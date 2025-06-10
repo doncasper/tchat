@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Twitch Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .chat-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, #9146ff, #bf46ff);
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .message {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0px;
+            border-left: 2px dotted #b6b6b6;
+            animation: slideIn 0.3s ease;
+            color: white;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .message.subscriber {
+            border-left-color: #9146ff;
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .message.moderator {
+            border-left-color: #00ff00;
+            background: rgba(0, 255, 0, 0.15);
+        }
+
+        .message.founder {
+            border-left-color: #ff00d0;
+            background: rgba(255, 0, 183, 0.15);
+        }
+
+        .username {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .message-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .emote {
+            height: 1.2em;
+            width: auto;
+            vertical-align: middle;
+            margin: 0 1px;
+            display: inline-block;
+        }
+
+        .badge.subscriber {
+            background: #9146ff;
+            color: white;
+        }
+        .badge.moderator {
+            background: #00ff00;
+            color: black;
+        }
+        .badge.vip {
+            background: #ffd700;
+            color: black;
+        }
+        .badge.founder {
+            background: #ff00d0;
+            color: white;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.removing {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+        }
+
+        /* Hide scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            display: none;
+        }
+        .chat-messages {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .badge-img {
+            height: 1.2em;
+            width: auto;
+            vertical-align: middle;
+            margin: 0 2px 0 0;
+            display: inline-block;
+        }
+
+        /* Add after .username */
+        .username-bubble {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 16px;
+            font-weight: 600;
+            color: #fff !important;
+            background: linear-gradient(90deg, #9146ff, #bf46ff); /* will be overridden inline */
+            margin-right: 8px;
+            box-shadow: 0 1px 4px 0 rgba(0,0,0,0.10);
+            font-size: 13px;
+            letter-spacing: 0.01em;
+            transition: background 0.2s;
+        }
+
+        /* Remove color from .username */
+        .username {
+            font-weight: 600;
+            margin-right: 8px;
+            /* color will be handled by .username-bubble now */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <span>Twitch Chat</span>
+            <span class="status" id="status">Connecting...</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+    </div>
+
+    <script>
+        class SimpleTwitchChat {
+            constructor() {
+                this.messages = [];
+                this.maxMessages = 35;
+                this.messageDuration = 100000; // 100 seconds
+                this.ws = null;
+                this.isConnected = false;
+                this.channelName = this.getChannelFromURL();
+                this.channelId = null;
+                this.badgeCache = {};
+                this.colorCache = new Map();
+                this.twitchColors = [
+                    '#FF0000', '#0000FF', '#00FF00', '#B22222', '#FF7F50',
+                    '#9ACD32', '#FF4500', '#2E8B57', '#DAA520', '#D2691E',
+                    '#5F9EA0', '#1E90FF', '#FF69B4', '#8A2BE2', '#00FF7F',
+                    '#FF6347', '#40E0D0', '#EE82EE', '#F5DEB3', '#FFFFFF',
+                    '#F0E68C', '#DDA0DD', '#B0E0E6', '#FFB6C1', '#FFA07A',
+                    '#20B2AA', '#87CEEB', '#778899', '#B0C4DE', '#FFFFE0'
+                ];
+                this.init();
+            }
+
+            async init() {
+                await this.fetchGlobalBadges();
+                await this.fetchChannelIdAndBadges();
+                this.connectToChat();
+            }
+
+            async fetchGlobalBadges() {
+                try {
+                    const res = await fetch('https://badges.twitch.tv/v1/badges/global/display');
+                    const data = await res.json();
+                    this.badgeCache = data.badge_sets || {};
+                } catch (e) {
+                    this.badgeCache = {};
+                }
+            }
+
+            async fetchChannelIdAndBadges() {
+                try {
+                    // Get channel ID from login name
+                    const res = await fetch(`https://api.ivr.fi/v2/twitch/user?login=${this.channelName}`);
+                    const data = await res.json();
+                    if (data && data.id) {
+                        this.channelId = data.id;
+                        // Fetch channel badges
+                        const badgeRes = await fetch(`https://badges.twitch.tv/v1/badges/channels/${this.channelId}/display`);
+                        const badgeData = await badgeRes.json();
+                        if (badgeData.badge_sets) {
+                            // Deep merge channel badges with global badges
+                            for (const badgeType in badgeData.badge_sets) {
+                                if (!this.badgeCache[badgeType]) {
+                                    this.badgeCache[badgeType] = badgeData.badge_sets[badgeType];
+                                } else {
+                                    // Merge versions
+                                    this.badgeCache[badgeType].versions = {
+                                        ...this.badgeCache[badgeType].versions,
+                                        ...badgeData.badge_sets[badgeType].versions
+                                    };
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // If channel badge fetch fails, just use global
+                }
+            }
+
+            getChannelFromURL() {
+                // Try to get channel from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                let channel = urlParams.get('channel');
+                
+                if (!channel) {
+                    // Default to a popular channel for demo
+                    channel = 'takotoken';
+                }
+                
+                return channel.toLowerCase();
+            }
+
+            // Twitch's color generation algorithm
+            generateTwitchColor(username) {
+                // Check cache first
+                if (this.colorCache.has(username)) {
+                    return this.colorCache.get(username);
+                }
+                
+                // Convert username to lowercase for consistency
+                const name = username.toLowerCase();
+                
+                // Twitch's actual color algorithm (simplified version)
+                // This better matches Twitch's real color assignment
+                let hash = 0;
+                for (let i = 0; i < name.length; i++) {
+                    hash = ((hash << 5) - hash) + name.charCodeAt(i);
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                
+                // Use a more sophisticated color selection that better matches Twitch
+                const colorIndex = Math.abs(hash) % this.twitchColors.length;
+                let color = this.twitchColors[colorIndex];
+                
+                // Additional color adjustment to better match Twitch's system
+                // This helps reduce color conflicts
+                const adjustment = (hash >> 8) % 3;
+                if (adjustment === 1) {
+                    // Slight color variation
+                    color = this.adjustColor(color, 10);
+                } else if (adjustment === 2) {
+                    // Different variation
+                    color = this.adjustColor(color, -10);
+                }
+                
+                // Cache the color for consistency
+                this.colorCache.set(username, color);
+                
+                // Debug: Log the color assignment
+                console.log(`Username: ${username}, Hash: ${hash}, Index: ${colorIndex}, Color: ${color}, Adjustment: ${adjustment}`);
+                
+                return color;
+            }
+
+            // Adjust color brightness/saturation to create variations
+            adjustColor(hexColor, adjustment) {
+                // Convert hex to RGB
+                const r = parseInt(hexColor.slice(1, 3), 16);
+                const g = parseInt(hexColor.slice(3, 5), 16);
+                const b = parseInt(hexColor.slice(5, 7), 16);
+                
+                // Adjust each component
+                const newR = Math.max(0, Math.min(255, r + adjustment));
+                const newG = Math.max(0, Math.min(255, g + adjustment));
+                const newB = Math.max(0, Math.min(255, b + adjustment));
+                
+                // Convert back to hex
+                return this.rgbToHex(newR, newG, newB);
+            }
+
+            connectToChat() {
+                try {
+                    // Connect to Twitch IRC without authentication (read-only)
+                    this.ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
+                    
+                    this.ws.onopen = () => {
+                        console.log('Connected to Twitch IRC');
+                        this.authenticate();
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        this.handleMessage(event.data);
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.log('WebSocket error, no chat available');
+                        this.updateStatus('No Chat');
+                    };
+                    
+                    this.ws.onclose = () => {
+                        console.log('Disconnected from Twitch IRC');
+                        this.isConnected = false;
+                        this.updateStatus('Disconnected');
+                    };
+                    
+                } catch (error) {
+                    console.log('Failed to connect, no chat available');
+                    this.updateStatus('No Chat');
+                }
+            }
+
+            authenticate() {
+                // Anonymous connection (limited but works for viewing)
+                this.ws.send('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands');
+                this.ws.send('NICK justinfan12345');
+                this.ws.send(`JOIN #${this.channelName}`);
+                this.updateStatus(`Connected to ${this.channelName}`);
+            }
+
+            handleMessage(data) {
+                const lines = data.split('\r\n');
+                
+                lines.forEach(line => {
+                    if (line.startsWith('PING')) {
+                        this.ws.send('PONG :tmi.twitch.tv');
+                        return;
+                    }
+                    
+                    if (line.includes('PRIVMSG')) {
+                        this.parseChatMessage(line);
+                    }
+                });
+            }
+
+            parseChatMessage(line) {
+                const match = line.match(/@(.+?) PRIVMSG #\w+ :(.+)/);
+                if (!match) return;
+                const tags = this.parseTags(line);
+                const username = tags['display-name'] || match[1].split('!')[0];
+                const message = match[2];
+                let color = tags.color;
+                if (!color || color === '') {
+                    color = this.generateTwitchColor(username);
+                } else {
+                    if (color.startsWith('#')) {
+                    } else if (color.includes(',')) {
+                        const rgb = color.split(',').map(c => parseInt(c.trim()));
+                        color = this.rgbToHex(rgb[0], rgb[1], rgb[2]);
+                    }
+                    this.colorCache.set(username, color);
+                }
+                const badges = this.parseBadges(tags.badges);
+                const badgeVersions = this.lastBadgeVersions || {};
+                const emotes = this.parseEmotes(tags.emotes, message);
+                const isSubscriber = tags.subscriber === '1';
+                const isModerator = tags.mod === '1';
+                this.addMessage(username, message, badges, isSubscriber, isModerator, color, emotes, badgeVersions);
+            }
+
+            parseEmotes(emotesString, message) {
+                if (!emotesString) return [];
+                
+                const emotes = [];
+                const emoteList = emotesString.split('/');
+                
+                emoteList.forEach(emoteData => {
+                    if (!emoteData) return;
+                    
+                    const [emoteId, positions] = emoteData.split(':');
+                    if (!positions) return;
+                    
+                    const positionList = positions.split(',');
+                    positionList.forEach(position => {
+                        const [start, end] = position.split('-').map(p => parseInt(p));
+                        const emoteName = message.substring(start, end + 1);
+                        
+                        emotes.push({
+                            id: emoteId,
+                            name: emoteName,
+                            start: start,
+                            end: end
+                        });
+                    });
+                });
+                
+                // Sort emotes by position (right to left for proper replacement)
+                emotes.sort((a, b) => b.start - a.start);
+                
+                return emotes;
+            }
+
+            // Convert RGB to Hex
+            rgbToHex(r, g, b) {
+                // Ensure values are within valid range (0-255)
+                r = Math.max(0, Math.min(255, Math.round(r)));
+                g = Math.max(0, Math.min(255, Math.round(g)));
+                b = Math.max(0, Math.min(255, Math.round(b)));
+                
+                // Convert to hex with proper padding
+                const toHex = (n) => {
+                    const hex = n.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                };
+                
+                return "#" + toHex(r) + toHex(g) + toHex(b);
+            }
+
+            parseTags(line) {
+                const tagsMatch = line.match(/@(.+?) /);
+                if (!tagsMatch) return {};
+                
+                const tagsString = tagsMatch[1];
+                const tags = {};
+                
+                tagsString.split(';').forEach(tag => {
+                    const [key, value] = tag.split('=');
+                    tags[key] = value;
+                });
+                
+                return tags;
+            }
+
+            parseBadges(badgesString) {
+                if (!badgesString) return [];
+                const badges = [];
+                const badgeVersions = {};
+                const badgeList = badgesString.split(',');
+                badgeList.forEach(badge => {
+                    const [type, version] = badge.split('/');
+                    badges.push(type);
+                    badgeVersions[type] = version;
+                });
+                // Save badge versions for image lookup
+                this.lastBadgeVersions = badgeVersions;
+                return badges;
+            }
+
+            getBadgeImage(type, version) {
+                // Try exact match, then fallback to version '1'
+                if (this.badgeCache[type] && this.badgeCache[type].versions[version]) {
+                    return this.badgeCache[type].versions[version];
+                }
+                if (this.badgeCache[type] && this.badgeCache[type].versions['1']) {
+                    return this.badgeCache[type].versions['1'];
+                }
+                return null;
+            }
+
+            addMessage(username, message, badges = [], isSubscriber = false, isModerator = false, color = '#9146ff', emotes = [], badgeVersions = {}) {
+                const messageObj = {
+                    id: Date.now() + Math.random(),
+                    username,
+                    message,
+                    badges,
+                    isSubscriber,
+                    isModerator,
+                    color,
+                    emotes,
+                    badgeVersions,
+                    timestamp: new Date()
+                };
+                this.messages.push(messageObj);
+                this.renderMessage(messageObj);
+                this.cleanupMessages();
+                setTimeout(() => {
+                    this.removeMessage(messageObj.id);
+                }, this.messageDuration);
+            }
+
+            renderMessage(messageObj) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.dataset.messageId = messageObj.id;
+                if (messageObj.isSubscriber) messageElement.classList.add('subscriber');
+                if (messageObj.isModerator) messageElement.classList.add('moderator');
+
+                // Badges
+                const badgesContainer = document.createElement('span');
+                badgesContainer.className = 'badges';
+                const allowedBadges = [
+                    'vip', 'subscriber', 'moderator', 'broadcaster', 'founder', 'staff', 'admin', 'global_mod', 'premium'
+                ];
+                messageObj.badges.forEach(badge => {
+                    if (!allowedBadges.includes(badge)) return; // Ignore unknown badges
+                    const version = (messageObj.badgeVersions && messageObj.badgeVersions[badge]) || '1';
+                    if (badge === 'vip' || badge === 'subscriber' || badge === 'moderator') {
+                        // Use styled text badge for VIP, SUB, MOD
+                        const badgeSpan = document.createElement('span');
+                        badgeSpan.className = `badge ${badge}`;
+                        badgeSpan.textContent = this.getBadgeText(badge);
+                        badgesContainer.appendChild(badgeSpan);
+                    } else {
+                        // Use styled text for other allowed badges
+                        const badgeSpan = document.createElement('span');
+                        badgeSpan.className = `badge ${badge}`;
+                        badgeSpan.textContent = this.getBadgeText(badge);
+                        badgesContainer.appendChild(badgeSpan);
+                    }
+                });
+
+                // Username
+                const usernameSpan = document.createElement('span');
+                usernameSpan.className = 'username username-bubble';
+                // Compute darker color for gradient
+                const mainColor = messageObj.color;
+                const darkerColor = this.getDarkerColor(mainColor);
+                usernameSpan.style.background = `linear-gradient(90deg, ${mainColor}, ${darkerColor})`;
+                usernameSpan.style.color = '#fff';
+                usernameSpan.textContent = messageObj.username;
+
+                // Message text with emotes
+                const messageTextSpan = document.createElement('span');
+                messageTextSpan.className = 'message-text';
+                this.appendMessageWithEmotes(messageTextSpan, messageObj.message, messageObj.emotes);
+
+                // Clear and append
+                messageElement.innerHTML = '';
+                messageElement.appendChild(usernameSpan);
+                messageElement.appendChild(badgesContainer);
+                messageElement.appendChild(messageTextSpan);
+
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            appendMessageWithEmotes(container, message, emotes) {
+                if (!emotes || emotes.length === 0) {
+                    container.textContent = message;
+                    return;
+                }
+                // Sort emotes by start position
+                emotes = [...emotes].sort((a, b) => a.start - b.start);
+                let lastIndex = 0;
+                for (let i = 0; i < emotes.length; i++) {
+                    const emote = emotes[i];
+                    // Add text before emote
+                    if (emote.start > lastIndex) {
+                        const text = message.substring(lastIndex, emote.start);
+                        container.appendChild(document.createTextNode(text));
+                    }
+                    // Add emote image
+                    const img = document.createElement('img');
+                    img.src = `https://static-cdn.jtvnw.net/emoticons/v2/${emote.id}/default/dark/1.0`;
+                    img.alt = emote.name;
+                    img.title = emote.name;
+                    img.className = 'emote';
+                    container.appendChild(img);
+                    lastIndex = emote.end + 1;
+                }
+                // Add remaining text
+                if (lastIndex < message.length) {
+                    container.appendChild(document.createTextNode(message.substring(lastIndex)));
+                }
+            }
+
+            removeMessage(messageId) {
+                const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+                if (messageElement) {
+                    messageElement.classList.add('removing');
+                    setTimeout(() => {
+                        if (messageElement.parentNode) {
+                            messageElement.parentNode.removeChild(messageElement);
+                        }
+                        this.messages = this.messages.filter(m => m.id !== messageId);
+                    }, 300);
+                }
+            }
+
+            cleanupMessages() {
+                if (this.messages.length > this.maxMessages) {
+                    const messagesToRemove = this.messages.slice(0, this.messages.length - this.maxMessages);
+                    messagesToRemove.forEach(msg => this.removeMessage(msg.id));
+                }
+            }
+
+            getBadgeText(type) {
+                const badgeMap = {
+                    'moderator': 'MOD',
+                    'subscriber': 'SUB',
+                    'vip': 'VIP',
+                    'broadcaster': 'BROADCASTER',
+                    'founder': 'FOUNDER',
+                    'staff': 'STAFF',
+                    'admin': 'ADMIN',
+                    'global_mod': 'GLOBAL MOD',
+                    'premium': 'PREMIUM',
+                };
+                return badgeMap[type] || type.toUpperCase();
+            }
+
+            updateStatus(status) {
+                document.getElementById('status').textContent = status;
+            }
+
+            getDarkerColor(hex) {
+                // Remove # if present
+                hex = hex.replace('#', '');
+                // Parse r, g, b
+                let r = parseInt(hex.substring(0,2), 16);
+                let g = parseInt(hex.substring(2,4), 16);
+                let b = parseInt(hex.substring(4,6), 16);
+                // Make darker (multiply by 0.7)
+                r = Math.round(r * 0.7);
+                g = Math.round(g * 0.7);
+                b = Math.round(b * 0.7);
+                // Return as hex
+                return this.rgbToHex(r, g, b);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.simpleChat = new SimpleTwitchChat();
+        });
+    </script>
+</body>
+</html> 
