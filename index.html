@@ -41,6 +41,41 @@
             justify-content: space-between;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .config-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 4px;
+            padding: 6px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .config-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .config-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
         .chat-messages {
             flex: 1;
             padding: 12px;
@@ -137,6 +172,146 @@
             transition: background 0.2s;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #444;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .close-button:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #9146ff;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #9146ff;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #9146ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #7a3fd8;
+        }
+
+        .btn-secondary {
+            background: #444;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -167,11 +342,50 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <span>Twitch Chat</span>
-            <span class="status" id="status">Connecting...</span>
+            <div class="header-left">
+                <span>Twitch Chat</span>
+            </div>
+            <div class="header-right">
+                <span class="status" id="status">Connecting...</span>
+                <button class="config-button" id="config-button" title="Settings">
+                    <svg class="config-icon" viewBox="0 0 24 24">
+                        <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
         <div class="chat-messages" id="chat-messages">
             <!-- Messages will appear here -->
+        </div>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Chat Settings</h3>
+                <button class="close-button" id="close-modal">&times;</button>
+            </div>
+            <form id="config-form">
+                <div class="form-group">
+                    <label class="form-label" for="max-messages">Max Messages</label>
+                    <input type="number" id="max-messages" class="form-input" min="10" max="100" step="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message-duration">Message Duration (seconds)</label>
+                    <input type="number" id="message-duration" class="form-input" min="30" max="300" step="10">
+                </div>
+                <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="enable-background">
+                        <label class="form-label" for="enable-background">Enable Background</label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -186,7 +400,8 @@
                     TWITCH_IRC_URL: 'wss://irc-ws.chat.twitch.tv:443',
                     BADGE_API_URL: 'https://badges.twitch.tv/v1/badges',
                     USER_API_URL: 'https://api.ivr.fi/v2/twitch/user',
-                    EMOTE_CDN_URL: 'https://static-cdn.jtvnw.net/emoticons/v2'
+                    EMOTE_CDN_URL: 'https://static-cdn.jtvnw.net/emoticons/v2',
+                    ENABLE_BACKGROUND: true
                 };
 
                 // Twitch color palette
@@ -228,13 +443,120 @@
                 this.lastBadgeVersions = {};
 
                 this.init();
+                this.initModal();
+            }
+
+            initModal() {
+                const configButton = document.getElementById('config-button');
+                const modalOverlay = document.getElementById('modal-overlay');
+                const closeButton = document.getElementById('close-modal');
+                const cancelButton = document.getElementById('cancel-button');
+                const configForm = document.getElementById('config-form');
+
+                // Load current settings
+                this.loadSettings();
+
+                // Event listeners
+                configButton.addEventListener('click', () => this.openModal());
+                closeButton.addEventListener('click', () => this.closeModal());
+                cancelButton.addEventListener('click', () => this.closeModal());
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay) this.closeModal();
+                });
+                configForm.addEventListener('submit', (e) => this.saveSettings(e));
+
+                // Close modal on Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            loadSettings() {
+                const maxMessagesInput = document.getElementById('max-messages');
+                const messageDurationInput = document.getElementById('message-duration');
+                const enableBackgroundInput = document.getElementById('enable-background');
+
+                maxMessagesInput.value = this.CONFIG.MAX_MESSAGES;
+                messageDurationInput.value = this.CONFIG.MESSAGE_DURATION / 1000; // Convert to seconds
+                enableBackgroundInput.checked = this.CONFIG.ENABLE_BACKGROUND;
+            }
+
+            openModal() {
+                const modalOverlay = document.getElementById('modal-overlay');
+                modalOverlay.classList.add('active');
+            }
+
+            closeModal() {
+                const modalOverlay = document.getElementById('modal-overlay');
+                modalOverlay.classList.remove('active');
+            }
+
+            saveSettings(e) {
+                e.preventDefault();
+
+                const maxMessages = parseInt(document.getElementById('max-messages').value);
+                const messageDuration = parseInt(document.getElementById('message-duration').value) * 1000; // Convert to milliseconds
+                const enableBackground = document.getElementById('enable-background').checked;
+
+                // Update configuration
+                this.CONFIG.MAX_MESSAGES = maxMessages;
+                this.CONFIG.MESSAGE_DURATION = messageDuration;
+                this.CONFIG.ENABLE_BACKGROUND = enableBackground;
+
+                // Apply background setting
+                this.applyBackgroundSetting();
+
+                // Save to localStorage
+                this.saveToLocalStorage();
+
+                this.closeModal();
+            }
+
+            applyBackgroundSetting() {
+                const chatContainer = document.querySelector('.chat-container');
+                if (this.CONFIG.ENABLE_BACKGROUND) {
+                    chatContainer.style.background = 'rgba(0, 0, 0, 0.7)';
+                    chatContainer.style.backdropFilter = 'blur(5px)';
+                } else {
+                    chatContainer.style.background = 'transparent';
+                    chatContainer.style.backdropFilter = 'none';
+                }
+            }
+
+            saveToLocalStorage() {
+                const settings = {
+                    maxMessages: this.CONFIG.MAX_MESSAGES,
+                    messageDuration: this.CONFIG.MESSAGE_DURATION,
+                    enableBackground: this.CONFIG.ENABLE_BACKGROUND
+                };
+                localStorage.setItem('twitchChatSettings', JSON.stringify(settings));
+            }
+
+            loadFromLocalStorage() {
+                const saved = localStorage.getItem('twitchChatSettings');
+                if (saved) {
+                    try {
+                        const settings = JSON.parse(saved);
+                        this.CONFIG.MAX_MESSAGES = settings.maxMessages || this.CONFIG.MAX_MESSAGES;
+                        this.CONFIG.MESSAGE_DURATION = settings.messageDuration || this.CONFIG.MESSAGE_DURATION;
+                        this.CONFIG.ENABLE_BACKGROUND = settings.enableBackground !== undefined ? settings.enableBackground : this.CONFIG.ENABLE_BACKGROUND;
+                    } catch (error) {
+                        console.warn('Failed to load settings from localStorage:', error);
+                    }
+                }
             }
 
             async init() {
+                // Load saved settings first
+                this.loadFromLocalStorage();
+                
                 try {
                     await this.fetchGlobalBadges();
                     await this.fetchChannelIdAndBadges();
                     this.connectToChat();
+                    this.applyBackgroundSetting();
                 } catch (error) {
                     console.error('Failed to initialize chat:', error);
                     this.updateStatus('Initialization failed');
