@@ -430,8 +430,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="show-header">
+                        <label class="form-label" for="show-header">Show Header</label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-label" for="chat-scale">Scale: <span id="scale-value">1.0</span>x</label>
                     <input type="range" id="chat-scale" class="form-input" min="0.5" max="2" step="0.01" value="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="chat-radius">Border Radius: <span id="radius-value">8</span>px</label>
+                    <input type="range" id="chat-radius" class="form-input" min="0" max="25" step="1" value="8">
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button>
@@ -454,7 +464,9 @@
                     USER_API_URL: 'https://api.ivr.fi/v2/twitch/user',
                     EMOTE_CDN_URL: 'https://static-cdn.jtvnw.net/emoticons/v2',
                     ENABLE_BACKGROUND: true,
-                    SCALE: 1.0
+                    SCALE: 1.0,
+                    SHOW_HEADER: true,
+                    RADIUS: 8
                 };
 
                 // Twitch color palette
@@ -507,6 +519,9 @@
                 const configForm = document.getElementById('config-form');
                 const scaleInput = document.getElementById('chat-scale');
                 const scaleValue = document.getElementById('scale-value');
+                const showHeaderInput = document.getElementById('show-header');
+                const radiusInput = document.getElementById('chat-radius');
+                const radiusValue = document.getElementById('radius-value');
 
                 // Load current settings
                 this.loadSettings();
@@ -530,13 +545,23 @@
                     scaleInput._listenerAdded = true;
                 }
 
+                // Add border radius slider event listener ONCE here
+                if (radiusInput && radiusValue && !radiusInput._listenerAdded) {
+                    radiusInput.addEventListener('input', (e) => {
+                        const val = parseInt(e.target.value);
+                        radiusValue.textContent = val;
+                        this.previewRadius(val);
+                    });
+                    radiusInput._listenerAdded = true;
+                }
+
                 // Close modal on Escape key
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                         this.closeModal();
                     }
-                    // Open config with Ctrl+, or Cmd+,
-                    if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+                    // Open config with Ctrl+m
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
                         // Don't trigger if focused on input/textarea
                         const active = document.activeElement;
                         if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
@@ -552,13 +577,20 @@
                 const enableBackgroundInput = document.getElementById('enable-background');
                 const scaleInput = document.getElementById('chat-scale');
                 const scaleValue = document.getElementById('scale-value');
+                const showHeaderInput = document.getElementById('show-header');
+                const radiusInput = document.getElementById('chat-radius');
+                const radiusValue = document.getElementById('radius-value');
 
                 maxMessagesInput.value = this.CONFIG.MAX_MESSAGES;
                 messageDurationInput.value = this.CONFIG.MESSAGE_DURATION / 1000; // Convert to seconds
                 enableBackgroundInput.checked = this.CONFIG.ENABLE_BACKGROUND;
                 scaleInput.value = this.CONFIG.SCALE;
                 scaleValue.textContent = this.CONFIG.SCALE.toFixed(2);
-                this.previewScale(parseFloat(this.CONFIG.SCALE));
+                showHeaderInput.checked = this.CONFIG.SHOW_HEADER;
+                radiusInput.value = this.CONFIG.RADIUS;
+                radiusValue.textContent = this.CONFIG.RADIUS;
+                this.previewRadius(this.CONFIG.RADIUS);
+                this.applyShowHeader();
             }
 
             openModal() {
@@ -578,16 +610,22 @@
                 const messageDuration = parseInt(document.getElementById('message-duration').value) * 1000; // Convert to milliseconds
                 const enableBackground = document.getElementById('enable-background').checked;
                 const scale = parseFloat(document.getElementById('chat-scale').value);
+                const showHeader = document.getElementById('show-header').checked;
+                const radius = parseInt(document.getElementById('chat-radius').value);
 
                 // Update configuration
                 this.CONFIG.MAX_MESSAGES = maxMessages;
                 this.CONFIG.MESSAGE_DURATION = messageDuration;
                 this.CONFIG.ENABLE_BACKGROUND = enableBackground;
                 this.CONFIG.SCALE = scale;
+                this.CONFIG.SHOW_HEADER = showHeader;
+                this.CONFIG.RADIUS = radius;
 
                 // Apply background setting
                 this.applyBackgroundSetting();
                 this.applyScale();
+                this.applyShowHeader();
+                this.applyRadius();
 
                 // Save to localStorage
                 this.saveToLocalStorage();
@@ -611,7 +649,9 @@
                     maxMessages: this.CONFIG.MAX_MESSAGES,
                     messageDuration: this.CONFIG.MESSAGE_DURATION,
                     enableBackground: this.CONFIG.ENABLE_BACKGROUND,
-                    scale: this.CONFIG.SCALE
+                    scale: this.CONFIG.SCALE,
+                    showHeader: this.CONFIG.SHOW_HEADER,
+                    radius: this.CONFIG.RADIUS
                 };
                 localStorage.setItem('twitchChatSettings', JSON.stringify(settings));
             }
@@ -625,6 +665,8 @@
                         this.CONFIG.MESSAGE_DURATION = settings.messageDuration || this.CONFIG.MESSAGE_DURATION;
                         this.CONFIG.ENABLE_BACKGROUND = settings.enableBackground !== undefined ? settings.enableBackground : this.CONFIG.ENABLE_BACKGROUND;
                         this.CONFIG.SCALE = settings.scale !== undefined ? settings.scale : this.CONFIG.SCALE;
+                        this.CONFIG.SHOW_HEADER = settings.showHeader !== undefined ? settings.showHeader : this.CONFIG.SHOW_HEADER;
+                        this.CONFIG.RADIUS = settings.radius !== undefined ? settings.radius : this.CONFIG.RADIUS;
                     } catch (error) {
                         console.warn('Failed to load settings from localStorage:', error);
                     }
@@ -641,6 +683,8 @@
                     this.connectToChat();
                     this.applyBackgroundSetting();
                     this.applyScale();
+                    this.applyShowHeader();
+                    this.applyRadius();
                 } catch (error) {
                     console.error('Failed to initialize chat:', error);
                     this.updateStatus('Initialization failed');
@@ -1099,6 +1143,22 @@
 
             applyScale() {
                 this.previewScale(this.CONFIG.SCALE);
+            }
+
+            applyShowHeader() {
+                const header = document.querySelector('.chat-header');
+                if (header) {
+                    header.style.display = this.CONFIG.SHOW_HEADER ? '' : 'none';
+                }
+            }
+
+            previewRadius(radius) {
+                const chatContainer = document.querySelector('.chat-container');
+                chatContainer.style.borderRadius = radius + 'px';
+            }
+
+            applyRadius() {
+                this.previewRadius(this.CONFIG.RADIUS);
             }
         }
 
