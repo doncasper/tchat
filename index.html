@@ -35,7 +35,7 @@
             padding: 8px 16px;
             color: white;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.875em;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -98,7 +98,7 @@
             border-left: 2px dotted #b6b6b6;
             animation: slideIn 0.3s ease;
             color: white;
-            font-size: 13px;
+            font-size: 0.81em;
             line-height: 1.3;
         }
 
@@ -122,7 +122,7 @@
         }
 
         .emote {
-            height: 2.2em;
+            height: 2em;
             width: auto;
             vertical-align: middle;
             margin: 0 1px;
@@ -133,7 +133,7 @@
             display: inline-block;
             padding: 2px 6px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 0.625em;
             font-weight: bold;
             margin-right: 6px;
             text-transform: uppercase;
@@ -202,7 +202,7 @@
         }
 
         .status {
-            font-size: 12px;
+            font-size: 0.75em;
             opacity: 0.8;
         }
 
@@ -215,7 +215,7 @@
             background: linear-gradient(90deg, #9146ff, #bf46ff);
             margin-right: 8px;
             box-shadow: 0 1px 4px 0 rgba(0,0,0,0.10);
-            font-size: 13px;
+            font-size: 0.81em;
             letter-spacing: 0.01em;
             transition: background 0.2s;
         }
@@ -268,7 +268,7 @@
 
         .modal-title {
             color: white;
-            font-size: 18px;
+            font-size: 1.125em;
             font-weight: 600;
         }
 
@@ -294,7 +294,7 @@
         .form-label {
             display: block;
             color: white;
-            font-size: 14px;
+            font-size: 0.875em;
             font-weight: 500;
             margin-bottom: 6px;
         }
@@ -306,7 +306,7 @@
             border-radius: 4px;
             background: #1a1a1a;
             color: white;
-            font-size: 14px;
+            font-size: 0.875em;
         }
 
         .form-input:focus {
@@ -336,7 +336,7 @@
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 0.875em;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
@@ -429,6 +429,10 @@
                         <label class="form-label" for="enable-background">Enable Background</label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="chat-scale">Scale: <span id="scale-value">1.0</span>x</label>
+                    <input type="range" id="chat-scale" class="form-input" min="0.5" max="2" step="0.01" value="1">
+                </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -449,7 +453,8 @@
                     BADGE_API_URL: 'https://badges.twitch.tv/v1/badges',
                     USER_API_URL: 'https://api.ivr.fi/v2/twitch/user',
                     EMOTE_CDN_URL: 'https://static-cdn.jtvnw.net/emoticons/v2',
-                    ENABLE_BACKGROUND: true
+                    ENABLE_BACKGROUND: true,
+                    SCALE: 1.0
                 };
 
                 // Twitch color palette
@@ -500,6 +505,8 @@
                 const closeButton = document.getElementById('close-modal');
                 const cancelButton = document.getElementById('cancel-button');
                 const configForm = document.getElementById('config-form');
+                const scaleInput = document.getElementById('chat-scale');
+                const scaleValue = document.getElementById('scale-value');
 
                 // Load current settings
                 this.loadSettings();
@@ -513,10 +520,28 @@
                 });
                 configForm.addEventListener('submit', (e) => this.saveSettings(e));
 
+                // Add scale slider event listener ONCE here
+                if (scaleInput && scaleValue && !scaleInput._listenerAdded) {
+                    scaleInput.addEventListener('input', (e) => {
+                        const val = parseFloat(e.target.value);
+                        scaleValue.textContent = val.toFixed(2);
+                        this.previewScale(val);
+                    });
+                    scaleInput._listenerAdded = true;
+                }
+
                 // Close modal on Escape key
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                         this.closeModal();
+                    }
+                    // Open config with Ctrl+, or Cmd+,
+                    if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+                        // Don't trigger if focused on input/textarea
+                        const active = document.activeElement;
+                        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+                        e.preventDefault();
+                        this.openModal();
                     }
                 });
             }
@@ -525,10 +550,15 @@
                 const maxMessagesInput = document.getElementById('max-messages');
                 const messageDurationInput = document.getElementById('message-duration');
                 const enableBackgroundInput = document.getElementById('enable-background');
+                const scaleInput = document.getElementById('chat-scale');
+                const scaleValue = document.getElementById('scale-value');
 
                 maxMessagesInput.value = this.CONFIG.MAX_MESSAGES;
                 messageDurationInput.value = this.CONFIG.MESSAGE_DURATION / 1000; // Convert to seconds
                 enableBackgroundInput.checked = this.CONFIG.ENABLE_BACKGROUND;
+                scaleInput.value = this.CONFIG.SCALE;
+                scaleValue.textContent = this.CONFIG.SCALE.toFixed(2);
+                this.previewScale(parseFloat(this.CONFIG.SCALE));
             }
 
             openModal() {
@@ -547,14 +577,17 @@
                 const maxMessages = parseInt(document.getElementById('max-messages').value);
                 const messageDuration = parseInt(document.getElementById('message-duration').value) * 1000; // Convert to milliseconds
                 const enableBackground = document.getElementById('enable-background').checked;
+                const scale = parseFloat(document.getElementById('chat-scale').value);
 
                 // Update configuration
                 this.CONFIG.MAX_MESSAGES = maxMessages;
                 this.CONFIG.MESSAGE_DURATION = messageDuration;
                 this.CONFIG.ENABLE_BACKGROUND = enableBackground;
+                this.CONFIG.SCALE = scale;
 
                 // Apply background setting
                 this.applyBackgroundSetting();
+                this.applyScale();
 
                 // Save to localStorage
                 this.saveToLocalStorage();
@@ -577,7 +610,8 @@
                 const settings = {
                     maxMessages: this.CONFIG.MAX_MESSAGES,
                     messageDuration: this.CONFIG.MESSAGE_DURATION,
-                    enableBackground: this.CONFIG.ENABLE_BACKGROUND
+                    enableBackground: this.CONFIG.ENABLE_BACKGROUND,
+                    scale: this.CONFIG.SCALE
                 };
                 localStorage.setItem('twitchChatSettings', JSON.stringify(settings));
             }
@@ -590,6 +624,7 @@
                         this.CONFIG.MAX_MESSAGES = settings.maxMessages || this.CONFIG.MAX_MESSAGES;
                         this.CONFIG.MESSAGE_DURATION = settings.messageDuration || this.CONFIG.MESSAGE_DURATION;
                         this.CONFIG.ENABLE_BACKGROUND = settings.enableBackground !== undefined ? settings.enableBackground : this.CONFIG.ENABLE_BACKGROUND;
+                        this.CONFIG.SCALE = settings.scale !== undefined ? settings.scale : this.CONFIG.SCALE;
                     } catch (error) {
                         console.warn('Failed to load settings from localStorage:', error);
                     }
@@ -605,6 +640,7 @@
                     await this.fetchChannelIdAndBadges();
                     this.connectToChat();
                     this.applyBackgroundSetting();
+                    this.applyScale();
                 } catch (error) {
                     console.error('Failed to initialize chat:', error);
                     this.updateStatus('Initialization failed');
@@ -1052,6 +1088,17 @@
                 b = Math.round(b * 0.7);
                 
                 return this.rgbToHex(r, g, b);
+            }
+
+            previewScale(scale) {
+                const chatContainer = document.querySelector('.chat-container');
+                // Base font size is 16px, scale 1.0 = 16px, 2.0 = 32px, 0.5 = 8px
+                const baseFontSize = 16;
+                chatContainer.style.fontSize = (baseFontSize * parseFloat(scale)) + 'px';
+            }
+
+            applyScale() {
+                this.previewScale(this.CONFIG.SCALE);
             }
         }
 
