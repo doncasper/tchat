@@ -122,7 +122,7 @@
         }
 
         .emote {
-            height: 1.2em;
+            height: 2.2em;
             width: auto;
             vertical-align: middle;
             margin: 0 1px;
@@ -923,7 +923,26 @@
                 messageElement.appendChild(messageTextSpan);
 
                 messagesContainer.appendChild(messageElement);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Ensure message is fully visible, even with emotes
+                const emoteImages = messageElement.querySelectorAll('img.emote');
+                if (emoteImages.length > 0) {
+                    let loaded = 0;
+                    emoteImages.forEach(img => {
+                        img.onload = img.onerror = () => {
+                            loaded++;
+                            if (loaded === emoteImages.length) {
+                                messageElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+                            }
+                        };
+                    });
+                    // Fallback: scroll after a short delay in case some images never fire events
+                    setTimeout(() => {
+                        messageElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+                    }, 200);
+                } else {
+                    messageElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+                }
             }
 
             createBadgesContainer(messageObj) {
