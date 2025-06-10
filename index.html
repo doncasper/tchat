@@ -142,11 +142,6 @@
             transition: all 0.2s ease;
         }
 
-        .badge:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-
         .badge.subscriber {
             background: linear-gradient(135deg, #9146ff, #bf46ff);
             color: white;
@@ -436,6 +431,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="enable-message-shadow">
+                        <label class="form-label" for="enable-message-shadow">Enable Message Shadows</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="enable-text-shadow">
+                        <label class="form-label" for="enable-text-shadow">Enable Text Shadows</label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-label" for="chat-scale">Scale: <span id="scale-value">1.0</span>x</label>
                     <input type="range" id="chat-scale" class="form-input" min="0.5" max="2" step="0.01" value="1">
                 </div>
@@ -466,7 +473,9 @@
                     ENABLE_BACKGROUND: true,
                     SCALE: 1.0,
                     SHOW_HEADER: true,
-                    RADIUS: 8
+                    RADIUS: 8,
+                    ENABLE_MESSAGE_SHADOW: true,
+                    ENABLE_TEXT_SHADOW: true
                 };
 
                 // Twitch color palette
@@ -522,6 +531,8 @@
                 const showHeaderInput = document.getElementById('show-header');
                 const radiusInput = document.getElementById('chat-radius');
                 const radiusValue = document.getElementById('radius-value');
+                const enableMessageShadowInput = document.getElementById('enable-message-shadow');
+                const enableTextShadowInput = document.getElementById('enable-text-shadow');
 
                 // Load current settings
                 this.loadSettings();
@@ -555,6 +566,22 @@
                     radiusInput._listenerAdded = true;
                 }
 
+                // Add message shadow checkbox event listener ONCE here
+                if (enableMessageShadowInput && !enableMessageShadowInput._listenerAdded) {
+                    enableMessageShadowInput.addEventListener('change', (e) => {
+                        this.previewMessageShadow(e.target.checked);
+                    });
+                    enableMessageShadowInput._listenerAdded = true;
+                }
+
+                // Add text shadow checkbox event listener ONCE here
+                if (enableTextShadowInput && !enableTextShadowInput._listenerAdded) {
+                    enableTextShadowInput.addEventListener('change', (e) => {
+                        this.previewTextShadow(e.target.checked);
+                    });
+                    enableTextShadowInput._listenerAdded = true;
+                }
+
                 // Close modal on Escape key
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
@@ -580,6 +607,8 @@
                 const showHeaderInput = document.getElementById('show-header');
                 const radiusInput = document.getElementById('chat-radius');
                 const radiusValue = document.getElementById('radius-value');
+                const enableMessageShadowInput = document.getElementById('enable-message-shadow');
+                const enableTextShadowInput = document.getElementById('enable-text-shadow');
 
                 maxMessagesInput.value = this.CONFIG.MAX_MESSAGES;
                 messageDurationInput.value = this.CONFIG.MESSAGE_DURATION / 1000; // Convert to seconds
@@ -590,6 +619,10 @@
                 radiusInput.value = this.CONFIG.RADIUS;
                 radiusValue.textContent = this.CONFIG.RADIUS;
                 this.previewRadius(this.CONFIG.RADIUS);
+                enableMessageShadowInput.checked = this.CONFIG.ENABLE_MESSAGE_SHADOW;
+                this.previewMessageShadow(this.CONFIG.ENABLE_MESSAGE_SHADOW);
+                enableTextShadowInput.checked = this.CONFIG.ENABLE_TEXT_SHADOW;
+                this.previewTextShadow(this.CONFIG.ENABLE_TEXT_SHADOW);
                 this.applyShowHeader();
             }
 
@@ -612,6 +645,8 @@
                 const scale = parseFloat(document.getElementById('chat-scale').value);
                 const showHeader = document.getElementById('show-header').checked;
                 const radius = parseInt(document.getElementById('chat-radius').value);
+                const enableMessageShadow = document.getElementById('enable-message-shadow').checked;
+                const enableTextShadow = document.getElementById('enable-text-shadow').checked;
 
                 // Update configuration
                 this.CONFIG.MAX_MESSAGES = maxMessages;
@@ -620,12 +655,16 @@
                 this.CONFIG.SCALE = scale;
                 this.CONFIG.SHOW_HEADER = showHeader;
                 this.CONFIG.RADIUS = radius;
+                this.CONFIG.ENABLE_MESSAGE_SHADOW = enableMessageShadow;
+                this.CONFIG.ENABLE_TEXT_SHADOW = enableTextShadow;
 
                 // Apply background setting
                 this.applyBackgroundSetting();
                 this.applyScale();
                 this.applyShowHeader();
                 this.applyRadius();
+                this.applyMessageShadow();
+                this.applyTextShadow();
 
                 // Save to localStorage
                 this.saveToLocalStorage();
@@ -651,7 +690,9 @@
                     enableBackground: this.CONFIG.ENABLE_BACKGROUND,
                     scale: this.CONFIG.SCALE,
                     showHeader: this.CONFIG.SHOW_HEADER,
-                    radius: this.CONFIG.RADIUS
+                    radius: this.CONFIG.RADIUS,
+                    enableMessageShadow: this.CONFIG.ENABLE_MESSAGE_SHADOW,
+                    enableTextShadow: this.CONFIG.ENABLE_TEXT_SHADOW
                 };
                 localStorage.setItem('twitchChatSettings', JSON.stringify(settings));
             }
@@ -667,6 +708,8 @@
                         this.CONFIG.SCALE = settings.scale !== undefined ? settings.scale : this.CONFIG.SCALE;
                         this.CONFIG.SHOW_HEADER = settings.showHeader !== undefined ? settings.showHeader : this.CONFIG.SHOW_HEADER;
                         this.CONFIG.RADIUS = settings.radius !== undefined ? settings.radius : this.CONFIG.RADIUS;
+                        this.CONFIG.ENABLE_MESSAGE_SHADOW = settings.enableMessageShadow !== undefined ? settings.enableMessageShadow : this.CONFIG.ENABLE_MESSAGE_SHADOW;
+                        this.CONFIG.ENABLE_TEXT_SHADOW = settings.enableTextShadow !== undefined ? settings.enableTextShadow : this.CONFIG.ENABLE_TEXT_SHADOW;
                     } catch (error) {
                         console.warn('Failed to load settings from localStorage:', error);
                     }
@@ -685,6 +728,8 @@
                     this.applyScale();
                     this.applyShowHeader();
                     this.applyRadius();
+                    this.applyMessageShadow();
+                    this.applyTextShadow();
                 } catch (error) {
                     console.error('Failed to initialize chat:', error);
                     this.updateStatus('Initialization failed');
@@ -1004,6 +1049,9 @@
 
                 messagesContainer.appendChild(messageElement);
 
+                // Apply text shadow config to this new message
+                this.applyTextShadowToMessage(messageElement);
+
                 // Ensure message is fully visible, even with emotes
                 const emoteImages = messageElement.querySelectorAll('img.emote');
                 if (emoteImages.length > 0) {
@@ -1188,6 +1236,37 @@
                     hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
                 }
                 return '#' + hex.padEnd(6, 'f');
+            }
+
+            previewMessageShadow(enabled) {
+                const messages = document.querySelectorAll('.message');
+                messages.forEach(msg => {
+                    msg.style.boxShadow = 'none';
+                });
+            }
+
+            applyMessageShadow() {
+                this.previewMessageShadow(this.CONFIG.ENABLE_MESSAGE_SHADOW);
+            }
+
+            previewTextShadow(enabled) {
+                // Only .message-text
+                const msgTexts = document.querySelectorAll('.message-text');
+                msgTexts.forEach(el => {
+                    el.style.textShadow = enabled ? '0 1px 2px rgba(0,0,0,0.5)' : 'none';
+                });
+            }
+
+            applyTextShadow() {
+                this.previewTextShadow(this.CONFIG.ENABLE_TEXT_SHADOW);
+            }
+
+            applyTextShadowToMessage(messageElement) {
+                const enabled = this.CONFIG.ENABLE_TEXT_SHADOW;
+                const msgTexts = messageElement.querySelectorAll('.message-text');
+                msgTexts.forEach(el => {
+                    el.style.textShadow = enabled ? '0 1px 2px rgba(0,0,0,0.5)' : 'none';
+                });
             }
         }
 
