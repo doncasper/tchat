@@ -112,6 +112,14 @@
             background: rgba(0, 255, 0, 0.15);
         }
 
+        .message.notification {
+            border-left: 4px solid #FFD700;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 215, 0, 0.08);
+            font-weight: bold;
+        }
+
         .username {
             font-weight: 600;
             margin-right: 8px;
@@ -874,17 +882,51 @@
 
             handleMessage(data) {
                 const lines = data.split('\r\n');
-                
                 lines.forEach(line => {
                     if (line.startsWith('PING')) {
                         this.ws.send('PONG :tmi.twitch.tv');
                         return;
                     }
-                    
                     if (line.includes('PRIVMSG')) {
                         this.parseChatMessage(line);
                     }
+                    if (line.includes('USERNOTICE')) {
+                        this.parseUserNotice(line);
+                    }
                 });
+            }
+
+            parseUserNotice(line) {
+                const tags = this.parseTags(line);
+                const msgId = tags['msg-id'];
+                let notification = '';
+                switch (msgId) {
+                    case 'sub':
+                    case 'resub':
+                        notification = `${tags['display-name'] || tags['login'] || 'Someone'} just subscribed!`;
+                        break;
+                    case 'subgift':
+                    case 'anonsubgift':
+                        notification = `${tags['display-name'] || 'An anonymous user'} gifted a sub!`;
+                        break;
+                    case 'raid':
+                        notification = `${tags['msg-param-displayName'] || 'Someone'} is raiding with ${tags['msg-param-viewerCount'] || '?'} viewers!`;
+                        break;
+                    case 'submysterygift':
+                        const count = tags['msg-param-mass-gift-count'] || tags['msg-param-gift-count'] || '?';
+                        notification = `${tags['display-name'] || 'Someone'} is gifting ${count} subs!`;
+                        break;
+                    case 'giftpaidupgrade':
+                        notification = `${tags['display-name'] || 'Someone'} continued their gifted sub!`;
+                        break;
+                    case 'bitsbadgetier':
+                        notification = `${tags['display-name'] || 'Someone'} reached a new bits badge tier!`;
+                        break;
+                    // Add more cases as needed
+                }
+                if (notification) {
+                    this.addNotification(notification, msgId, tags);
+                }
             }
 
             parseChatMessage(line) {
@@ -899,6 +941,11 @@
                 const emotes = this.parseEmotes(tags.emotes, message);
                 const isSubscriber = tags.subscriber === '1';
                 const isModerator = tags.mod === '1';
+
+                // Bits notification
+                if (tags.bits) {
+                    this.addNotification(`${username} cheered ${tags.bits} bits!`, 'bits', tags);
+                }
 
                 this.addMessage(username, message, badges, isSubscriber, isModerator, color, emotes);
             }
@@ -1267,6 +1314,32 @@
                 msgTexts.forEach(el => {
                     el.style.textShadow = enabled ? '0 1px 2px rgba(0,0,0,0.5)' : 'none';
                 });
+            }
+
+            addNotification(text, type, tags) {
+                const notificationObj = {
+                    id: Date.now() + Math.random(),
+                    message: text,
+                    type,
+                    tags,
+                    timestamp: new Date(),
+                    isNotification: true
+                };
+                this.messages.push(notificationObj);
+                this.renderNotification(notificationObj);
+                this.cleanupMessages();
+            }
+
+            renderNotification(notificationObj) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const notificationElement = document.createElement('div');
+                notificationElement.className = `message notification ${notificationObj.type}`;
+                notificationElement.dataset.messageId = notificationObj.id;
+                notificationElement.textContent = notificationObj.message;
+                messagesContainer.appendChild(notificationElement);
+                notificationElement.scrollIntoView({ behavior: 'auto', block: 'end' });
+                // Apply text shadow config if needed
+                this.applyTextShadowToMessage(notificationElement);
             }
         }
 
