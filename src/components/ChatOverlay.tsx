@@ -292,11 +292,14 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
 
   const getContainerStyle = () => {
     const style: React.CSSProperties = {
+      width: '100vw',
+      height: '100vh',
+      position: 'fixed',
+      top: 0,
+      left: 0,
       background: finalConfig.enableBackground ? theme.colors.background : 'transparent',
       borderRadius: `${finalConfig.radius}px`,
       fontSize: `${16 * finalConfig.scale}px`,
-      transform: `scale(${finalConfig.scale})`,
-      transformOrigin: 'top left'
     };
 
     if (finalConfig.enableBackground) {
