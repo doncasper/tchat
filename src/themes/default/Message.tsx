@@ -1,40 +1,31 @@
 import React from 'react';
 import type { ChatMessage, Emote } from '../../types/chat';
+import styles from './Message.module.css';
 
 interface MessageProps {
   message: ChatMessage;
 }
 
 export const Message: React.FC<MessageProps> = ({ message }) => {
+  let messageClass = styles.default;
+  if (message.isSubscriber) messageClass = styles.subscriber;
+  else if (message.isModerator) messageClass = styles.moderator;
+
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: '0.5em',
-      padding: '0.5em',
-      marginBottom: '0.25em',
-      background: message.isSubscriber
-        ? 'rgba(145, 70, 255, 0.15)'
-        : message.isModerator
-        ? 'rgba(0, 255, 0, 0.15)'
-        : 'rgba(255,255,255,0.08)',
-      borderLeft: `2px dotted ${
-        message.isSubscriber ? '#9146ff' : message.isModerator ? '#00ff00' : '#b6b6b6'
-      }`,
-      color: '#fff',
-      fontSize: '1em',
-      fontFamily: 'inherit',
-      lineHeight: 1.3,
-    }}>
-      <span style={{
-        fontWeight: 700,
-        marginRight: '0.5em',
-        background: `linear-gradient(90deg, ${message.color}, #6e2bbf)`,
-        color: '#fff',
-        borderRadius: 4,
-        padding: '0 0.4em',
-      }}>{message.username}</span>
-      <span>{renderMessageWithEmotes(message.message, message.emotes)}</span>
+    <div className={`${styles.message} ${messageClass}`}>
+      <span
+        className={`${styles.username} ${styles['username-gradient']}`}
+        style={{
+          // Pass the username color as a CSS variable for the gradient
+          // fallback to #9146ff if not present
+          ['--username-color' as any]: message.color || '#9146ff',
+        }}
+      >
+        {message.username}
+      </span>
+      <span className={styles['message-text']}>
+        {renderMessageWithEmotes(message.message, message.emotes)}
+      </span>
     </div>
   );
 };
@@ -56,7 +47,7 @@ function renderMessageWithEmotes(text: string, emotes: Emote[]) {
         src={emote.url}
         alt={emote.name}
         title={emote.name}
-        style={{ height: '1.8em', verticalAlign: 'middle', margin: '0 1px' }}
+        className={styles.emote}
       />
     );
     lastIndex = emote.end + 1;

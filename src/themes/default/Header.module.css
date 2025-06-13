@@ -1,0 +1,16 @@
+.header {
+  background: linear-gradient(90deg, #9146ff, #bf46ff);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+.header-title {
+  flex: 1;
+}
+.header-status {
+  font-size: 0.95em;
+  opacity: 0.8;
+} 

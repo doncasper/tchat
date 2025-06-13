@@ -1,6 +1,5 @@
 import React from 'react';
-import type { ChatConfig, Theme, ChatMessage } from '../types/chat';
-import { defaultTheme } from '../themes/default';
+import type { ChatConfig, ChatMessage } from '../types/chat';
 import './ChatOverlay.css';
 import { useTwitchChat } from '../hooks/useTwitchChat';
 import { ChatHeader } from './ChatHeader';
@@ -8,7 +7,6 @@ import { ChatMessageList } from './ChatMessageList';
 
 interface ChatOverlayProps {
   channel?: string;
-  theme?: Theme;
   config?: Partial<ChatConfig>;
 }
 
@@ -25,7 +23,6 @@ const DEFAULT_CONFIG: Partial<ChatConfig> = {
 
 export const ChatOverlay: React.FC<ChatOverlayProps> = ({ 
   channel = 'takotoken',
-  theme = defaultTheme,
   config = {}
 }) => {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
@@ -43,7 +40,7 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
       position: 'fixed',
       top: 0,
       left: 0,
-      background: finalConfig.enableBackground ? theme.colors.background : 'transparent',
+      background: finalConfig.enableBackground ? 'rgba(0, 0, 0, 0.7)' : 'transparent',
       borderRadius: `${finalConfig.radius}px`,
       fontSize: `${16 * (finalConfig.scale ?? 1)}px`,
     };
