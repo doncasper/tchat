@@ -3,7 +3,8 @@ import type { ChatConfig, Theme, ChatMessage } from '../types/chat';
 import { defaultTheme } from '../themes/default';
 import './ChatOverlay.css';
 import { useTwitchChat } from '../hooks/useTwitchChat';
-import { themeFactories } from '../themes/ThemeFactory';
+import { ChatHeader } from './ChatHeader';
+import { ChatMessageList } from './ChatMessageList';
 
 interface ChatOverlayProps {
   channel?: string;
@@ -28,9 +29,6 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
   config = {}
 }) => {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
-
-  // For now, always use the default theme factory
-  const { Header, Message } = themeFactories.default;
 
   const { messages, status } = useTwitchChat({
     channel,
@@ -59,12 +57,8 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
 
   return (
     <div className="chat-container" style={getContainerStyle()}>
-      <Header status={status} showHeader={finalConfig.showHeader} />
-      <div className="chat-messages">
-        {messages.map((msg: ChatMessage) => (
-          <Message key={msg.id} message={msg} />
-        ))}
-      </div>
+      <ChatHeader status={status} showHeader={finalConfig.showHeader} />
+      <ChatMessageList messages={messages as ChatMessage[]} />
     </div>
   );
 }; 
