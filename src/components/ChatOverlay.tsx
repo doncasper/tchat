@@ -29,16 +29,36 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
   const [status, setStatus] = useState('Connecting...');
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
+  const cleanupIntervalRef = useRef<number | null>(null);
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
 
   useEffect(() => {
     connectToChat();
+    
+    // Start cleanup interval
+    cleanupIntervalRef.current = setInterval(() => {
+      const now = Date.now();
+      setMessages(prev => {
+        const validMessages = prev.filter(msg => {
+          const messageAge = now - msg.timestamp.getTime();
+          return messageAge < finalConfig.messageDuration;
+        });
+        
+        return validMessages;
+      });
+    }, 5000); // Check every 5 seconds
+
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
+      
+      // Clear cleanup interval
+      if (cleanupIntervalRef.current) {
+        clearInterval(cleanupIntervalRef.current);
+      }
     };
-  }, [channel]);
+  }, [channel, finalConfig.messageDuration]);
 
   const connectToChat = () => {
     try {
@@ -268,11 +288,6 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
       
       return newMessages;
     });
-
-    // Auto-remove message after duration
-    setTimeout(() => {
-      setMessages(prev => prev.filter(m => m.id !== messageObj.id));
-    }, finalConfig.messageDuration);
   };
 
   const getContainerStyle = () => {
