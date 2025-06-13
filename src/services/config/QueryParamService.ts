@@ -77,7 +77,7 @@ export class QueryParamService {
     }
   }
 
-  private static stringifyValue(param: keyof ChatConfig, value: any): string {
+  private static stringifyValue(_: keyof ChatConfig, value: any): string {
     if (typeof value === 'boolean') {
       return value ? '1' : '0';
     }

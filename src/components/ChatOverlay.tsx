@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ChatConfig, Theme, Emote, ChatMessage } from '../types/chat';
+import type { ChatConfig, Theme, ChatMessage } from '../types/chat';
 import { defaultTheme } from '../themes/default';
 import './ChatOverlay.css';
 import { useTwitchChat } from '../hooks/useTwitchChat';
@@ -32,7 +32,7 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
   // For now, always use the default theme factory
   const { Header, Message } = themeFactories.default;
 
-  const { messages, status, isConnected } = useTwitchChat({
+  const { messages, status } = useTwitchChat({
     channel,
     messageDuration: finalConfig.messageDuration,
     maxMessages: finalConfig.maxMessages,
