@@ -33,27 +33,16 @@ export const ChatOverlay: React.FC<ChatOverlayProps> = ({
     maxMessages: finalConfig.maxMessages,
   });
 
-  const getContainerStyle = () => {
-    const style: React.CSSProperties = {
-      width: '100vw',
-      height: '100vh',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      background: finalConfig.enableBackground ? 'rgba(0, 0, 0, 0.7)' : 'transparent',
-      borderRadius: `${finalConfig.radius}px`,
-      fontSize: `${16 * (finalConfig.scale ?? 1)}px`,
-    };
-
-    if (finalConfig.enableBackground) {
-      style.backdropFilter = 'blur(5px)';
-    }
-
-    return style;
+  // Dynamic container style for borderRadius, fontSize, background, blur
+  const containerStyle: React.CSSProperties = {
+    borderRadius: `${finalConfig.radius}px`,
+    fontSize: `${16 * (finalConfig.scale ?? 1)}px`,
+    background: finalConfig.enableBackground ? 'var(--chat-bg)' : 'transparent',
+    backdropFilter: finalConfig.enableBackground ? 'blur(5px)' : undefined,
   };
 
   return (
-    <div className="chat-container" style={getContainerStyle()}>
+    <div className="chat-container" style={containerStyle}>
       <ChatHeader status={status} showHeader={finalConfig.showHeader} />
       <ChatMessageList messages={messages as ChatMessage[]} />
     </div>

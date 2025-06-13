@@ -32,7 +32,7 @@
   background: linear-gradient(90deg, var(--username-color, #9146ff), #6e2bbf);
 }
 .message-text {
-  /* no styling */
+  box-shadow: none;
 }
 .emote {
   height: 1.8em;
