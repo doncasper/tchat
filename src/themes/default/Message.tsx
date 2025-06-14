@@ -13,17 +13,19 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
 
   return (
     <div className={`${styles.message} ${messageClass}`}>
-      <span
-        className={`${styles.username} ${styles['username-gradient']}`}
-        style={{
-          // Pass the username color as a CSS variable for the gradient
-          // fallback to #9146ff if not present
-          ['--username-color' as any]: message.color || '#9146ff',
-        }}
-      >
-        {message.username}
-      </span>
-      <span className={styles['message-text']}>
+      <div style={{ display: 'block', alignItems: 'center', marginBottom: '4px' }}>
+        <span
+          className={`${styles.username} ${styles['username-gradient']}`}
+          style={{
+            // Pass the username color as a CSS variable for the gradient
+            // fallback to #9146ff if not present
+            ['--username-color' as any]: message.color || '#9146ff',
+          }}
+        >
+          {message.username}
+        </span>
+      </div>
+    <span className={styles['message-text']}>
         {renderMessageWithEmotes(message.message, message.emotes)}
       </span>
     </div>

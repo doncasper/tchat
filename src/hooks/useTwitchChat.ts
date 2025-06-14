@@ -7,7 +7,7 @@ interface UseTwitchChatOptions {
   maxMessages?: number;
 }
 
-export function useTwitchChat({ channel, messageDuration = 100000, maxMessages = 35 }: UseTwitchChatOptions) {
+export function useTwitchChat({ channel, messageDuration = 0, maxMessages = 20 }: UseTwitchChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState('Connecting...');
   const [isConnected, setIsConnected] = useState(false);
@@ -16,18 +16,19 @@ export function useTwitchChat({ channel, messageDuration = 100000, maxMessages =
 
   useEffect(() => {
     let isMounted = true;
+    let ws: WebSocket | null = null;
+
     const connectToChat = () => {
       try {
-        const ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
+        ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
         wsRef.current = ws;
 
         ws.onopen = () => {
-          // Send authentication and join commands in the correct order
-          console.log('Connecting to chat:', channel.toLowerCase());
-          ws.send('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands');
-          ws.send('NICK justinfan12345');
-          ws.send(`JOIN #${channel.toLowerCase()}`);
+          ws?.send('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands');
+          ws?.send('NICK justinfan12345');
+          ws?.send(`JOIN #${channel.toLowerCase()}`);
           if (isMounted) {
+            console.log('Connected to chat:', channel.toLowerCase());
             setStatus(`Connected to ${channel}`);
             setIsConnected(true);
           }
@@ -58,20 +59,26 @@ export function useTwitchChat({ channel, messageDuration = 100000, maxMessages =
 
     connectToChat();
 
-    cleanupIntervalRef.current = window.setInterval(() => {
-      const now = Date.now();
-      setMessages(prev => {
-        const validMessages = prev.filter(msg => {
-          const messageAge = now - msg.timestamp.getTime();
-          return messageAge < messageDuration;
+    if (messageDuration > 0) {
+      cleanupIntervalRef.current = window.setInterval(() => {
+        const now = Date.now();
+        setMessages(prev => {
+          const validMessages = prev.filter(msg => {
+            const messageAge = now - msg.timestamp.getTime();
+            return messageAge < messageDuration;
+          });
+          return validMessages;
         });
-        return validMessages;
-      });
-    }, 5000);
+      }, 5000);
+    }
 
     return () => {
       isMounted = false;
-      if (wsRef.current) wsRef.current.close();
+      if (wsRef.current && wsRef.current.readyState === 1) {
+        console.log('Closing WebSocket');
+        wsRef.current.close();
+      }
+      wsRef.current = null;
       if (cleanupIntervalRef.current) clearInterval(cleanupIntervalRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
