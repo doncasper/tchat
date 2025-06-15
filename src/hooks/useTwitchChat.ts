@@ -39,8 +39,8 @@ export function useTwitchChat({ channel, messageDuration = 0, maxMessages = 20 }
         };
 
         ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
           if (isMounted) {
+            console.error('WebSocket error:', error);
             setStatus('Connection error');
             setIsConnected(false);
           }
@@ -74,7 +74,7 @@ export function useTwitchChat({ channel, messageDuration = 0, maxMessages = 20 }
 
     return () => {
       isMounted = false;
-      if (wsRef.current && wsRef.current.readyState === 1) {
+      if (wsRef.current && wsRef.current.readyState < 2) {
         console.log('Closing WebSocket');
         wsRef.current.close();
       }
