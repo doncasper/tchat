@@ -27,10 +27,10 @@ body {
 
 .chat-header {
   width: 100%;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  background: linear-gradient(135deg, #5d2da4 0%, #642586 100%);
   color: white;
   padding: 1rem 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 4px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
 }
 
@@ -139,11 +139,6 @@ body {
   box-sizing: border-box;
 }
 
-.message:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
 .message-header {
   display: flex;
   justify-content: space-between;
@@ -174,16 +169,50 @@ body {
   justify-content: center;
   min-width: 20px;
   min-height: 20px;
-  border-radius: 50%;
+  border-radius: 4px;
+  padding: 0 4px;
   font-size: 0.7rem;
   color: white;
   font-weight: bold;
   transition: transform 0.2s ease;
 }
 
-.badge:hover {
-  transform: scale(1.2);
+.badge.broadcaster {
+  background-color: #db1600;
 }
+
+.badge.moderator {
+  background-color: #2da539;
+}
+
+.badge.subscriber {
+  background-color: #8d0ee1;
+}
+
+.badge.vip {
+  background-color: #f312ac;
+}
+
+.badge.founder {
+  background-color: #c624b0;
+}
+
+.badge.staff {
+  background-color: #27ae60;
+}
+
+.badge.admin {
+  background-color: #27ae60;
+}
+
+.badge.global_mod {
+  background-color: #27ae60;
+}
+
+.badge.premium {
+  background-color: #f39c12;
+}
+
 
 .message-time {
   font-size: 0.8rem;
