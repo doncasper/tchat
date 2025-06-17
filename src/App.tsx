@@ -156,7 +156,7 @@ function ChatApp() {
 
   const handleSettingsClick = () => {
     console.log('Settings clicked')
-    // Add settings functionality here
+    // TODO: Add opening settings component here!
   }
 
   const handleThemeSwitch = (themeName: string) => {

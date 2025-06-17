@@ -1,13 +1,7 @@
 import type { ReactNode } from 'react'
-import type { ThemeComponent } from '../ThemeInterface'
-import type { ChatDataItem } from '../../types/ChatTypes'
+import type { ThemeComponent, ChatProps } from '../ThemeInterface'
 import styles from './Chat.module.css'
 
-interface ChatProps {
-  messages: ChatDataItem[]
-  messagesEndRef: React.RefObject<HTMLDivElement>
-  getBadgeText: (badge: string) => string
-}
 
 const Chat: ThemeComponent = {
   render: (props: ChatProps): ReactNode => {

@@ -1,12 +1,6 @@
 import type { ReactNode } from 'react'
-import type { ThemeComponent } from '../ThemeInterface'
-import type { ChatDataItem } from '../../types/ChatTypes'
+import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import styles from './Message.module.css'
-
-interface MessageProps {
-  message: ChatDataItem
-  getBadgeText: (badge: string) => string
-}
 
 const Message: ThemeComponent = {
   render: (props: MessageProps): ReactNode => {
@@ -26,7 +20,7 @@ const Message: ThemeComponent = {
             </div>
           </div>
           <span className={styles.messageTime}>
-            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
           </span>
         </div>
         <div className={styles.messageContent}>
