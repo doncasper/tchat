@@ -1,15 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { ThemeProvider, useTheme } from './themes/ThemeContext'
+import type { ChatDataItem } from './types/ChatTypes'
 import './App.css'
-
-// ChatDataItem represents a message or notification in the chat
-interface ChatDataItem {
-  id: string
-  type: 'message' | 'notification'
-  text: string
-  author: string
-  badges?: string[]
-  count?: number
-}
 
 const chatDataItems: ChatDataItem[] = [
   {
@@ -134,9 +126,10 @@ const chatDataItems: ChatDataItem[] = [
   }
 ]
 
-function App() {
+function ChatApp() {
   const [messages, setMessages] = useState<ChatDataItem[]>(chatDataItems)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { currentTheme, currentThemeName, availableThemes, switchTheme } = useTheme()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -161,51 +154,44 @@ function App() {
     }
   }
 
+  const handleSettingsClick = () => {
+    console.log('Settings clicked')
+    // Add settings functionality here
+  }
+
+  const handleThemeSwitch = (themeName: string) => {
+    switchTheme(themeName)
+  }
+
+  // Render theme components
+  const HeaderComponent = currentTheme.Header.render({
+    streamTitle: "Live Stream Chat with Streamer",
+    viewerCount: 1234,
+    onSettingsClick: handleSettingsClick,
+    onThemeSwitch: handleThemeSwitch,
+    currentTheme: currentThemeName,
+    availableThemes
+  })
+
+  const ChatComponent = currentTheme.Chat.render({
+    messages,
+    messagesEndRef,
+    getBadgeText
+  })
+
   return (
     <div className="chat-app">
-      <header className="chat-header">
-        <div className="header-content">
-          <div className="stream-info">
-            <h1>Live Stream Chat with Streamer</h1>
-            <div className="stream-status">
-              <span className="live-indicator">● LIVE</span>
-              <span className="viewer-count">1,234 viewers</span>
-            </div>
-          </div>
-          <div className="header-actions">
-            <button className="settings-btn">⚙️</button>
-          </div>
-        </div>
-      </header>
-
-      <div className="chat-container">
-        <div className="messages-container">
-          {messages.map((message) => (
-            <div key={message.id} className="message">
-              <div className="message-header">
-                <div className="author-info">
-                  <span className="author-name">{message.author}</span>
-                  <div className="badges">
-                    {message.badges?.map((badge, index) => (
-                      <span key={index} className={`badge ${badge}`} title={badge}>
-                        {getBadgeText(badge)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <span className="message-time">
-                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-              <div className="message-content">
-                {message.text}
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
+      {HeaderComponent}
+      {ChatComponent}
     </div>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider initialTheme="default">
+      <ChatApp />
+    </ThemeProvider>
   )
 }
 
