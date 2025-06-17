@@ -5,29 +5,24 @@
   margin-bottom: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border-left: 4px solid #9b59b6;
   width: 100%;
   box-sizing: border-box;
   animation: slideIn 0.3s ease-out;
   position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
 }
 
-.notification::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-  animation: shimmer 2s infinite;
-  pointer-events: none;
+.broadcaster {
+  border-left: 4px solid #e74c3c;
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+.vip {
+  border-left: 4px solid #f39c12;
+}
+
+.subscriber {
+  border-left: 4px solid #8d0ee1;
 }
 
 @keyframes slideIn {
@@ -41,99 +36,28 @@
   }
 }
 
-.notification-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+.notification::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmer 5s infinite;
+  pointer-events: none;
 }
 
-.author-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.author-name {
-  font-weight: 600;
-  color: #2c3e50;
-  font-size: 0.95rem;
-}
-
-.badges {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  min-height: 20px;
-  border-radius: 4px;
-  padding: 0 4px;
-  font-size: 0.7rem;
-  color: white;
-  font-weight: bold;
-  transition: transform 0.2s ease;
-}
-
-.badge.broadcaster {
-  background-color: #db1600;
-}
-
-.badge.moderator {
-  background-color: #2da539;
-}
-
-.badge.subscriber {
-  background-color: #8d0ee1;
-}
-
-.badge.vip {
-  background-color: #f312ac;
-}
-
-.badge.founder {
-  background-color: #c624b0;
-}
-
-.badge.staff {
-  background-color: #27ae60;
-}
-
-.badge.admin {
-  background-color: #27ae60;
-}
-
-.badge.global_mod {
-  background-color: #27ae60;
-}
-
-.badge.premium {
-  background-color: #f39c12;
-}
-
-.notification-count {
-  background: rgba(155, 89, 182, 0.2);
-  color: #8e44ad;
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid rgba(155, 89, 182, 0.3);
-}
-
-.notification-time {
-  font-size: 0.8rem;
-  color: #7f8c8d;
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .notification-content {
-  color: #34495e;
+  color: #ffffff;
   line-height: 1.5;
   font-size: 0.9rem;
   word-wrap: break-word;
   font-weight: 500;
+  text-align: center;
 } 

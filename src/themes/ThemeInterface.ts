@@ -27,6 +27,7 @@ export interface ChatProps {
   messages: ChatDataItem[]
   messagesEndRef: React.RefObject<HTMLDivElement>
   getBadgeText: (badge: string) => string
+  getUserType: (badges: string[]) => string
 }
 
 export interface HeaderProps {
@@ -46,4 +47,5 @@ export interface MessageProps {
 export interface NotificationProps {
   notification: ChatDataItem
   getBadgeText: (badge: string) => string
+  getUserType: (badges: string[]) => string
 }

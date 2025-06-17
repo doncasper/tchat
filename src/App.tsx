@@ -94,7 +94,7 @@ const chatDataItems: ChatDataItem[] = [
     type: 'notification',
     text: "Remember to follow and subscribe!",
     author: "ModBot",
-    badges: ["moderator"]
+    badges: ["broadcaster"]
   },
   {
     id: "14",
@@ -154,6 +154,13 @@ function ChatApp() {
     }
   }
 
+  const getUserType = (badges: string[]) => {
+    if (badges.includes('broadcaster')) return 'broadcaster'
+    if (badges.includes('vip')) return 'vip'
+    if (badges.includes('subscriber')) return 'subscriber'
+    return ''
+  }
+
   const handleSettingsClick = () => {
     console.log('Settings clicked')
     // TODO: Add opening settings component here!
@@ -176,7 +183,8 @@ function ChatApp() {
   const ChatComponent = currentTheme.Chat.render({
     messages,
     messagesEndRef,
-    getBadgeText
+    getBadgeText,
+    getUserType
   })
 
   return (
