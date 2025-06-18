@@ -43,8 +43,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-  animation: shimmer 5s infinite;
+  background: linear-gradient(45deg, transparent 10%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmer 7s infinite;
   pointer-events: none;
 }
 
