@@ -12,11 +12,17 @@ const Chat: ThemeComponent = {
       <div className={styles.chatContainer}>
         <div className={styles.messagesContainer}>
           {messages.map((message) => (
-            message.type === 'notification' ? (
-              <Notification.render key={message.id} notification={message} getUserType={getUserType} />
-            ) : (
-              <Message.render key={message.id} message={message} getBadgeText={getBadgeText} />
-            )
+            (() => {
+              switch (message.type) {
+                case 'notification':
+                  return <Notification.render key={message.id} notification={message} getUserType={getUserType} />;
+                case 'message':
+                  return <Message.render key={message.id} message={message} getBadgeText={getBadgeText} />;
+                default:
+                  console.log('Unknown message type:', message.type)
+                  return null;
+              }
+            })()
           ))}
           <div ref={messagesEndRef} />
         </div>
