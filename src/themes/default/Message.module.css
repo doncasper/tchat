@@ -109,28 +109,28 @@
 }
 
 /* Special styling for broadcaster messages */
-.message:has(.badge[title="broadcaster"]) {
+.message.broadcaster {
   border-left-color: #e74c3c;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(231, 76, 60, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(255, 68, 48, 0.5) 100%);
 }
-.message:has(.badge[title="broadcaster"]) .message-time {
+.message.broadcaster .message-time {
   color: #7b291f;
 }
 
 /* Special styling for moderator messages */
-.message:has(.badge[title="moderator"]) {
+.message.moderator {
   border-left-color: #27ae60;
   background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(39, 174, 96, 0.5) 100%);
 }
-.message:has(.badge[title="moderator"]) .message-time {
+.message.moderator .message-time {
   color: #196e3d;
 }
 
 /* Special styling for subscriber messages */
-.message:has(.badge[title="subscriber"]) {
+.message.subscriber {
   border-left-color: #8d0ee1;
   background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(141, 14, 225, 0.5) 100%);
 } 
-.message:has(.badge[title="subscriber"]) .message-time {
+.message.subscriber .message-time {
   color: #6a17a2;
 }

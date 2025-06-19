@@ -7,10 +7,10 @@ const Message: ThemeComponent = {
     const { message, getBadgeText } = props
     
     return (
-      <div className={styles.message}>
+      <div className={`${styles.message} ${styles[message.userType || '']}`}>
         <div className={styles.messageHeader}>
           <div className={styles.authorInfo}>
-            <span className={styles.authorName}>{message.author}</span>
+            <span className={styles.authorName}>{message.nickname}</span>
             <div className={styles.badges}>
               {message.badges?.map((badge: string, index: number) => (
                 <span key={index} className={`${styles.badge} ${styles[badge]}`} title={badge}>
@@ -20,7 +20,7 @@ const Message: ThemeComponent = {
             </div>
           </div>
           <span className={styles.messageTime}>
-            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
+            {message.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
           </span>
         </div>
         <div className={styles.messageContent}>

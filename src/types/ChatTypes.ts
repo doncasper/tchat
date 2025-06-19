@@ -3,7 +3,9 @@ export interface ChatDataItem {
   id: string
   type: 'message' | 'notification'
   text: string
-  author: string
+  nickname: string
+  userType?: 'subscriber' | 'moderator' | 'broadcaster' | 'vip' | 'admin' | 'staff' | 'partner' | 'founder' | 'super_moderator' | 'global_moderator' | 'turbo' | 'bot'
+  time: Date
   badges?: string[]
   count?: number
 } 
