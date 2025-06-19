@@ -13,7 +13,7 @@ const Message: ThemeComponent = {
             <span className={styles.authorName}>{message.author}</span>
             <div className={styles.badges}>
               {message.badges?.map((badge: string, index: number) => (
-                <span key={index} className={`${styles.badge} ${styles[badge] || badge}`} title={badge}>
+                <span key={index} className={`${styles.badge} ${styles[badge]}`} title={badge}>
                   {getBadgeText(badge)}
                 </span>
               ))}
