@@ -68,11 +68,11 @@ const chatDataItems: ChatDataItem[] = [
   {
     id: "8",
     type: 'message',
-    text: "Can we play that again?",
+    text: "Lorem ipsum refers to placeholder text often used in publishing and graphic design to demonstrate the visual style of a document, webpage, or typeface. It is intended to serve as a sample, not to be read as meaningful sentences.",
     nickname: "Tom",
     userType: "subscriber",
     time: new Date(),
-    badges: []
+    badges: ['subscriber']
   },
   {
     id: "9",
