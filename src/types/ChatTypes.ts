@@ -4,7 +4,7 @@ export interface ChatDataItem {
   type: 'message' | 'notification'
   text: string
   nickname: string
-  userType?: 'subscriber' | 'moderator' | 'broadcaster' | 'vip' | 'admin' | 'staff' | 'partner' | 'founder' | 'super_moderator' | 'global_moderator' | 'turbo' | 'bot'
+  userType?: 'broadcaster' | 'moderator' | 'subscriber' | 'vip' | 'staff' | 'partner' | 'founder' | 'artist' | 'dj' | 'turbo' | 'bot'
   time: Date
   badges?: string[]
   count?: number
