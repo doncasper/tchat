@@ -1,4 +1,4 @@
 // Main store exports
-export { useChatStore } from './chatStore'
-export { useThemeStore } from './themeStore'
-export { useUIStore } from './uiStore' 
+export { useChatStore } from './chatStore.ts'
+export { useThemeStore } from './themeStore.ts'
+export { useUIStore } from './uiStore.ts' 
