@@ -9,14 +9,14 @@ const Message: ThemeComponent = {
     const { showTimestamps, showBadges, compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.message} ${styles[fontSize]} ${compactMode ? styles.compact : ''} neon-message`}>
+      <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} message`}>
         <div className={styles.messageHeader}>
           <div className={styles.authorInfo}>
             <span className={styles.authorName}>{message.nickname}</span>
             {showBadges && (
               <div className={styles.badges}>
                 {message.badges?.map((badge: string, index: number) => (
-                  <span key={index} className={`${styles.badge} ${styles[badge] || badge}`} title={badge}>
+                  <span key={index} className={`${styles.badge} ${styles[badge]}`} title={badge}>
                     {getBadgeText(badge)}
                   </span>
                 ))}

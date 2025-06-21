@@ -1,9 +1,9 @@
 .chat-header {
   width: 100%;
-  background: linear-gradient(135deg, #5d2da4 0%, #642586 100%);
+  background: linear-gradient(135deg, #2d99e1 0%, #2b5b78 100%);
   color: white;
   padding: 1rem 2rem;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 4px solid #8e57c2;
   box-sizing: border-box;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .live-indicator {
-  color: #e74c3c;
+  color: #dbe12c;
   font-weight: bold;
   animation: pulse 2s infinite;
 }

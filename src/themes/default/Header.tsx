@@ -20,16 +20,18 @@ const Header: ThemeComponent = {
           </div>
           <div className={styles.headerActions}>
             <div className={styles.themeSwitcher}>
-              {availableThemes.map((theme) => (
-                <button
-                  key={theme}
-                  className={`${styles.themeBtn} ${currentTheme === theme ? styles.active : ''}`}
-                  onClick={() => onThemeSwitch(theme)}
-                  title={`Switch to ${theme} theme`}
-                >
-                  {theme === 'default' ? '🌙' : '⚡'}
-                </button>
-              ))}
+              <select
+                className={styles.themeDropdown}
+                value={currentTheme}
+                onChange={(e) => onThemeSwitch(e.target.value)}
+                title="Select theme"
+              >
+                {availableThemes.map((theme) => (
+                  <option key={theme} value={theme}>
+                    {theme === 'default' ? '🌙 Default' : theme === 'neon' ? '⚡ Neon' : theme === 'tako' ? '🎨 Tako' : theme}
+                  </option>
+                ))}
+              </select>
             </div>
             <button className={styles.settingsBtn} onClick={onSettingsClick}>
               ⚙️

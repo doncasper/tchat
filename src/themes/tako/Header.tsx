@@ -1,15 +1,8 @@
 import type { ReactNode } from 'react'
-import type { ThemeComponent } from '../ThemeInterface'
+import type { ThemeComponent, HeaderProps } from '../ThemeInterface'
 import styles from './Header.module.css'
 
-interface HeaderProps {
-  streamTitle: string
-  viewerCount: number
-  onSettingsClick: () => void
-  onThemeSwitch: (theme: string) => void
-  currentTheme: string
-  availableThemes: string[]
-}
+
 
 const Header: ThemeComponent = {
   render: (props: HeaderProps): ReactNode => {
@@ -19,7 +12,7 @@ const Header: ThemeComponent = {
       <header className={styles.chatHeader}>
         <div className={styles.headerContent}>
           <div className={styles.streamInfo}>
-            <h1 className={styles.neonText}>{streamTitle}</h1>
+            <h1>{streamTitle}</h1>
             <div className={styles.streamStatus}>
               <span className={styles.liveIndicator}>● LIVE</span>
               <span className={styles.viewerCount}>{viewerCount.toLocaleString()} viewers</span>
@@ -27,18 +20,20 @@ const Header: ThemeComponent = {
           </div>
           <div className={styles.headerActions}>
             <div className={styles.themeSwitcher}>
-              {availableThemes.map((theme) => (
-                <button
-                  key={theme}
-                  className={`${styles.themeBtn} ${currentTheme === theme ? styles.active : ''}`}
-                  onClick={() => onThemeSwitch(theme)}
-                  title={`Switch to ${theme} theme`}
-                >
-                  {theme === 'default' ? '🌙' : '⚡'}
-                </button>
-              ))}
+              <select
+                className={styles.themeDropdown}
+                value={currentTheme}
+                onChange={(e) => onThemeSwitch(e.target.value)}
+                title="Select theme"
+              >
+                {availableThemes.map((theme) => (
+                  <option key={theme} value={theme}>
+                    {theme === 'default' ? '🌙 Default' : theme === 'neon' ? '⚡ Neon' : theme === 'tako' ? '🎨 Tako' : theme}
+                  </option>
+                ))}
+              </select>
             </div>
-            <button className={`${styles.settingsBtn}`} onClick={onSettingsClick}>
+            <button className={styles.settingsBtn} onClick={onSettingsClick}>
               ⚙️
             </button>
           </div>
