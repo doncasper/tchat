@@ -1,14 +1,10 @@
 import type { Theme, ThemeFactory } from './ThemeInterface'
-import DefaultTheme from './default'
-import NeonTheme from './neon'
 
 class ChatThemeFactory implements ThemeFactory {
   private themes: Map<string, Theme> = new Map()
 
   constructor() {
-    // Register available themes
-    this.themes.set('default', DefaultTheme)
-    this.themes.set('neon', NeonTheme)
+    // Themes will now register themselves.
   }
 
   createTheme(themeName: string): Theme {

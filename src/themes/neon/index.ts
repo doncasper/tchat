@@ -3,6 +3,7 @@ import Header from './Header'
 import Chat from './Chat'
 import Message from './Message'
 import Notification from './Notification'
+import { themeFactory } from '../ThemeFactory'
 
 // Import all CSS files
 import './Header.module.css'
@@ -57,5 +58,8 @@ const NeonTheme: Theme = {
     }
   `
 }
+
+// Self-register the theme
+themeFactory.registerTheme(NeonTheme)
 
 export default NeonTheme 

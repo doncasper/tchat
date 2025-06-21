@@ -3,6 +3,7 @@ import Header from './Header'
 import Chat from './Chat'
 import Message from './Message'
 import Notification from './Notification'
+import { themeFactory } from '../ThemeFactory'
 
 // Import all CSS files
 import './Header.module.css'
@@ -18,5 +19,8 @@ const DefaultTheme: Theme = {
   Notification,
   globalStyles: ``
 }
+
+// Self-register the theme
+themeFactory.registerTheme(DefaultTheme)
 
 export default DefaultTheme 
