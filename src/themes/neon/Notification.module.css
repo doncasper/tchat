@@ -43,6 +43,82 @@
   }
 }
 
+/* Font size variants */
+.notification.small {
+  font-size: 0.8rem;
+}
+
+.notification.small .author-name {
+  font-size: 0.85rem;
+}
+
+.notification.small .notification-content {
+  font-size: 0.8rem;
+}
+
+.notification.small .notification-time {
+  font-size: 0.7rem;
+}
+
+.notification.small .notification-count {
+  font-size: 0.7rem;
+}
+
+.notification.small .badge {
+  font-size: 0.6rem;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.notification.medium {
+  font-size: 0.9rem;
+}
+
+.notification.large {
+  font-size: 1.1rem;
+}
+
+.notification.large .author-name {
+  font-size: 1.05rem;
+}
+
+.notification.large .notification-content {
+  font-size: 1.1rem;
+}
+
+.notification.large .notification-time {
+  font-size: 0.9rem;
+}
+
+.notification.large .notification-count {
+  font-size: 0.9rem;
+}
+
+.notification.large .badge {
+  font-size: 0.8rem;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Compact mode */
+.notification.compact {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+.notification.compact .notification-header {
+  margin-bottom: 0.25rem;
+}
+
+.notification.compact .author-info {
+  gap: 0.25rem;
+}
+
+.notification.compact .badges {
+  gap: 0.125rem;
+}
+
 .notification-header {
   display: flex;
   justify-content: space-between;

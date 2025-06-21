@@ -13,6 +13,34 @@
   flex: 0 0 auto;
 }
 
+/* Font size variants */
+.notification.small {
+  font-size: 0.8rem;
+}
+
+.notification.small .notification-content {
+  font-size: 0.8rem;
+}
+
+.notification.medium {
+  font-size: 0.9rem;
+}
+
+.notification.large {
+  font-size: 1.1rem;
+}
+
+.notification.large .notification-content {
+  font-size: 1.1rem;
+}
+
+/* Compact mode */
+.notification.compact {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+}
+
 .broadcaster {
   border-left: 4px solid #e74c3c;
 }
