@@ -9,7 +9,7 @@ const Message: ThemeComponent = {
     const { showTimestamps, showBadges, compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
+      <div className={`${styles.message} ${styles[fontSize]} ${compactMode ? styles.compact : ''} message`}>
         <div className={styles.messageHeader}>
           <div className={styles.authorInfo}>
             <span className={styles.authorName}>{message.nickname}</span>

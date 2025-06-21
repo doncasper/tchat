@@ -9,7 +9,7 @@ const Notification: ThemeComponent = {
     const { showTimestamps, showBadges, compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.notification} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
+      <div className={`${styles.notification} ${styles[fontSize]} ${compactMode ? styles.compact : ''} neon-notification`}>
         <div className={styles.notificationHeader}>
           <div className={styles.authorInfo}>
             <span className={styles.authorName}>{notification.nickname}</span>

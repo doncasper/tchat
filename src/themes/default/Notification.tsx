@@ -9,7 +9,7 @@ const Notification: ThemeComponent = {
     const { compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.notification} ${styles[getUserType(notification.badges || [])]} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
+      <div className={`${styles.notification} ${styles[getUserType(notification.badges || [])]} ${styles[fontSize]} ${compactMode ? styles.compact : ''} notification`}>
         <div className={styles.notificationContent}>
           {notification.text}
         </div>

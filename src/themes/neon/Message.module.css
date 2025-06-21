@@ -8,9 +8,9 @@
   border: 1px solid rgba(0, 255, 255, 0.3);
   width: 100%;
   box-sizing: border-box;
-  animation: neon-slide-in 0.3s ease-out;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .message::before {

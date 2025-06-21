@@ -8,7 +8,9 @@
   border-left: 4px solid #3498db;
   width: 100%;
   box-sizing: border-box;
-  animation: slideIn 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 @keyframes slideIn {
