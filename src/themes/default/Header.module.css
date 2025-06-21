@@ -53,26 +53,29 @@
 }
 
 .theme-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
   background: rgba(255, 255, 255, 0.1);
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%0A0%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%0A0%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px top 50%;
+  background-size: 0.65em auto;
+
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 30px 8px 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-size: 0.9rem;
   color: white;
+  height: 36px;
   min-width: 120px;
   outline: none;
 }
 
 .theme-dropdown:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.theme-dropdown:focus {
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .theme-dropdown option {
@@ -81,12 +84,10 @@
   padding: 8px;
 }
 
-/* Legacy theme button styles - kept for reference */
-/*
-.theme-btn {
+.settings-btn {
   background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
   width: 36px;
   height: 36px;
   cursor: pointer;
@@ -96,36 +97,9 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: white;
-}
-
-.theme-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
-
-.theme-btn.active {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-*/
-
-.settings-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 10px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
 }
 
 .settings-btn:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 } 

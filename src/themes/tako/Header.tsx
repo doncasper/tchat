@@ -8,6 +8,10 @@ const Header: ThemeComponent = {
   render: (props: HeaderProps): ReactNode => {
     const { streamTitle, viewerCount, onSettingsClick, onThemeSwitch, currentTheme, availableThemes } = props
     
+    const formatThemeName = (themeName: string): string => {
+      return themeName.charAt(0).toUpperCase() + themeName.slice(1)
+    }
+    
     return (
       <header className={styles.chatHeader}>
         <div className={styles.headerContent}>
@@ -25,10 +29,11 @@ const Header: ThemeComponent = {
                 value={currentTheme}
                 onChange={(e) => onThemeSwitch(e.target.value)}
                 title="Select theme"
+                name="theme-switcher"
               >
                 {availableThemes.map((theme) => (
                   <option key={theme} value={theme}>
-                    {theme === 'default' ? '🌙 Default' : theme === 'neon' ? '⚡ Neon' : theme === 'tako' ? '🎨 Tako' : theme}
+                    {formatThemeName(theme)}
                   </option>
                 ))}
               </select>
