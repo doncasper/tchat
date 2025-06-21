@@ -5,7 +5,7 @@
   margin-bottom: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #c2c2c2;
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -202,5 +202,23 @@
   background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(141, 14, 225, 0.5) 100%);
 } 
 .message.subscriber .message-time {
+  color: #6a17a2;
+}
+
+/* Special styling for vip messages */
+.message.vip {
+  border-left-color: #da0ee1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(197, 14, 225, 0.5) 100%);
+} 
+.message.vip .message-time {
+  color: #6a17a2;
+}
+
+/* Special styling for founder messages */
+.message.founder {
+  border-left-color: #fa75fe;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(234, 74, 255, 0.5) 100%);
+} 
+.message.founder .message-time {
   color: #6a17a2;
 }

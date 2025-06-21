@@ -31,7 +31,7 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Can't believe we're already 2 hours in!",
     nickname: "Mike",
-    userType: "subscriber",
+    userType: "founder",
     time: new Date(),
     badges: ["subscriber", "founder"]
   },
@@ -42,7 +42,7 @@ const chatDataItems: ChatDataItem[] = [
     nickname: "Emma",
     userType: "moderator",
     time: new Date(),
-    badges: ["moderator"]
+    badges: ["moderator", "founder", "subscriber"]
   },
   {
     id: "5",
@@ -234,7 +234,10 @@ function ChatApp() {
 
   const getUserType = (badges: string[]) => {
     if (badges.includes('broadcaster')) return 'broadcaster'
+    if (badges.includes('bot')) return 'bot'
+    if (badges.includes('moderator')) return 'moderator'
     if (badges.includes('vip')) return 'vip'
+    if (badges.includes('founder')) return 'founder'
     if (badges.includes('subscriber')) return 'subscriber'
     return ''
   }
@@ -261,7 +264,6 @@ function ChatApp() {
     messages,
     messagesEndRef,
     getBadgeText,
-    getUserType
   })
 
   return (

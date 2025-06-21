@@ -17,7 +17,7 @@ const Chat: ThemeComponent = {
                 case 'notification':
                   return <Notification.render key={message.id} notification={message} getUserType={getUserType} />;
                 case 'message':
-                  return <Message.render key={message.id} message={message} getBadgeText={getBadgeText} />;
+                  return <Message.render key={message.id} message={message} getBadgeText={getBadgeText} getUserType={getUserType} />;
                 default:
                   console.log('Unknown message type:', message.type)
                   return null;

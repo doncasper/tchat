@@ -47,5 +47,4 @@ export interface MessageProps {
 export interface NotificationProps {
   notification: ChatDataItem
   getBadgeText: (badge: string) => string
-  getUserType: (badges: string[]) => string
 }
