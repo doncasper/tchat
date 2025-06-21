@@ -8,13 +8,35 @@ import { Settings } from './components/Settings/Settings'
 import type { ChatDataItem } from './types/ChatTypes'
 import './App.css'
 
-const chatDataItems: ChatDataItem[] = [
+// Utility function to fill in userType based on badges
+const fillUserTypeFromBadges = (items: ChatDataItem[]): ChatDataItem[] => {
+  return items.map(item => {
+    const badges = item.badges || []
+    const derivedUserType = getUserType(badges)
+    
+    return {
+      ...item,
+      userType: item.userType || derivedUserType
+    }
+  })
+}
+
+const getUserType = (badges: string[]) => {
+  if (badges.includes('broadcaster')) return 'broadcaster'
+  if (badges.includes('bot')) return 'bot'
+  if (badges.includes('moderator')) return 'moderator'
+  if (badges.includes('vip')) return 'vip'
+  if (badges.includes('founder')) return 'founder'
+  if (badges.includes('subscriber')) return 'subscriber'
+  return undefined
+}
+
+const rawChatDataItems: ChatDataItem[] = [
   {
     id: "1",
     type: 'message',
     text: "Hey everyone! How's the stream going?",
     nickname: "Alex",
-    userType: "moderator",
     time: new Date(),
     badges: ["moderator", "subscriber"]
   },
@@ -31,7 +53,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Can't believe we're already 2 hours in!",
     nickname: "Mike",
-    userType: "founder",
     time: new Date(),
     badges: ["subscriber", "founder"]
   },
@@ -40,7 +61,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "That last play was insane!",
     nickname: "Emma",
-    userType: "moderator",
     time: new Date(),
     badges: ["moderator", "founder", "subscriber"]
   },
@@ -57,7 +77,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Thanks for the raid! Welcome everyone!",
     nickname: "Streamer",
-    userType: "broadcaster",
     time: new Date(),
     badges: ["broadcaster"]
   },
@@ -66,7 +85,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "This community is the best 💙",
     nickname: "Lisa",
-    userType: "moderator",
     time: new Date(),
     badges: ["subscriber", "moderator"]
   },
@@ -75,7 +93,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Lorem ipsum refers to placeholder text often used in publishing and graphic design to demonstrate the visual style of a document, webpage, or typeface. It is intended to serve as a sample, not to be read as meaningful sentences.",
     nickname: "Tom",
-    userType: "subscriber",
     time: new Date(),
     badges: ['subscriber']
   },
@@ -84,7 +101,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'notification',
     text: "Tom has subscribed!",
     nickname: "Tom",
-    userType: "subscriber",
     time: new Date(),
     badges: ["subscriber"]
   },
@@ -93,7 +109,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Donation incoming! Keep up the great work!!!",
     nickname: "Chris",
-    userType: "vip",
     time: new Date(),
     badges: ["vip", "subscriber"]
   },
@@ -102,7 +117,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "The chat is moving so fast!",
     nickname: "Anna",
-    userType: "subscriber",
     time: new Date(),
     badges: ["subscriber"]
   },
@@ -120,9 +134,8 @@ const chatDataItems: ChatDataItem[] = [
     type: 'notification',
     text: "Remember to follow and subscribe!",
     nickname: "ModBot",
-    userType: "bot",
     time: new Date(),
-    badges: ["moderator"]
+    badges: ["moderator", "bot"]
   },
   {
     id: "14",
@@ -137,7 +150,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Can't wait for the next stream!",
     nickname: "Fan",
-    userType: "vip",
     time: new Date(),
     badges: ["subscriber", "vip"]
   },
@@ -146,7 +158,6 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "The energy in here is incredible!",
     nickname: "Maria",
-    userType: "moderator",
     time: new Date(),
     badges: ["moderator"]
   },
@@ -155,11 +166,13 @@ const chatDataItems: ChatDataItem[] = [
     type: 'message',
     text: "Thanks for the amazing stream everyone!",
     nickname: "Streamer",
-    userType: "broadcaster",
     time: new Date(),
     badges: ["broadcaster"]
   }
 ]
+
+// Process the chat data to fill in userType based on badges
+const chatDataItems: ChatDataItem[] = fillUserTypeFromBadges(rawChatDataItems)
 
 function ChatApp() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -230,16 +243,6 @@ function ChatApp() {
       case 'premium': return 'PREMIUM'
       default: return ''
     }
-  }
-
-  const getUserType = (badges: string[]) => {
-    if (badges.includes('broadcaster')) return 'broadcaster'
-    if (badges.includes('bot')) return 'bot'
-    if (badges.includes('moderator')) return 'moderator'
-    if (badges.includes('vip')) return 'vip'
-    if (badges.includes('founder')) return 'founder'
-    if (badges.includes('subscriber')) return 'subscriber'
-    return ''
   }
 
   const handleSettingsClick = () => {
