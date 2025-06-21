@@ -1,5 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import { ThemeProvider, useTheme } from './themes/ThemeContext'
+import { useEffect, useRef } from 'react'
+import { useChatStore } from './store/chatStore'
+import { useThemeStore } from './store/themeStore'
+import { useUIStore } from './store/uiStore'
+import { useThemeInitializer } from './store/useThemeInitializer'
+import { Settings } from './components/Settings/Settings'
 import type { ChatDataItem } from './types/ChatTypes'
 import './App.css'
 
@@ -157,18 +161,42 @@ const chatDataItems: ChatDataItem[] = [
 ]
 
 function ChatApp() {
-  const [messages, setMessages] = useState<ChatDataItem[]>([])
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { currentTheme, currentThemeName, availableThemes, switchTheme } = useTheme()
+  
+  // Initialize theme
+  useThemeInitializer()
+  
+  // Zustand stores
+  const {
+    messages,
+    currentMessageIndex,
+    messageDelay,
+    autoScroll,
+    addMessage,
+    setCurrentMessageIndex
+  } = useChatStore()
+
+  const {
+    currentTheme,
+    currentThemeName,
+    availableThemes,
+    switchTheme
+  } = useThemeStore()
+
+  const {
+    isSettingsOpen,
+    toggleSettings
+  } = useUIStore()
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (autoScroll && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
   }
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages, autoScroll])
 
   // Add messages one by one with a timer
   useEffect(() => {
@@ -176,14 +204,14 @@ function ChatApp() {
       const timer = setTimeout(() => {
         const nextMessage = chatDataItems[currentMessageIndex]
         if (nextMessage) {
-          setMessages(prevMessages => [...prevMessages, nextMessage])
+          addMessage(nextMessage)
         }
-        setCurrentMessageIndex(prevIndex => prevIndex + 1)
-      }, 1000) // 1 second delay 
+        setCurrentMessageIndex(currentMessageIndex + 1)
+      }, messageDelay)
 
       return () => clearTimeout(timer)
     }
-  }, [currentMessageIndex])
+  }, [currentMessageIndex, messageDelay, addMessage, setCurrentMessageIndex])
 
   const getBadgeText = (badge: string) => {
     switch (badge) {
@@ -208,8 +236,7 @@ function ChatApp() {
   }
 
   const handleSettingsClick = () => {
-    console.log('Settings clicked')
-    // TODO: Add opening settings component here!
+    toggleSettings()
   }
 
   const handleThemeSwitch = (themeName: string) => {
@@ -237,16 +264,13 @@ function ChatApp() {
     <div className="chat-app">
       {HeaderComponent}
       {ChatComponent}
+      <Settings isOpen={isSettingsOpen} onClose={toggleSettings} />
     </div>
   )
 }
 
 function App() {
-  return (
-    <ThemeProvider initialTheme="default">
-      <ChatApp />
-    </ThemeProvider>
-  )
+  return <ChatApp />
 }
 
 export default App
