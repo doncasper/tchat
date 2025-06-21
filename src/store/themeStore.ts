@@ -8,11 +8,13 @@ interface ThemeState {
   currentTheme: Theme
   currentThemeName: string
   availableThemes: string[]
+  isInitialized: boolean
   
   // Actions
   switchTheme: (themeName: string) => void
   registerTheme: (theme: Theme) => void
   unregisterTheme: (themeName: string) => boolean
+  initializeTheme: () => void
   
   // Computed
   isThemeAvailable: (themeName: string) => boolean
@@ -22,10 +24,11 @@ export const useThemeStore = create<ThemeState>()(
   devtools(
     persist(
       (set, get) => ({
-        // Initial state
+        // Initial state - will be overridden by persist middleware
         currentTheme: themeFactory.createTheme('default'),
         currentThemeName: 'default',
         availableThemes: themeFactory.getAvailableThemes(),
+        isInitialized: false,
         
         // Actions
         switchTheme: (themeName) => {
@@ -57,6 +60,34 @@ export const useThemeStore = create<ThemeState>()(
           }
           return success
         },
+
+        initializeTheme: () => {
+          const { currentThemeName } = get()
+          const availableThemes = themeFactory.getAvailableThemes()
+          
+          // Ensure we have themes available
+          if (availableThemes.length === 0) {
+            console.warn('No themes available during initialization')
+            return
+          }
+
+          // Check if the persisted theme is still available
+          const targetThemeName = availableThemes.includes(currentThemeName) 
+            ? currentThemeName 
+            : 'default'
+          
+          const theme = themeFactory.createTheme(targetThemeName)
+          
+          set({
+            currentTheme: theme,
+            currentThemeName: targetThemeName,
+            availableThemes,
+            isInitialized: true
+          })
+          
+          // Apply global styles
+          applyGlobalStyles(theme.globalStyles)
+        },
         
         // Computed
         isThemeAvailable: (themeName) => {
@@ -68,7 +99,15 @@ export const useThemeStore = create<ThemeState>()(
         name: 'theme-storage',
         partialize: (state) => ({
           currentThemeName: state.currentThemeName
-        })
+        }),
+        onRehydrateStorage: () => (state) => {
+          // After rehydration, ensure the currentTheme matches the persisted currentThemeName
+          if (state && state.currentThemeName) {
+            // We'll handle the actual theme initialization in the initializeTheme method
+            // which will be called after themes are registered
+            state.isInitialized = false
+          }
+        }
       }
     ),
     {
