@@ -27,15 +27,15 @@
   font-size: 0.8rem;
 }
 
-.message.small .authorName {
+.message.small .author-name {
   font-size: 0.85rem;
 }
 
-.message.small .messageContent {
+.message.small .message-content {
   font-size: 0.8rem;
 }
 
-.message.small .messageTime {
+.message.small .message-time {
   font-size: 0.7rem;
 }
 
@@ -53,15 +53,15 @@
   font-size: 1.1rem;
 }
 
-.message.large .authorName {
+.message.large .author-name {
   font-size: 1.05rem;
 }
 
-.message.large .messageContent {
+.message.large .message-content {
   font-size: 1.1rem;
 }
 
-.message.large .messageTime {
+.message.large .message-time {
   font-size: 0.9rem;
 }
 
@@ -78,11 +78,11 @@
   border-radius: 8px;
 }
 
-.message.compact .messageHeader {
+.message.compact .message-header {
   margin-bottom: 0.25rem;
 }
 
-.message.compact .authorInfo {
+.message.compact .author-info {
   gap: 0.25rem;
 }
 

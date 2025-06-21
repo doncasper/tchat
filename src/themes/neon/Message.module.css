@@ -43,6 +43,74 @@
   }
 }
 
+/* Font size variants */
+.message.small {
+  font-size: 0.8rem;
+}
+
+.message.small .author-name {
+  font-size: 0.85rem;
+}
+
+.message.small .message-content {
+  font-size: 0.8rem;
+}
+
+.message.small .message-time {
+  font-size: 0.7rem;
+}
+
+.message.small .badge {
+  font-size: 0.6rem;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.message.medium {
+  font-size: 0.9rem;
+}
+
+.message.large {
+  font-size: 1.1rem;
+}
+
+.message.large .author-name {
+  font-size: 1.05rem;
+}
+
+.message.large .message-content {
+  font-size: 1.1rem;
+}
+
+.message.large .message-time {
+  font-size: 0.9rem;
+}
+
+.message.large .badge {
+  font-size: 0.8rem;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Compact mode */
+.message.compact {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+.message.compact .message-header {
+  margin-bottom: 0.25rem;
+}
+
+.message.compact .author-info {
+  gap: 0.25rem;
+}
+
+.message.compact .badges {
+  gap: 0.125rem;
+}
+
 .message-header {
   display: flex;
   justify-content: space-between;
