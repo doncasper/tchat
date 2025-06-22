@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Message.module.css'
-import animations from './animations.module.css'
 
 const Message: ThemeComponent = {
   render: (props: MessageProps): ReactNode => {
@@ -10,7 +9,7 @@ const Message: ThemeComponent = {
     const { showTimestamps, showBadges, compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} ${animations.defaultMessage}`}>
+      <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
         <div className={styles.messageHeader}>
           <div className={styles.authorInfo}>
             <span className={styles.authorName}>{message.nickname}</span>

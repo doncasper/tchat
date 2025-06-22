@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { useUIStore } from '../store/uiStore'
+import { useThemeStore } from '../store/themeStore'
 
 export const useAnimationStyles = () => {
   const { enableAnimations, animationSpeed } = useUIStore()
+  const { currentTheme } = useThemeStore()
 
   useEffect(() => {
     // Remove existing animation styles
@@ -16,6 +18,11 @@ export const useAnimationStyles = () => {
       const styleElement = document.createElement('style')
       styleElement.id = 'animation-styles'
       styleElement.textContent = `
+        :root {
+          --animation-duration: 0s !important;
+          --animation-enabled: 0 !important;
+        }
+        
         * {
           animation: none !important;
           transition: none !important;
@@ -38,101 +45,16 @@ export const useAnimationStyles = () => {
         duration = 0.3
     }
 
-    // Create dynamic animation styles
+    // Create dynamic animation styles using CSS custom properties
     const styleElement = document.createElement('style')
     styleElement.id = 'animation-styles'
     styleElement.textContent = `
-      /* Message animations */
-      .message {
-        animation: slideIn ${duration}s ease-out !important;
-      }
-
-      .message .badge {
-        transition: transform ${duration * 0.67}s ease !important;
-      }
-
-      /* Notification animations */
-      .notification {
-        animation: slideIn ${duration}s ease-out !important;
-      }
-
-      .notification::before {
-        animation: shimmer ${duration * 7}s infinite !important;
-      }
-
-      /* Neon theme specific animations */
-      .neon-message {
-        animation: neon-slide-in ${duration}s ease-out !important;
-      }
-
-      .neon-message::before {
-        animation: neon-scan ${duration * 4}s infinite !important;
-      }
-
-      .neon-notification {
-        animation: neon-notification-slide-in ${duration}s ease-out !important;
-      }
-
-      .neon-notification::before {
-        animation: neon-notification-scan ${duration * 2}s infinite !important;
-      }
-
-      /* Settings modal animation */
-      .settingsModal {
-        animation: slideIn ${duration}s ease-out !important;
-      }
-
-      /* Keyframes for animations */
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-
-      @keyframes neon-scan {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-
-      @keyframes neon-slide-in {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-          box-shadow: 0 0 0 rgba(0, 255, 255, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-        }
-      }
-
-      @keyframes neon-notification-scan {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-
-      @keyframes neon-notification-slide-in {
-        from {
-          opacity: 0;
-          transform: translateY(20px) scale(0.95);
-          box-shadow: 0 0 0 rgba(255, 0, 102, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-          box-shadow: 0 0 30px rgba(255, 0, 102, 0.3);
-        }
+      :root {
+        --animation-duration: ${duration}s;
+        --animation-enabled: 1;
+        --animation-duration-fast: ${duration * 0.67}s;
+        --animation-duration-slow: ${duration * 2}s;
+        --animation-duration-very-slow: ${duration * 4}s;
       }
     `
 
@@ -145,4 +67,27 @@ export const useAnimationStyles = () => {
       }
     }
   }, [enableAnimations, animationSpeed])
+
+  // Apply theme-specific animation styles if the theme provides them
+  useEffect(() => {
+    if (!currentTheme?.animationStyles) return
+
+    const existingThemeAnimationStyle = document.getElementById('theme-animation-styles')
+    if (existingThemeAnimationStyle) {
+      existingThemeAnimationStyle.remove()
+    }
+
+    if (enableAnimations) {
+      const themeStyleElement = document.createElement('style')
+      themeStyleElement.id = 'theme-animation-styles'
+      themeStyleElement.textContent = currentTheme.animationStyles
+      document.head.appendChild(themeStyleElement)
+
+      return () => {
+        if (themeStyleElement.parentNode) {
+          themeStyleElement.parentNode.removeChild(themeStyleElement)
+        }
+      }
+    }
+  }, [currentTheme, enableAnimations])
 } 

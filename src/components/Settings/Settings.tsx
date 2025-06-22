@@ -41,11 +41,23 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
     switchTheme
   } = useThemeStore()
 
+  // Get theme-specific animation class
+  const getThemeAnimationClass = () => {
+    switch (currentThemeName) {
+      case 'tako':
+        return 'tako-settings-modal'
+      case 'minimal':
+        return '' // Minimal theme has no animations
+      default:
+        return 'default-settings-modal'
+    }
+  }
+
   if (!isOpen) return null
 
   return (
     <div className={styles.settingsOverlay} onClick={onClose}>
-      <div className={styles.settingsModal} onClick={(e) => e.stopPropagation()}>
+      <div className={`${styles.settingsModal} ${getThemeAnimationClass()}`} onClick={(e) => e.stopPropagation()}>
         <div className={styles.settingsHeader}>
           <h2>Settings</h2>
           <button className={styles.closeButton} onClick={onClose}>

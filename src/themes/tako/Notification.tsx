@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, NotificationProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Notification.module.css'
+import animations from './animations.module.css'
 import loveImage from '../../../public/themes/tako/love.png'
 
 const Notification: ThemeComponent = {
@@ -10,7 +11,7 @@ const Notification: ThemeComponent = {
     const { compactMode, fontSize } = useUIStore()
     
     return (
-      <div className={`${styles.notification} ${styles[fontSize]} ${compactMode ? styles.compact : ''} notification`}>
+      <div className={`${styles.notification} ${styles[fontSize]} ${compactMode ? styles.compact : ''} ${animations.takoNotification}`}>
         <div className={styles.notificationContent}>
           {notification.notificationType === 'sub_gift' && (
             <span className={styles.notificationText}>

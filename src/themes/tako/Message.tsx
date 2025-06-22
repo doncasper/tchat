@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Message.module.css'
+import animations from './animations.module.css'
 import broadcasterImage from '../../../public/themes/tako/chill.png'
 import moderatorImage from '../../../public/themes/tako/coffee.png'
 
@@ -20,7 +21,7 @@ const Message: ThemeComponent = {
             <img src={broadcasterImage} alt="Tako Broadcaster" />
           )}
         </div>
-        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} message`}>
+        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} ${animations.takoMessage}`}>
           <div className={styles.messageHeader}>
             <div className={styles.authorInfo}>
               <span className={styles.authorName}>{message.nickname}</span>

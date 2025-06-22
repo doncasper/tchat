@@ -1,0 +1,114 @@
+.message {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Font size variants */
+.message.small {
+  font-size: 0.8rem;
+}
+
+.message.medium {
+  font-size: 0.9rem;
+}
+
+.message.large {
+  font-size: 1.1rem;
+}
+
+/* Compact mode */
+.message.compact {
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.badges {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: bold;
+}
+
+.badge.broadcaster {
+  background-color: #dc3545;
+}
+
+.badge.moderator {
+  background-color: #28a745;
+}
+
+.badge.subscriber {
+  background-color: #6f42c1;
+}
+
+.badge.vip {
+  background-color: #fd7e14;
+}
+
+.badge.founder {
+  background-color: #e83e8c;
+}
+
+.badge.staff {
+  background-color: #20c997;
+}
+
+.badge.admin {
+  background-color: #20c997;
+}
+
+.badge.global_mod {
+  background-color: #20c997;
+}
+
+.badge.premium {
+  background-color: #ffc107;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.message-content {
+  color: #333;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+} 
