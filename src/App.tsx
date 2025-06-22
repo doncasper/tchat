@@ -33,12 +33,31 @@ const getUserType = (badges: string[]) => {
 
 const rawChatDataItems: ChatDataItem[] = [
   {
+    id: "n-0",
+    type: 'notification',
+    text: "Remember to follow and subscribe!",
+    notificationType: 'alert',
+    nickname: "ModBot",
+    time: new Date(),
+    badges: ["moderator", "bot"]
+  },
+  {
     id: "1",
     type: 'message',
     text: "Hey everyone! How's the stream going?",
     nickname: "Alex",
     time: new Date(),
     badges: ["moderator", "subscriber"]
+  },
+  {
+    id: "n-1",
+    type: 'notification',
+    text: "Mr. White gifted 5 subs!",
+    notificationType: 'sub_gift',
+    count: 5,
+    nickname: "Mr. White",
+    time: new Date(),
+    badges: ["subscriber"]
   },
   {
     id: "2",
@@ -100,6 +119,7 @@ const rawChatDataItems: ChatDataItem[] = [
     id: "9",
     type: 'notification',
     text: "Tom has subscribed!",
+    notificationType: 'sub',
     nickname: "Tom",
     time: new Date(),
     badges: ["subscriber"]
@@ -124,6 +144,7 @@ const rawChatDataItems: ChatDataItem[] = [
     id: "12",
     type: 'notification',
     text: "Anna raided with 1000 viewers!",
+    notificationType: 'raid',
     nickname: "Anna",
     time: new Date(),
     badges: [],
@@ -133,6 +154,7 @@ const rawChatDataItems: ChatDataItem[] = [
     id: "13",
     type: 'notification',
     text: "Remember to follow and subscribe!",
+    notificationType: 'alert',
     nickname: "ModBot",
     time: new Date(),
     badges: ["moderator", "bot"]

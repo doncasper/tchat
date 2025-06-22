@@ -2,6 +2,7 @@
 export interface ChatDataItem {
   id: string
   type: 'message' | 'notification'
+  notificationType?: 'alert' | 'sub_gift' | 'sub' | 'cheer' | 'follow' | 'host' | 'raid' | 'bits'
   text: string
   nickname: string
   userType?: 'broadcaster' | 'moderator' | 'subscriber' | 'vip' | 'staff' | 'partner' | 'founder' | 'artist' | 'dj' | 'turbo' | 'bot'

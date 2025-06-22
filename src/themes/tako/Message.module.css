@@ -127,7 +127,6 @@
   font-size: 0.7rem;
   color: white;
   font-weight: bold;
-  transition: transform 0.2s ease;
 }
 
 .badge.broadcaster {
@@ -182,6 +181,7 @@
 .message.broadcaster {
   border-left-color: #e74c3c;
   background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(255, 68, 48, 0.5) 100%);
+  position: relative;
 }
 .message.broadcaster .message-time {
   color: #7b291f;
@@ -221,4 +221,20 @@
 } 
 .message.founder .message-time {
   color: #6a17a2;
+}
+
+.user-type-logo img {
+  margin: -1.5rem 0.5rem -0.4rem 0.5rem;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  animation: slideIn 0.6s ease;
+}
+
+.user-type-logo.moderator {
+  transform: scaleX(-1);
+}
+
+.user-type-logo.broadcaster {
+  transform: scaleX(-1);
 }

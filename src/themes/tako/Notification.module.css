@@ -1,6 +1,6 @@
 .notification {
-  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 1) 0%, rgba(155, 89, 182, 1) 100%);
+  border-radius: 25px;
   padding: 1rem 2rem;
   margin-bottom: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
