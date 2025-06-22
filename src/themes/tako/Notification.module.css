@@ -1,11 +1,11 @@
 .notification {
-  background: linear-gradient(135deg, rgba(52, 152, 219, 1) 0%, rgba(155, 89, 182, 1) 100%);
+  background: radial-gradient(circle, #7456d7 0%, #4f399a 100%);
+  border: 2px solid #45347c;
   border-radius: 25px;
-  padding: 1rem 2rem;
-  margin-bottom: 1rem;
+  padding: 2rem 1rem;
+  margin: 0 auto 1rem auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  width: 100%;
+  width: 90%;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -36,9 +36,8 @@
 
 /* Compact mode */
 .notification.compact {
-  padding: 0.5rem 1rem;
+  padding: 1rem 1.5rem;
   margin-bottom: 0.5rem;
-  border-radius: 8px;
 }
 
 .broadcaster {
@@ -51,17 +50,6 @@
 
 .subscriber {
   border-left: 4px solid #8d0ee1;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .notification::before {

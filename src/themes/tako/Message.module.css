@@ -1,5 +1,5 @@
 .message {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(235, 235, 255, 0.9);
   border-radius: 12px;
   padding: 1rem 2rem;
   margin-bottom: 1rem;
@@ -109,6 +109,9 @@
   font-weight: 600;
   color: #2c3e50;
   font-size: 0.95rem;
+  background-color: #7456d7;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
 }
 
 .badges {
@@ -125,6 +128,7 @@
   border-radius: 4px;
   padding: 0 4px;
   font-size: 0.7rem;
+  background-color: #929292;
   color: white;
   font-weight: bold;
 }
@@ -177,54 +181,8 @@
   word-wrap: break-word;
 }
 
-/* Special styling for broadcaster messages */
-.message.broadcaster {
-  border-left-color: #e74c3c;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(255, 68, 48, 0.5) 100%);
-  position: relative;
-}
-.message.broadcaster .message-time {
-  color: #7b291f;
-}
-
-/* Special styling for moderator messages */
-.message.moderator {
-  border-left-color: #27ae60;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(39, 174, 96, 0.5) 100%);
-}
-.message.moderator .message-time {
-  color: #196e3d;
-}
-
-/* Special styling for subscriber messages */
-.message.subscriber {
-  border-left-color: #8d0ee1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(141, 14, 225, 0.5) 100%);
-} 
-.message.subscriber .message-time {
-  color: #6a17a2;
-}
-
-/* Special styling for vip messages */
-.message.vip {
-  border-left-color: #da0ee1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(197, 14, 225, 0.5) 100%);
-} 
-.message.vip .message-time {
-  color: #6a17a2;
-}
-
-/* Special styling for founder messages */
-.message.founder {
-  border-left-color: #fa75fe;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 50%, rgba(234, 74, 255, 0.5) 100%);
-} 
-.message.founder .message-time {
-  color: #6a17a2;
-}
-
 .user-type-logo img {
-  margin: -1.5rem 0.5rem -0.4rem 0.5rem;
+  margin: -1.5rem 0.5rem -1.9rem 0.5rem;
   width: 40px;
   height: 40px;
   object-fit: contain;

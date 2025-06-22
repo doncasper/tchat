@@ -9,11 +9,6 @@
   transition: transform var(--animation-duration-fast) ease;
 }
 
-.takoMessage:hover {
-  transform: scale(1.02);
-  transition: transform 0.2s ease;
-}
-
 /* Notification animations */
 .takoNotification {
   animation: takoNotificationPop var(--animation-duration) ease-out;

@@ -89,7 +89,7 @@ const rawChatDataItems: ChatDataItem[] = [
     text: "Anyone else hyped for the next game?",
     nickname: "David",
     time: new Date(),
-    badges: []
+    badges: ["verified"]
   },
   {
     id: "6",
@@ -257,7 +257,8 @@ function ChatApp() {
       case 'moderator': return 'MOD'
       case 'subscriber': return 'SUB'
       case 'vip': return 'VIP'
-      case 'broadcaster': return 'BROADCASTER'
+      case 'broadcaster': return 'STREAMER'
+      case 'verified': return 'VERIFIED'
       case 'founder': return 'FOUNDER'
       case 'staff': return 'STAFF'
       case 'admin': return 'ADMIN'

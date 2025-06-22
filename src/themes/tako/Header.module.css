@@ -1,16 +1,22 @@
 .chat-header {
   width: 100%;
-  background: linear-gradient(135deg, #2d99e1 0%, #2b5b78 100%);
-  color: white;
+  background: linear-gradient(135deg, #5eb8f0 0%, #dc76c1 100%);
+  color: #7456d7;
+  
   padding: 1rem 2rem;
-  border-bottom: 4px solid #8e57c2;
+  border-bottom: 4px solid #7456d7;
   box-sizing: border-box;
+}
+
+.chat-header h1 {
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
 
 .stream-info h1 {
@@ -27,7 +33,7 @@
 }
 
 .live-indicator {
-  color: #dbe12c;
+  color: #7456d7;
   font-weight: bold;
   animation: pulse 2s infinite;
 }
@@ -38,7 +44,7 @@
 }
 
 .viewer-count {
-  color: #bdc3c7;
+  color: #e0e6ea;
 }
 
 .header-actions {
