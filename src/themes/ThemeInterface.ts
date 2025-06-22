@@ -43,7 +43,7 @@ export interface Theme {
 }
 
 // Utility function to extract CSS styles from CSS modules
-export const extractStylesFromModule = (cssModule: any): string => {
+export const extractStylesFromModule = (_cssModule: any): string => {
   // This is a placeholder - in a real implementation, you'd need to
   // extract the actual CSS rules from the module
   // For now, we'll return an empty string and handle this differently

@@ -23,6 +23,10 @@
   animation: takoModalSlide var(--animation-duration) ease-out;
 }
 
+.author-name {
+  animation: takoSlideIn var(--animation-duration) ease-out;
+}
+
 /* Tako-specific keyframes */
 @keyframes takoSlideIn {
   from {
