@@ -20,50 +20,8 @@ const DefaultTheme: Theme = {
   Notification,
   globalStyles: ``,
   
-  // Animation styles extracted from CSS module
-  animationStyles: `
-    /* Default Theme Animations */
-    
-    /* Message animations */
-    .default-message {
-      animation: slideIn var(--animation-duration) ease-out;
-    }
-    
-    .default-message .badge {
-      transition: transform var(--animation-duration-fast) ease;
-    }
-    
-    /* Notification animations */
-    .default-notification {
-      animation: slideIn var(--animation-duration) ease-out;
-    }
-    
-    .default-notification::before {
-      animation: shimmer var(--animation-duration-very-slow) infinite;
-    }
-    
-    /* Settings modal animation */
-    .default-settings-modal {
-      animation: slideIn var(--animation-duration) ease-out;
-    }
-    
-    /* Keyframes */
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-  `
+  // Use CSS module for animations
+  animationModule: animations
 }
 
 // Self-register the theme

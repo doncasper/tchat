@@ -3,7 +3,6 @@ import type { ThemeComponent, NotificationProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Notification.module.css'
 import animations from './animations.module.css'
-import loveImage from '../../../public/themes/tako/love.png'
 
 const Notification: ThemeComponent = {
   render: (props: NotificationProps): ReactNode => {

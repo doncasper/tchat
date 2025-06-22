@@ -38,6 +38,16 @@ export interface Theme {
   globalStyles: string
   // Optional: Theme can provide animation styles if it supports animations
   animationStyles?: string
+  // Optional: CSS module for animations (alternative to animationStyles)
+  animationModule?: any
+}
+
+// Utility function to extract CSS styles from CSS modules
+export const extractStylesFromModule = (cssModule: any): string => {
+  // This is a placeholder - in a real implementation, you'd need to
+  // extract the actual CSS rules from the module
+  // For now, we'll return an empty string and handle this differently
+  return ''
 }
 
 // Theme factory interface

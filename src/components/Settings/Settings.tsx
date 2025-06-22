@@ -45,11 +45,11 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const getThemeAnimationClass = () => {
     switch (currentThemeName) {
       case 'tako':
-        return 'tako-settings-modal'
+        return 'tako-settingsmodal'
       case 'minimal':
         return '' // Minimal theme has no animations
       default:
-        return 'default-settings-modal'
+        return 'default-settingsmodal'
     }
   }
 

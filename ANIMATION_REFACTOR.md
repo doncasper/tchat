@@ -16,7 +16,11 @@ The animation system has been refactored to be completely theme-specific using C
 
 ### 3. **Opt-Out Capability**
 - **Before**: All themes forced to use animations
-- **After**: Themes can completely opt out by not providing `animationStyles`
+- **After**: Themes can completely opt out by not providing `animationModule`
+
+### 4. **CSS Module Extraction**
+- **Before**: Duplicated CSS in theme definitions
+- **After**: Styles extracted directly from CSS modules
 
 ## Architecture
 
@@ -24,26 +28,32 @@ The animation system has been refactored to be completely theme-specific using C
 
 #### 1. **Animation Hook** (`src/hooks/useAnimationStyles.ts`)
 - Provides CSS custom properties for dynamic durations
-- Applies theme-specific animation styles if available
+- Extracts styles from CSS modules when available
 - Handles animation enabling/disabling globally
 
-#### 2. **Theme Animation Styles**
-Each theme can provide animation styles through the `animationStyles` property:
+#### 2. **Theme Animation Modules**
+Each theme can provide animation styles through CSS modules:
 
 ```typescript
+// src/themes/themeName/animations.module.css
+.themeMessage {
+  animation: slideIn var(--animation-duration) ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+```
+
+```typescript
+// src/themes/themeName/index.ts
+import animations from './animations.module.css'
+
 const Theme: Theme = {
   name: 'themeName',
   // ... other properties
-  animationStyles: `
-    .theme-message {
-      animation: customAnimation var(--animation-duration) ease-out;
-    }
-    
-    @keyframes customAnimation {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `
+  animationModule: animations
 }
 ```
 
@@ -101,6 +111,11 @@ import animations from './animations.module.css'
 - Dead code elimination for unused animations
 - Better tree-shaking
 
+### 6. **No Code Duplication**
+- CSS styles defined once in CSS modules
+- Automatically extracted and applied
+- No manual string duplication
+
 ## Implementation Guide
 
 ### For Themes with Animations
@@ -123,17 +138,9 @@ import animations from './animations.module.css'
 import animations from './animations.module.css'
 
 const Theme: Theme = {
+  name: 'themeName',
   // ... other properties
-  animationStyles: `
-    .theme-message {
-      animation: slideIn var(--animation-duration) ease-out;
-    }
-    
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `
+  animationModule: animations
 }
 ```
 
@@ -146,13 +153,13 @@ import animations from './animations.module.css'
 
 ### For Themes Without Animations
 
-Simply omit the `animationStyles` property:
+Simply omit the `animationModule` property:
 
 ```typescript
 const Theme: Theme = {
   name: 'minimal',
   // ... other properties
-  // No animationStyles property = no animations
+  // No animationModule property = no animations
 }
 ```
 
@@ -168,12 +175,33 @@ const Theme: Theme = {
 }
 ```
 
+## How CSS Module Extraction Works
+
+1. **CSS Module Import**: Theme imports `animations.module.css`
+2. **Class Name Extraction**: Hook extracts actual CSS class names from module
+3. **StyleSheet Search**: Hook searches all stylesheets for matching rules
+4. **Class Name Replacement**: CSS module classes replaced with theme-specific classes
+5. **Style Injection**: Extracted styles injected into DOM with new class names
+
+Example transformation:
+```css
+/* Original CSS module */
+.themeMessage_abc123 {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Extracted and transformed */
+.theme-message {
+  animation: slideIn 0.3s ease-out;
+}
+```
+
 ## Migration from Previous System
 
 1. **Remove old animation logic** from theme index files
 2. **Create `animations.module.css`** for each theme
 3. **Update components** to use CSS module classes
-4. **Add `animationStyles`** property to theme definition
+4. **Add `animationModule`** property to theme definition
 5. **Test animation behavior** with different speed settings
 
 ## Best Practices
@@ -182,4 +210,5 @@ const Theme: Theme = {
 2. **Keep animations simple** and performant
 3. **Provide fallbacks** for reduced motion preferences
 4. **Test with different speeds** to ensure smooth behavior
-5. **Document custom keyframes** in theme documentation 
+5. **Document custom keyframes** in theme documentation
+6. **Use descriptive class names** in CSS modules 
