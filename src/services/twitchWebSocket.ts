@@ -96,6 +96,7 @@ export class TwitchWebSocket {
 
   disconnect() {
     this.isConnected = false
+    this.reconnectAttempts = this.maxReconnectAttempts // Prevent reconnection
     this.stopPingInterval()
     if (this.ws) {
       this.ws.close()
@@ -354,6 +355,11 @@ export class TwitchWebSocket {
   }
 
   private attemptReconnect() {
+    // Don't auto-reconnect if manually disconnected
+    if (!this.isConnected && this.ws?.readyState === WebSocket.CLOSED) {
+      return
+    }
+
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       this.config.onStatusChange('Max reconnection attempts reached')
       return
@@ -365,7 +371,7 @@ export class TwitchWebSocket {
     this.config.onStatusChange(`Reconnecting in ${delay / 1000}s...`)
 
     setTimeout(() => {
-      if (!this.isConnected) {
+      if (!this.isConnected && this.ws?.readyState === WebSocket.CLOSED) {
         this.connect()
       }
     }, delay)

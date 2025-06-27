@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { TwitchWebSocket } from '../services/twitchWebSocket'
 import { useChatStore } from '../store/chatStore'
 
@@ -7,9 +7,85 @@ interface UseTwitchChatOptions {
   autoConnect?: boolean
 }
 
-// Global reference to prevent multiple instances
-let globalWebSocket: TwitchWebSocket | null = null
-let connectionCount = 0
+// WebSocket manager singleton
+class WebSocketManager {
+  private static instance: WebSocketManager | null = null
+  private webSocket: TwitchWebSocket | null = null
+  private subscribers: Set<(message: any) => void> = new Set()
+  private statusSubscribers: Set<(status: string) => void> = new Set()
+  private currentChannel: string = ''
+
+  static getInstance(): WebSocketManager {
+    if (!WebSocketManager.instance) {
+      WebSocketManager.instance = new WebSocketManager()
+    }
+    return WebSocketManager.instance
+  }
+
+  subscribe(onMessage: (message: any) => void, onStatusChange: (status: string) => void) {
+    this.subscribers.add(onMessage)
+    this.statusSubscribers.add(onStatusChange)
+    
+    return () => {
+      this.subscribers.delete(onMessage)
+      this.statusSubscribers.delete(onStatusChange)
+      
+      // Clean up if no more subscribers
+      if (this.subscribers.size === 0 && this.webSocket) {
+        this.webSocket.disconnect()
+        this.webSocket = null
+        this.currentChannel = ''
+      }
+    }
+  }
+
+  connect(channel: string) {
+    if (this.webSocket && this.currentChannel === channel) {
+      return // Already connected to this channel
+    }
+
+    if (this.webSocket && this.currentChannel !== channel) {
+      this.webSocket.changeChannel(channel)
+      this.currentChannel = channel
+      return
+    }
+
+    if (!this.webSocket) {
+      this.webSocket = new TwitchWebSocket({
+        channel,
+        onMessage: (message) => {
+          this.subscribers.forEach(callback => callback(message))
+        },
+        onStatusChange: (status) => {
+          this.statusSubscribers.forEach(callback => callback(status))
+        },
+        onConnect: () => {
+          console.log('WebSocket connected via manager')
+        },
+        onDisconnect: () => {
+          console.log('WebSocket disconnected via manager')
+        }
+      })
+      this.webSocket.connect()
+      this.currentChannel = channel
+    }
+  }
+
+  disconnect() {
+    if (this.webSocket) {
+      this.webSocket.disconnect()
+      this.webSocket = null
+      this.currentChannel = ''
+    }
+  }
+
+  changeChannel(channel: string) {
+    if (this.webSocket && this.currentChannel !== channel) {
+      this.webSocket.changeChannel(channel)
+      this.currentChannel = channel
+    }
+  }
+}
 
 export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
   const { 
@@ -17,68 +93,55 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
     autoConnect = true 
   } = options
 
-  const wsRef = useRef<TwitchWebSocket | null>(null)
   const { addMessage, setConnectionStatus, clearMessages } = useChatStore()
-  const isInitialized = useRef(false)
+  const managerRef = useRef<WebSocketManager | null>(null)
+  const unsubscribeRef = useRef<(() => void) | null>(null)
+
+  const handleMessage = useCallback((message: any) => {
+    addMessage(message)
+  }, [addMessage])
+
+  const handleStatusChange = useCallback((status: string) => {
+    setConnectionStatus(status)
+  }, [setConnectionStatus])
 
   useEffect(() => {
-    if (!autoConnect || isInitialized.current) return
+    if (!autoConnect) return
 
-    connectionCount++
-    console.log(`Connection attempt ${connectionCount}`)
+    managerRef.current = WebSocketManager.getInstance()
+    
+    // Subscribe to messages and status changes
+    unsubscribeRef.current = managerRef.current.subscribe(handleMessage, handleStatusChange)
+    
+    // Connect to the channel
+    managerRef.current.connect(channel)
 
-    // Reuse existing global connection or create new one
-    if (!globalWebSocket) {
-      globalWebSocket = new TwitchWebSocket({
-        channel,
-        onMessage: (message) => {
-          addMessage(message)
-        },
-        onStatusChange: (status) => {
-          setConnectionStatus(status)
-        },
-        onConnect: () => {
-          console.log('WebSocket connected')
-        },
-        onDisconnect: () => {
-          console.log('WebSocket disconnected')
-        }
-      })
-      globalWebSocket.connect()
-    } else if (globalWebSocket) {
-      // Change channel if different
-      globalWebSocket.changeChannel(channel)
-    }
-
-    wsRef.current = globalWebSocket
-    isInitialized.current = true
-
-    // Cleanup on unmount
+    // Cleanup function
     return () => {
-      connectionCount--
-      console.log(`Connection cleanup, remaining: ${connectionCount}`)
-      
-      // Only disconnect when no more components are using it
-      if (connectionCount <= 0 && globalWebSocket) {
-        globalWebSocket.disconnect()
-        globalWebSocket = null
-        wsRef.current = null
-        isInitialized.current = false
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current()
+        unsubscribeRef.current = null
       }
     }
-  }, [channel, autoConnect, addMessage, setConnectionStatus])
+  }, [channel, autoConnect, handleMessage, handleStatusChange])
 
   const connect = () => {
-    wsRef.current?.connect()
+    if (managerRef.current) {
+      managerRef.current.connect(channel)
+    }
   }
 
   const disconnect = () => {
-    wsRef.current?.disconnect()
+    if (managerRef.current) {
+      managerRef.current.disconnect()
+    }
   }
 
   const changeChannel = (newChannel: string) => {
     clearMessages()
-    wsRef.current?.changeChannel(newChannel)
+    if (managerRef.current) {
+      managerRef.current.changeChannel(newChannel)
+    }
   }
 
   return {
