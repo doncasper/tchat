@@ -9,6 +9,10 @@ interface ChatState {
   isLoading: boolean
   error: string | null
   
+  // Connection state
+  connectionStatus: string
+  currentChannel: string
+  
   // Chat settings
   autoScroll: boolean
   messageDelay: number
@@ -21,6 +25,8 @@ interface ChatState {
   setCurrentMessageIndex: (index: number) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
+  setConnectionStatus: (status: string) => void
+  setCurrentChannel: (channel: string) => void
   setAutoScroll: (autoScroll: boolean) => void
   setMessageDelay: (delay: number) => void
   setMaxMessages: (max: number) => void
@@ -40,12 +46,27 @@ export const useChatStore = create<ChatState>()(
         currentMessageIndex: 0,
         isLoading: false,
         error: null,
+        connectionStatus: 'Disconnected',
+        currentChannel: 'takotoken',
         autoScroll: true,
         messageDelay: 1000,
         maxMessages: 1000,
         
         // Actions
         addMessage: (message) => set((state) => {
+          // Check for duplicate messages (same id or same content within 1 second)
+          const isDuplicate = state.messages.some(existingMessage => 
+            existingMessage.id === message.id ||
+            (existingMessage.text === message.text && 
+             existingMessage.nickname === message.nickname &&
+             Math.abs(new Date(existingMessage.time).getTime() - new Date(message.time).getTime()) < 1000)
+          )
+          
+          if (isDuplicate) {
+            console.log('Duplicate message detected, skipping:', message)
+            return state
+          }
+          
           const newMessages = [...state.messages, message]
           
           // Remove old messages if we exceed maxMessages
@@ -75,6 +96,10 @@ export const useChatStore = create<ChatState>()(
         
         setError: (error) => set({ error }),
         
+        setConnectionStatus: (status) => set({ connectionStatus: status }),
+        
+        setCurrentChannel: (channel) => set({ currentChannel: channel }),
+        
         setAutoScroll: (autoScroll) => set({ autoScroll }),
         
         setMessageDelay: (delay) => set({ messageDelay: delay }),
@@ -102,7 +127,8 @@ export const useChatStore = create<ChatState>()(
         partialize: (state) => ({
           autoScroll: state.autoScroll,
           messageDelay: state.messageDelay,
-          maxMessages: state.maxMessages
+          maxMessages: state.maxMessages,
+          currentChannel: state.currentChannel
         })
       }
     ),

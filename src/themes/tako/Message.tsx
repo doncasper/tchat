@@ -3,8 +3,8 @@ import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Message.module.css'
 import animations from './animations.module.css'
-import broadcasterImage from '../../../public/themes/tako/chill.png'
-import moderatorImage from '../../../public/themes/tako/coffee.png'
+import broadcasterImage from './img/chill.png'
+import moderatorImage from './img/coffee.png'
 
 const Message: ThemeComponent = {
   render: (props: MessageProps): ReactNode => {

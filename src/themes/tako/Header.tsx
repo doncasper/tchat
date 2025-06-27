@@ -2,8 +2,6 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, HeaderProps } from '../ThemeInterface'
 import styles from './Header.module.css'
 
-
-
 const Header: ThemeComponent = {
   render: (props: HeaderProps): ReactNode => {
     const { streamTitle, viewerCount, onSettingsClick, onThemeSwitch, currentTheme, availableThemes } = props

@@ -1,203 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useChatStore } from './store/chatStore'
 import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
 import { useThemeInitializer } from './store/useThemeInitializer'
 import { useAnimationStyles } from './hooks/useAnimationStyles'
+import { useTwitchChat } from './hooks/useTwitchChat'
 import { Settings } from './components/Settings/Settings'
-import type { ChatDataItem } from './types/ChatTypes'
 import './App.css'
 
-// Utility function to fill in userType based on badges
-const fillUserTypeFromBadges = (items: ChatDataItem[]): ChatDataItem[] => {
-  return items.map(item => {
-    const badges = item.badges || []
-    const derivedUserType = getUserType(badges)
-    
-    return {
-      ...item,
-      userType: item.userType || derivedUserType
-    }
-  })
-}
-
-const getUserType = (badges: string[]) => {
-  if (badges.includes('broadcaster')) return 'broadcaster'
-  if (badges.includes('bot')) return 'bot'
-  if (badges.includes('moderator')) return 'moderator'
-  if (badges.includes('vip')) return 'vip'
-  if (badges.includes('founder')) return 'founder'
-  if (badges.includes('subscriber')) return 'subscriber'
-  return undefined
-}
-
-const rawChatDataItems: ChatDataItem[] = [
-  {
-    id: "n-0",
-    type: 'notification',
-    text: "Remember to follow and subscribe!",
-    notificationType: 'alert',
-    nickname: "ModBot",
-    time: new Date(),
-    badges: ["moderator", "bot"]
-  },
-  {
-    id: "1",
-    type: 'message',
-    text: "Hey everyone! How's the stream going?",
-    nickname: "Alex",
-    time: new Date(),
-    badges: ["moderator", "subscriber"]
-  },
-  {
-    id: "n-1",
-    type: 'notification',
-    text: "Mr. White gifted 5 subs!",
-    notificationType: 'sub_gift',
-    count: 5,
-    nickname: "Mr. White",
-    time: new Date(),
-    badges: ["subscriber"]
-  },
-  {
-    id: "2",
-    type: 'message',
-    text: "Just joined! This is amazing content 🔥",
-    nickname: "Sarah",
-    time: new Date(),
-    badges: []
-  },
-  {
-    id: "3",
-    type: 'message',
-    text: "Can't believe we're already 2 hours in!",
-    nickname: "Mike",
-    time: new Date(),
-    badges: ["subscriber", "founder"]
-  },
-  {
-    id: "4",
-    type: 'message',
-    text: "That last play was insane!",
-    nickname: "Emma",
-    time: new Date(),
-    badges: ["moderator", "founder", "subscriber"]
-  },
-  {
-    id: "5",
-    type: 'message',
-    text: "Anyone else hyped for the next game?",
-    nickname: "David",
-    time: new Date(),
-    badges: ["verified"]
-  },
-  {
-    id: "6",
-    type: 'message',
-    text: "Thanks for the raid! Welcome everyone!",
-    nickname: "Streamer",
-    time: new Date(),
-    badges: ["broadcaster"]
-  },
-  {
-    id: "7",
-    type: 'message',
-    text: "This community is the best 💙",
-    nickname: "Lisa",
-    time: new Date(),
-    badges: ["subscriber", "moderator"]
-  },
-  {
-    id: "8",
-    type: 'message',
-    text: "Lorem ipsum refers to placeholder text often used in publishing and graphic design to demonstrate the visual style of a document, webpage, or typeface. It is intended to serve as a sample, not to be read as meaningful sentences.",
-    nickname: "Tom",
-    time: new Date(),
-    badges: ['subscriber']
-  },
-  {
-    id: "9",
-    type: 'notification',
-    text: "Tom has subscribed!",
-    notificationType: 'sub',
-    nickname: "Tom",
-    time: new Date(),
-    badges: ["subscriber"]
-  },
-  {
-    id: "10",
-    type: 'message',
-    text: "Donation incoming! Keep up the great work!!!",
-    nickname: "Chris",
-    time: new Date(),
-    badges: ["vip", "subscriber"]
-  },
-  {
-    id: "11",
-    type: 'message',
-    text: "The chat is moving so fast!",
-    nickname: "Anna",
-    time: new Date(),
-    badges: ["subscriber"]
-  },
-  {
-    id: "12",
-    type: 'notification',
-    text: "Anna raided with 1000 viewers!",
-    notificationType: 'raid',
-    nickname: "Anna",
-    time: new Date(),
-    badges: [],
-    count: 1000
-  },
-  {
-    id: "13",
-    type: 'notification',
-    text: "Remember to follow and subscribe!",
-    notificationType: 'alert',
-    nickname: "ModBot",
-    time: new Date(),
-    badges: ["moderator", "bot"]
-  },
-  {
-    id: "14",
-    type: 'message',
-    text: "This is my first time here, loving it!",
-    nickname: "NewUser",
-    time: new Date(),
-    badges: []
-  },
-  {
-    id: "15",
-    type: 'message',
-    text: "Can't wait for the next stream!",
-    nickname: "Fan",
-    time: new Date(),
-    badges: ["subscriber", "vip"]
-  },
-  {
-    id: "16",
-    type: 'message',
-    text: "The energy in here is incredible!",
-    nickname: "Maria",
-    time: new Date(),
-    badges: ["moderator"]
-  },
-  {
-    id: "17",
-    type: 'message',
-    text: "Thanks for the amazing stream everyone!",
-    nickname: "Streamer",
-    time: new Date(),
-    badges: ["broadcaster"]
-  }
-]
-
-// Process the chat data to fill in userType based on badges
-const chatDataItems: ChatDataItem[] = fillUserTypeFromBadges(rawChatDataItems)
 
 function ChatApp() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [channelInput, setChannelInput] = useState('')
+  const [showChannelInput, setShowChannelInput] = useState(false)
   
   // Initialize theme
   useThemeInitializer()
@@ -208,11 +23,10 @@ function ChatApp() {
   // Zustand stores
   const {
     messages,
-    currentMessageIndex,
-    messageDelay,
     autoScroll,
-    addMessage,
-    setCurrentMessageIndex
+    connectionStatus,
+    currentChannel,
+    setCurrentChannel,
   } = useChatStore()
 
   const {
@@ -227,6 +41,12 @@ function ChatApp() {
     toggleSettings
   } = useUIStore()
 
+  // Initialize WebSocket connection
+  const { changeChannel } = useTwitchChat({
+    channel: currentChannel,
+    autoConnect: true
+  })
+
   const scrollToBottom = () => {
     if (autoScroll && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
@@ -237,20 +57,16 @@ function ChatApp() {
     scrollToBottom()
   }, [messages, autoScroll])
 
-  // Add messages one by one with a timer
-  useEffect(() => {
-    if (currentMessageIndex < chatDataItems.length) {
-      const timer = setTimeout(() => {
-        const nextMessage = chatDataItems[currentMessageIndex]
-        if (nextMessage) {
-          addMessage(nextMessage)
-        }
-        setCurrentMessageIndex(currentMessageIndex + 1)
-      }, messageDelay)
-
-      return () => clearTimeout(timer)
+  const handleChannelSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmedChannel = channelInput.trim()
+    if (trimmedChannel && trimmedChannel !== currentChannel) {
+      setCurrentChannel(trimmedChannel)
+      changeChannel(trimmedChannel)
+      setChannelInput('')
+      setShowChannelInput(false)
     }
-  }, [currentMessageIndex, messageDelay, addMessage, setCurrentMessageIndex])
+  }
 
   const getBadgeText = (badge: string) => {
     switch (badge) {
@@ -278,8 +94,8 @@ function ChatApp() {
 
   // Render theme components
   const HeaderComponent = currentTheme.Header.render({
-    streamTitle: "Live Stream Chat with Streamer",
-    viewerCount: 1234,
+    streamTitle: `${currentChannel}'s Chat`,
+    viewerCount: messages.length,
     onSettingsClick: handleSettingsClick,
     onThemeSwitch: handleThemeSwitch,
     currentTheme: currentThemeName,
@@ -295,6 +111,64 @@ function ChatApp() {
   return (
     <div className="chat-app">
       {HeaderComponent}
+      <div className="connection-status-bar" style={{
+        padding: '8px 16px',
+        backgroundColor: connectionStatus.includes('Connected') ? '#00b300' : '#ff4444',
+        color: 'white',
+        fontSize: '14px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <span>{connectionStatus}</span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {showChannelInput ? (
+            <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '4px' }}>
+              <input
+                type="text"
+                value={channelInput}
+                onChange={(e) => setChannelInput(e.target.value)}
+                placeholder="Channel name"
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: 'none',
+                  fontSize: '14px'
+                }}
+                autoFocus
+              />
+              <button type="submit" style={{
+                padding: '4px 12px',
+                borderRadius: '4px',
+                border: 'none',
+                backgroundColor: 'white',
+                color: '#333',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}>Join</button>
+              <button type="button" onClick={() => setShowChannelInput(false)} style={{
+                padding: '4px 12px',
+                borderRadius: '4px',
+                border: 'none',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}>Cancel</button>
+            </form>
+          ) : (
+            <button onClick={() => setShowChannelInput(true)} style={{
+              padding: '4px 12px',
+              borderRadius: '4px',
+              border: 'none',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}>Change Channel</button>
+          )}
+        </div>
+      </div>
       {ChatComponent}
       <Settings isOpen={isSettingsOpen} onClose={toggleSettings} />
     </div>
