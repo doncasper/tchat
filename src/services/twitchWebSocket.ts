@@ -220,7 +220,7 @@ export class TwitchWebSocket {
         }
         break
 
-      case 'submysterygift':
+      case 'submysterygift': {
         const count = tags['msg-param-mass-gift-count'] || tags['msg-param-gift-count'] || '?'
         notification = {
           id: `${Date.now()}-${Math.random()}`,
@@ -233,6 +233,7 @@ export class TwitchWebSocket {
           count: parseInt(count)
         }
         break
+      }
     }
 
     if (notification) {

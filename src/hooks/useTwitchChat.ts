@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { TwitchWebSocket } from '../services/twitchWebSocket'
 import { useChatStore } from '../store/chatStore'
+import type { ChatDataItem } from '../types/ChatTypes'
 
 interface UseTwitchChatOptions {
   channel?: string
@@ -11,7 +12,7 @@ interface UseTwitchChatOptions {
 class WebSocketManager {
   private static instance: WebSocketManager | null = null
   private webSocket: TwitchWebSocket | null = null
-  private subscribers: Set<(message: any) => void> = new Set()
+  private subscribers: Set<(message: ChatDataItem) => void> = new Set()
   private statusSubscribers: Set<(status: string) => void> = new Set()
   private currentChannel: string = ''
 
@@ -22,7 +23,7 @@ class WebSocketManager {
     return WebSocketManager.instance
   }
 
-  subscribe(onMessage: (message: any) => void, onStatusChange: (status: string) => void) {
+  subscribe(onMessage: (message: ChatDataItem) => void, onStatusChange: (status: string) => void) {
     this.subscribers.add(onMessage)
     this.statusSubscribers.add(onStatusChange)
     
@@ -97,7 +98,7 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
   const managerRef = useRef<WebSocketManager | null>(null)
   const unsubscribeRef = useRef<(() => void) | null>(null)
 
-  const handleMessage = useCallback((message: any) => {
+  const handleMessage = useCallback((message: ChatDataItem) => {
     addMessage(message)
   }, [addMessage])
 

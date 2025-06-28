@@ -5,7 +5,7 @@ import { useChatStore } from '../../store/chatStore'
 
 interface VirtualChatWrapperProps {
   messages: ChatDataItem[]
-  messagesEndRef: React.RefObject<HTMLDivElement>
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
   renderMessage: (message: ChatDataItem) => React.ReactNode
   renderNotification: (notification: ChatDataItem) => React.ReactNode
 }
@@ -17,7 +17,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
   renderNotification
 }) => {
   const { autoScroll } = useChatStore()
-  const scrollToBottomRef = useRef<() => void>(null as any)
+  const scrollToBottomRef = useRef<() => void>(() => {})
   const isUserScrolling = useRef(false)
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 

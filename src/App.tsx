@@ -43,14 +43,10 @@ function ChatApp() {
     autoConnect: true
   })
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     if (autoScroll && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }
-
-  useEffect(() => {
-    scrollToBottom()
   }, [messages, autoScroll])
 
   const handleChannelSubmit = (e: React.FormEvent) => {
@@ -80,6 +76,18 @@ function ChatApp() {
     }
   }
 
+  const getUserType = (badges: string[]) => {
+    if (badges.includes('broadcaster')) return 'broadcaster'
+    if (badges.includes('moderator')) return 'moderator'
+    if (badges.includes('vip')) return 'vip'
+    if (badges.includes('subscriber')) return 'subscriber'
+    if (badges.includes('founder')) return 'founder'
+    if (badges.includes('staff')) return 'staff'
+    if (badges.includes('admin')) return 'admin'
+    if (badges.includes('global_mod')) return 'global_mod'
+    return ''
+  }
+
   const handleSettingsClick = () => {
     toggleSettings()
   }
@@ -89,24 +97,27 @@ function ChatApp() {
   }
 
   // Render theme components
-  const HeaderComponent = currentTheme.Header.render({
+  const HeaderComponent = currentTheme.Header.render
+  const headerProps = {
     streamTitle: `${currentChannel}'s Chat`,
     viewerCount: messages.length,
     onSettingsClick: handleSettingsClick,
     onThemeSwitch: handleThemeSwitch,
     currentTheme: currentThemeName,
     availableThemes
-  })
+  }
 
-  const ChatComponent = currentTheme.Chat.render({
+  const ChatComponent = currentTheme.Chat.render
+  const chatProps = {
     messages,
     messagesEndRef,
     getBadgeText,
-  })
+    getUserType
+  }
 
   return (
     <div className="chat-app">
-      {HeaderComponent}
+      <HeaderComponent {...headerProps} />
       <div className="connection-status-bar" style={{
         padding: '8px 16px',
         backgroundColor: connectionStatus.includes('Connected') ? '#00b300' : '#ff4444',
@@ -165,7 +176,7 @@ function ChatApp() {
           )}
         </div>
       </div>
-      {ChatComponent}
+      <ChatComponent {...chatProps} />
       <Settings isOpen={isSettingsOpen} onClose={toggleSettings} />
     </div>
   )

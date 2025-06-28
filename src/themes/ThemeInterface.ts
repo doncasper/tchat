@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import type { ComponentType } from 'react'
 import type { ChatDataItem } from '../types/ChatTypes'
 
 // Base interface for theme components
 export interface ThemeComponent {
-  render: (props: any) => ReactNode
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  render: ComponentType<any>
   styles: string
 }
 
@@ -25,7 +26,7 @@ export interface ThemeFactory {
 
 export interface ChatProps {
   messages: ChatDataItem[]
-  messagesEndRef: React.RefObject<HTMLDivElement>
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
   getBadgeText: (badge: string) => string
   getUserType: (badges: string[]) => string
 }

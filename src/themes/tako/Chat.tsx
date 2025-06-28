@@ -8,18 +8,20 @@ import Notification from './Notification'
 
 const Chat: ThemeComponent = {
   render: (props: ChatProps): ReactNode => {
-    const { messages, messagesEndRef, getBadgeText, getUserType } = props
+    const { messages, messagesEndRef, getBadgeText } = props
+    
+    const MessageComponent = Message.render
+    const NotificationComponent = Notification.render
     
     const renderMessage = (message: ChatDataItem) => (
-      <Message.render 
+      <MessageComponent 
         message={message} 
         getBadgeText={getBadgeText} 
-        getUserType={getUserType} 
       />
     )
     
     const renderNotification = (notification: ChatDataItem) => (
-      <Notification.render 
+      <NotificationComponent 
         notification={notification} 
         getBadgeText={getBadgeText}
       />
