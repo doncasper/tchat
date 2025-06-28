@@ -10,7 +10,6 @@ import './Header.module.css'
 import './Chat.module.css'
 import './Message.module.css'
 import './Notification.module.css'
-import './animations.module.css'
 
 const TakoTheme: Theme = {
   name: 'tako',

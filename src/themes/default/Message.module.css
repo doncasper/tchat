@@ -11,6 +11,7 @@
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+  animation: slideIn var(--animation-duration, 0.3s) ease-out;
 }
 
 @keyframes slideIn {
@@ -127,7 +128,7 @@
   font-size: 0.7rem;
   color: white;
   font-weight: bold;
-  transition: transform 0.2s ease;
+  transition: transform var(--animation-duration-fast, 0.2s) ease;
 }
 
 .badge.broadcaster {

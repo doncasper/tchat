@@ -11,6 +11,7 @@
   overflow: hidden;
   flex: 0 0 auto;
   flex-shrink: 0;
+  animation: slideIn var(--animation-duration, 0.3s) ease-out;
 }
 
 /* Font size variants */
@@ -72,7 +73,7 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(45deg, transparent 10%, rgba(255, 255, 255, 0.1) 50%, transparent 80%);
-  animation: shimmer 7s infinite;
+  animation: shimmer var(--animation-duration-very-slow, 7s) infinite;
   pointer-events: none;
 }
 

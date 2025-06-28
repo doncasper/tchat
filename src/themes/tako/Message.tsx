@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import styles from './Message.module.css'
-import animations from './animations.module.css'
 import broadcasterImage from './img/chill.png'
 import moderatorImage from './img/coffee.png'
 
@@ -22,7 +21,7 @@ const Message: ThemeComponent = {
           )}
         </div>
         <span className={styles.authorName} style={{ backgroundColor: message.color }}>{message.nickname}</span>
-        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} ${animations.takoMessage}`}>
+        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
           <div className={styles.messageHeader}>
             <div className={styles.authorInfo}>
               {showBadges && (
