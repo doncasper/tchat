@@ -1,0 +1,202 @@
+.message {
+  background: rgba(235, 235, 255, 0.9);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid #c2c2c2;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  animation: takoSlideIn var(--animation-duration, 0.3s) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes takoSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Font size variants */
+.message.small {
+  font-size: 0.8rem;
+}
+
+.message.small .author-name {
+  font-size: 0.85rem;
+}
+
+.message.small .message-content {
+  font-size: 0.8rem;
+}
+
+.message.small .message-time {
+  font-size: 0.7rem;
+}
+
+.message.small .badge {
+  font-size: 0.6rem;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.message.medium {
+  font-size: 0.9rem;
+}
+
+.message.large {
+  font-size: 1.1rem;
+}
+
+.message.large .author-name {
+  font-size: 1.05rem;
+}
+
+.message.large .message-content {
+  font-size: 1.1rem;
+}
+
+.message.large .message-time {
+  font-size: 0.9rem;
+}
+
+.message.large .badge {
+  font-size: 0.8rem;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Compact mode */
+.message.compact {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+}
+
+.message.compact .message-header {
+  margin-bottom: 0.25rem;
+}
+
+.message.compact .author-info {
+  gap: 0.25rem;
+}
+
+.message.compact .badges {
+  gap: 0.125rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  background-color: #7456d7;
+  padding: 0.5rem 1rem;
+  border-radius: 12px 12px 0 0;
+  margin-left: 0.5rem;
+  animation: takoSlideIn var(--animation-duration, 0.3s) ease-out;
+}
+
+.badges {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  background-color: #929292;
+  color: white;
+  font-weight: bold;
+  transition: transform var(--animation-duration-fast, 0.2s) ease;
+}
+
+.badge.broadcaster {
+  background-color: #db1600;
+}
+
+.badge.moderator {
+  background-color: #2da539;
+}
+
+.badge.subscriber {
+  background-color: #8d0ee1;
+}
+
+.badge.vip {
+  background-color: #f312ac;
+}
+
+.badge.founder {
+  background-color: #c624b0;
+}
+
+.badge.staff {
+  background-color: #27ae60;
+}
+
+.badge.admin {
+  background-color: #27ae60;
+}
+
+.badge.global_mod {
+  background-color: #27ae60;
+}
+
+.badge.premium {
+  background-color: #f39c12;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: #8e8e8e;
+}
+
+.message-content {
+  color: #34495e;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+}
+
+.user-type-logo img {
+  margin: -1.5rem 0.5rem -1.9rem 0.5rem;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  animation: takoSlideIn 0.6s ease;
+}
+
+.user-type-logo.moderator {
+  transform: scaleX(-1);
+}
+
+.user-type-logo.broadcaster {
+  transform: scaleX(-1);
+}
