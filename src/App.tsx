@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useChatStore } from './store/chatStore'
 import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
@@ -10,8 +10,6 @@ import './App.css'
 
 function ChatApp() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [channelInput, setChannelInput] = useState('')
-  const [showChannelInput, setShowChannelInput] = useState(false)
   
   // Initialize theme
   useThemeInitializer()
@@ -22,7 +20,6 @@ function ChatApp() {
     autoScroll,
     connectionStatus,
     currentChannel,
-    setCurrentChannel,
   } = useChatStore()
 
   const {
@@ -49,16 +46,6 @@ function ChatApp() {
     }
   }, [messages, autoScroll])
 
-  const handleChannelSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const trimmedChannel = channelInput.trim()
-    if (trimmedChannel && trimmedChannel !== currentChannel) {
-      setCurrentChannel(trimmedChannel)
-      changeChannel(trimmedChannel)
-      setChannelInput('')
-      setShowChannelInput(false)
-    }
-  }
 
   const getBadgeText = (badge: string) => {
     switch (badge) {
@@ -123,61 +110,16 @@ function ChatApp() {
         backgroundColor: connectionStatus.includes('Connected') ? '#00b300' : '#ff4444',
         color: 'white',
         fontSize: '14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        textAlign: 'center'
       }}>
-        <span>{connectionStatus}</span>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          {showChannelInput ? (
-            <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '4px' }}>
-              <input
-                type="text"
-                value={channelInput}
-                onChange={(e) => setChannelInput(e.target.value)}
-                placeholder="Channel name"
-                style={{
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  fontSize: '14px'
-                }}
-                autoFocus
-              />
-              <button type="submit" style={{
-                padding: '4px 12px',
-                borderRadius: '4px',
-                border: 'none',
-                backgroundColor: 'white',
-                color: '#333',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}>Join</button>
-              <button type="button" onClick={() => setShowChannelInput(false)} style={{
-                padding: '4px 12px',
-                borderRadius: '4px',
-                border: 'none',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}>Cancel</button>
-            </form>
-          ) : (
-            <button onClick={() => setShowChannelInput(true)} style={{
-              padding: '4px 12px',
-              borderRadius: '4px',
-              border: 'none',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}>Change Channel</button>
-          )}
-        </div>
+        {connectionStatus}
       </div>
       <ChatComponent {...chatProps} />
-      <Settings isOpen={isSettingsOpen} onClose={toggleSettings} />
+      <Settings 
+        isOpen={isSettingsOpen} 
+        onClose={toggleSettings}
+        changeChannel={changeChannel}
+      />
     </div>
   )
 }

@@ -157,6 +157,36 @@
   background: #dc2626;
 }
 
+.primaryButton {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.primaryButton:hover {
+  background: #2563eb;
+}
+
+.secondaryButton {
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: #d1d5db;
+}
+
 /* Responsive design */
 @media (max-width: 640px) {
   .settingsModal {

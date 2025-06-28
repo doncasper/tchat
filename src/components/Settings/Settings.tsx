@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useChatStore } from '../../store/chatStore'
 import { useUIStore } from '../../store/uiStore'
 import { useThemeStore } from '../../store/themeStore'
@@ -7,16 +7,21 @@ import styles from './Settings.module.css'
 interface SettingsProps {
   isOpen: boolean
   onClose: () => void
+  changeChannel: (channel: string) => void
 }
 
-export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
+export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChannel }) => {
+  const [channelInput, setChannelInput] = useState('')
+  const [showChannelInput, setShowChannelInput] = useState(false)
   const {
     autoScroll,
     messageDelay,
     maxMessages,
+    currentChannel,
     setAutoScroll,
     setMessageDelay,
     setMaxMessages,
+    setCurrentChannel,
     clearMessages
   } = useChatStore()
 
@@ -34,6 +39,17 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
     availableThemes,
     switchTheme
   } = useThemeStore()
+
+  const handleChannelSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmedChannel = channelInput.trim()
+    if (trimmedChannel && trimmedChannel !== currentChannel) {
+      setCurrentChannel(trimmedChannel)
+      changeChannel(trimmedChannel)
+      setChannelInput('')
+      setShowChannelInput(false)
+    }
+  }
 
   if (!isOpen) return null
 
@@ -63,6 +79,50 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
                   </option>
                 ))}
               </select>
+            </div>
+          </section>
+
+          {/* Channel Settings */}
+          <section className={styles.settingsSection}>
+            <h3>Channel</h3>
+            <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <label>Current channel: <strong>{currentChannel}</strong></label>
+              {showChannelInput ? (
+                <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '8px', marginTop: '8px', width: '100%' }}>
+                  <input
+                    type="text"
+                    value={channelInput}
+                    onChange={(e) => setChannelInput(e.target.value)}
+                    placeholder="Channel name"
+                    style={{
+                      flex: 1,
+                      padding: '8px',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '14px'
+                    }}
+                    autoFocus
+                  />
+                  <button type="submit" className={styles.primaryButton}>
+                    Join
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowChannelInput(false)} 
+                    className={styles.secondaryButton}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              ) : (
+                <button 
+                  onClick={() => setShowChannelInput(true)} 
+                  className={styles.primaryButton}
+                  style={{ marginTop: '8px' }}
+                >
+                  Change Channel
+                </button>
+              )}
             </div>
           </section>
 
