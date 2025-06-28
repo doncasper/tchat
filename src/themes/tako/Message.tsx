@@ -8,7 +8,7 @@ import moderatorImage from './img/coffee.png'
 const Message: ThemeComponent = {
   render: (props: MessageProps): ReactNode => {
     const { message, getBadgeText } = props
-    const { showTimestamps, showBadges, compactMode, fontSize } = useUIStore()
+    const { showTimestamps, showBadges, fontSize } = useUIStore()
     
     return (
       <div>
@@ -21,7 +21,7 @@ const Message: ThemeComponent = {
           )}
         </div>
         <span className={styles.authorName} style={{ backgroundColor: message.color }}>{message.nickname}</span>
-        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''}`}>
+        <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]}`}>
           <div className={styles.messageHeader}>
             <div className={styles.authorInfo}>
               {showBadges && (

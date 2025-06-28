@@ -23,11 +23,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const {
     showTimestamps,
     showBadges,
-    compactMode,
     fontSize,
     setShowTimestamps,
     setShowBadges,
-    setCompactMode,
     setFontSize
   } = useUIStore()
 
@@ -134,16 +132,6 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
                   onChange={(e) => setShowBadges(e.target.checked)}
                 />
                 Show badges
-              </label>
-            </div>
-            <div className={styles.settingGroup}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={compactMode}
-                  onChange={(e) => setCompactMode(e.target.checked)}
-                />
-                Compact mode
               </label>
             </div>
             <div className={styles.settingGroup}>

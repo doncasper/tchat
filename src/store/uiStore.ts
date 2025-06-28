@@ -10,7 +10,6 @@ interface UIState {
   // Display preferences
   showTimestamps: boolean
   showBadges: boolean
-  compactMode: boolean
   fontSize: 'small' | 'medium' | 'large'
   
   // Actions
@@ -19,7 +18,6 @@ interface UIState {
   toggleFullscreen: () => void
   setShowTimestamps: (show: boolean) => void
   setShowBadges: (show: boolean) => void
-  setCompactMode: (compact: boolean) => void
   setFontSize: (size: 'small' | 'medium' | 'large') => void
 }
 
@@ -33,7 +31,6 @@ export const useUIStore = create<UIState>()(
         isFullscreen: false,
         showTimestamps: true,
         showBadges: true,
-        compactMode: false,
         fontSize: 'medium',
         
         // Actions
@@ -53,8 +50,6 @@ export const useUIStore = create<UIState>()(
         
         setShowBadges: (show) => set({ showBadges: show }),
         
-        setCompactMode: (compact) => set({ compactMode: compact }),
-        
         setFontSize: (size) => set({ fontSize: size })
       }),
       {
@@ -62,7 +57,6 @@ export const useUIStore = create<UIState>()(
         partialize: (state) => ({
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
-          compactMode: state.compactMode,
           fontSize: state.fontSize
         })
       }

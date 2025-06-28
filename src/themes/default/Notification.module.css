@@ -35,12 +35,6 @@
   font-size: 1.1rem;
 }
 
-/* Compact mode */
-.notification.compact {
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-}
 
 .broadcaster {
   border-left: 4px solid #e74c3c;

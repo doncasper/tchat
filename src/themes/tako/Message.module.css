@@ -74,24 +74,6 @@
   min-height: 24px;
 }
 
-/* Compact mode */
-.message.compact {
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-}
-
-.message.compact .message-header {
-  margin-bottom: 0.25rem;
-}
-
-.message.compact .author-info {
-  gap: 0.25rem;
-}
-
-.message.compact .badges {
-  gap: 0.125rem;
-}
 
 .message-header {
   display: flex;
