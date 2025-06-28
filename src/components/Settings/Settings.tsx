@@ -84,9 +84,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
 
           {/* Channel Settings */}
           <section className={styles.settingsSection}>
-            <h3>Channel</h3>
+            <h3>Channel: <strong>{currentChannel}</strong></h3>
             <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <label>Current channel: <strong>{currentChannel}</strong></label>
               {showChannelInput ? (
                 <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '8px', marginTop: '8px', width: '100%' }}>
                   <input
@@ -144,8 +143,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
               <input
                 type="number"
                 min="0"
-                max="5000"
-                step="100"
+                max="50000"
+                step="10"
                 value={messageDelay}
                 onChange={(e) => setMessageDelay(Number(e.target.value))}
               />
@@ -154,9 +153,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
               <label>Max messages:</label>
               <input
                 type="number"
-                min="100"
-                max="10000"
-                step="100"
+                min="1"
+                max="200"
+                step="1"
                 value={maxMessages}
                 onChange={(e) => setMaxMessages(Number(e.target.value))}
               />
@@ -203,8 +202,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 <input
                   type="range"
                   min="1"
-                  max="7"
-                  step="0.1"
+                  max="2"
+                  step="0.05"
                   value={fontSizeMultiplier}
                   onChange={(e) => setFontSizeMultiplier(Number(e.target.value))}
                   className={styles.slider}
@@ -212,8 +211,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>
                   <span>100%</span>
-                  <span>400%</span>
-                  <span>700%</span>
+                  <span>150%</span>
+                  <span>200%</span>
                 </div>
               </div>
             </div>
