@@ -73,7 +73,11 @@ The `TwitchWebSocket` class handles:
 ```
 src/
 ├── App.tsx                    # Main application orchestrator
-├── components/Settings/       # Settings modal
+├── components/
+│   ├── Settings/             # Settings modal
+│   └── VirtualScroll/        # Virtual scrolling for performance
+│       ├── VirtualScroll.tsx      # Core windowing implementation
+│       └── VirtualChatWrapper.tsx # Theme-friendly wrapper
 ├── hooks/
 │   ├── useTwitchChat.ts      # WebSocket connection hook
 │   └── useAnimationStyles.ts # Dynamic animation styles
@@ -112,6 +116,21 @@ src/
 - Each theme can provide `animationStyles` string or `animationModule` CSS module
 - `useAnimationStyles` hook applies theme-specific animations to DOM
 - Themes have full control over their animation behavior
+
+### Performance Optimization
+
+**Virtual Scrolling (Windowing)**
+- `VirtualScroll` component implements efficient message rendering
+- Only visible messages (plus buffer) are rendered to DOM
+- Automatic height measurement and adjustment for variable content
+- Smooth scrolling with configurable overscan and buffer sizes
+- `VirtualChatWrapper` provides theme-compatible integration
+
+**Benefits:**
+- Handles thousands of messages without performance degradation
+- Reduces memory usage and DOM nodes
+- Maintains smooth auto-scroll behavior
+- Compatible with all existing themes
 
 ### State Management Patterns
 
