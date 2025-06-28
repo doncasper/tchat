@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useChatStore } from '../../store/chatStore'
 import { useUIStore } from '../../store/uiStore'
 import { useThemeStore } from '../../store/themeStore'
+import { useQueryParams } from '../../hooks/useQueryParams'
 import styles from './Settings.module.css'
 
 interface SettingsProps {
@@ -13,6 +14,7 @@ interface SettingsProps {
 export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChannel }) => {
   const [channelInput, setChannelInput] = useState('')
   const [showChannelInput, setShowChannelInput] = useState(false)
+  const { updateURL } = useQueryParams()
   const {
     autoScroll,
     messageDelay,
@@ -48,8 +50,26 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
       changeChannel(trimmedChannel)
       setChannelInput('')
       setShowChannelInput(false)
+      updateURL()
     }
   }
+
+  // Update URL whenever settings change
+  useEffect(() => {
+    if (isOpen) {
+      updateURL()
+    }
+  }, [
+    isOpen,
+    autoScroll,
+    messageDelay,
+    maxMessages,
+    showTimestamps,
+    showBadges,
+    fontSizeMultiplier,
+    currentThemeName,
+    updateURL
+  ])
 
   if (!isOpen) return null
 

@@ -4,6 +4,7 @@ import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
 import { useThemeInitializer } from './store/useThemeInitializer'
 import { useTwitchChat } from './hooks/useTwitchChat'
+import { useQueryParams } from './hooks/useQueryParams'
 import { Settings } from './components/Settings/Settings'
 import './App.css'
 
@@ -13,6 +14,12 @@ function ChatApp() {
   
   // Initialize theme
   useThemeInitializer()
+  
+  // Initialize from query params
+  const { syncFromURL } = useQueryParams()
+  useEffect(() => {
+    syncFromURL()
+  }, [syncFromURL])
   
   // Zustand stores
   const {
