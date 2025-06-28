@@ -152,6 +152,7 @@ export class TwitchWebSocket {
         notificationType: 'bits',
         text: `${username} cheered ${tags.bits} bits!`,
         nickname: username || 'Unknown',
+        color: this.parseColor(tags.color, username),
         time: new Date(),
         count: parseInt(tags.bits)
       }
@@ -164,6 +165,7 @@ export class TwitchWebSocket {
       type: 'message',
       text: message || '',
       nickname: username || 'Unknown',
+      color: this.parseColor(tags.color, username),
       userType,
       time: new Date(),
       badges,
@@ -187,6 +189,7 @@ export class TwitchWebSocket {
           notificationType: 'sub',
           text: `${tags['display-name'] || tags['login'] || 'Someone'} just subscribed!`,
           nickname: tags['display-name'] || tags['login'] || 'Someone',
+          color: this.parseColor(tags.color, tags['display-name'] || tags['login']),
           time: new Date()
         }
         break
@@ -199,6 +202,7 @@ export class TwitchWebSocket {
           notificationType: 'sub_gift',
           text: `${tags['display-name'] || 'An anonymous user'} gifted a sub!`,
           nickname: tags['display-name'] || 'Anonymous',
+          color: this.parseColor(tags.color, tags['display-name']),
           time: new Date()
         }
         break
@@ -210,6 +214,7 @@ export class TwitchWebSocket {
           notificationType: 'raid',
           text: `${tags['msg-param-displayName'] || 'Someone'} is raiding with ${tags['msg-param-viewerCount'] || '?'} viewers!`,
           nickname: tags['msg-param-displayName'] || 'Someone',
+          color: this.parseColor(tags.color, tags['msg-param-displayName']),
           time: new Date(),
           count: parseInt(tags['msg-param-viewerCount'] || '0')
         }
@@ -223,6 +228,7 @@ export class TwitchWebSocket {
           notificationType: 'sub_gift',
           text: `${tags['display-name'] || 'Someone'} is gifting ${count} subs!`,
           nickname: tags['display-name'] || 'Someone',
+          color: this.parseColor(tags.color, tags['display-name']),
           time: new Date(),
           count: parseInt(count)
         }

@@ -21,7 +21,7 @@ const Message: ThemeComponent = {
             <img src={broadcasterImage} alt="Tako Broadcaster" />
           )}
         </div>
-        <span className={styles.authorName}>{message.nickname}</span>
+        <span className={styles.authorName} style={{ backgroundColor: message.color }}>{message.nickname}</span>
         <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]} ${compactMode ? styles.compact : ''} ${animations.takoMessage}`}>
           <div className={styles.messageHeader}>
             <div className={styles.authorInfo}>
