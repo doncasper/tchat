@@ -5,10 +5,13 @@ import styles from './Notification.module.css'
 
 const NotificationComponent = (props: NotificationProps): ReactNode => {
   const { notification } = props
-  const { fontSize } = useUIStore()
+  const { fontSizeMultiplier } = useUIStore()
   
   return (
-    <div className={`${styles.notification} ${styles[fontSize]}`}>
+    <div 
+      className={styles.notification}
+      style={{ fontSize: `${fontSizeMultiplier}em` }}
+    >
       <div className={styles.notificationContent}>
         {notification.notificationType === 'sub_gift' && (
           <span className={styles.notificationText}>

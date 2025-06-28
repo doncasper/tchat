@@ -5,10 +5,13 @@ import styles from './Message.module.css'
 
 const MessageComponent = (props: MessageProps): ReactNode => {
   const { message, getBadgeText } = props
-  const { showTimestamps, showBadges, fontSize } = useUIStore()
+  const { showTimestamps, showBadges, fontSizeMultiplier } = useUIStore()
   
   return (
-    <div className={`${styles.message} ${styles[message.userType || '']} ${styles[fontSize]}`}>
+    <div 
+      className={`${styles.message} ${styles[message.userType || '']}`}
+      style={{ fontSize: `${fontSizeMultiplier}em` }}
+    >
       <div className={styles.messageHeader}>
         <div className={styles.authorInfo}>
           <span className={styles.authorName}>{message.nickname}</span>

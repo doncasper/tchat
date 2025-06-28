@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useEffect } from 'react'
 import type { ChatDataItem } from '../../types/ChatTypes'
 import { VirtualScroll } from './VirtualScroll'
 import { useChatStore } from '../../store/chatStore'
+import { useUIStore } from '../../store/uiStore'
 
 interface VirtualChatWrapperProps {
   messages: ChatDataItem[]
@@ -17,6 +18,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
   renderNotification
 }) => {
   const { autoScroll } = useChatStore()
+  const { fontSizeMultiplier } = useUIStore()
   const scrollToBottomRef = useRef<() => void>(() => {})
   const isUserScrolling = useRef(false)
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -83,6 +85,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
   return (
     <>
       <VirtualScroll
+        key={fontSizeMultiplier}
         messages={messages}
         itemHeight={60} // Estimated height, will be auto-adjusted
         bufferSize={10}

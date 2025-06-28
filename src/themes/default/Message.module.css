@@ -12,6 +12,7 @@
   overflow: hidden;
   flex-shrink: 0;
   animation: slideIn var(--animation-duration, 0.3s) ease-out;
+  font-size: 0.9rem;
 }
 
 @keyframes slideIn {
@@ -25,54 +26,7 @@
   }
 }
 
-/* Font size variants */
-.message.small {
-  font-size: 0.8rem;
-}
-
-.message.small .author-name {
-  font-size: 0.85rem;
-}
-
-.message.small .message-content {
-  font-size: 0.8rem;
-}
-
-.message.small .message-time {
-  font-size: 0.7rem;
-}
-
-.message.small .badge {
-  font-size: 0.6rem;
-  min-width: 16px;
-  min-height: 16px;
-}
-
-.message.medium {
-  font-size: 0.9rem;
-}
-
-.message.large {
-  font-size: 1.1rem;
-}
-
-.message.large .author-name {
-  font-size: 1.05rem;
-}
-
-.message.large .message-content {
-  font-size: 1.1rem;
-}
-
-.message.large .message-time {
-  font-size: 0.9rem;
-}
-
-.message.large .badge {
-  font-size: 0.8rem;
-  min-width: 24px;
-  min-height: 24px;
-}
+/* Font size is now controlled by inline styles with fontSizeMultiplier */
 
 
 .message-header {
@@ -91,7 +45,7 @@
 .author-name {
   font-weight: 600;
   color: #2c3e50;
-  font-size: 0.95rem;
+  font-size: 1.05em;
 }
 
 .badges {
@@ -107,7 +61,7 @@
   min-height: 20px;
   border-radius: 4px;
   padding: 0 4px;
-  font-size: 0.7rem;
+  font-size: 0.78em;
   color: white;
   font-weight: bold;
   transition: transform var(--animation-duration-fast, 0.2s) ease;
@@ -150,14 +104,14 @@
 }
 
 .message-time {
-  font-size: 0.8rem;
+  font-size: 0.89em;
   color: #8e8e8e;
 }
 
 .message-content {
   color: #34495e;
   line-height: 1.5;
-  font-size: 0.9rem;
+  font-size: 1em;
   word-wrap: break-word;
 }
 

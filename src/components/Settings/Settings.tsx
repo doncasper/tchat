@@ -28,10 +28,10 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
   const {
     showTimestamps,
     showBadges,
-    fontSize,
+    fontSizeMultiplier,
     setShowTimestamps,
     setShowBadges,
-    setFontSize
+    setFontSizeMultiplier
   } = useUIStore()
 
   const {
@@ -194,16 +194,28 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 Show badges
               </label>
             </div>
-            <div className={styles.settingGroup}>
-              <label>Font size:</label>
-              <select
-                value={fontSize}
-                onChange={(e) => setFontSize(e.target.value as 'small' | 'medium' | 'large')}
-              >
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
+            <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <label>Font size:</label>
+                <span style={{ fontWeight: '600' }}>{Math.round(fontSizeMultiplier * 100)}%</span>
+              </div>
+              <div style={{ width: '100%' }}>
+                <input
+                  type="range"
+                  min="1"
+                  max="7"
+                  step="0.1"
+                  value={fontSizeMultiplier}
+                  onChange={(e) => setFontSizeMultiplier(Number(e.target.value))}
+                  className={styles.slider}
+                  style={{ width: '100%' }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>
+                  <span>100%</span>
+                  <span>400%</span>
+                  <span>700%</span>
+                </div>
+              </div>
             </div>
           </section>
 

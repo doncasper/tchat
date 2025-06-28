@@ -12,28 +12,10 @@
   flex: 0 0 auto;
   flex-shrink: 0;
   animation: takoNotificationPop var(--animation-duration, 0.3s) ease-out;
-}
-
-/* Font size variants */
-.notification.small {
-  font-size: 0.8rem;
-}
-
-.notification.small .notification-content {
-  font-size: 0.8rem;
-}
-
-.notification.medium {
   font-size: 0.9rem;
 }
 
-.notification.large {
-  font-size: 1.1rem;
-}
-
-.notification.large .notification-content {
-  font-size: 1.1rem;
-}
+/* Font size is now controlled by inline styles with fontSizeMultiplier */
 
 
 .broadcaster {
@@ -82,7 +64,7 @@
 .notification-content {
   color: #ffffff;
   line-height: 1.5;
-  font-size: 0.9rem;
+  font-size: 1em;
   word-wrap: break-word;
   font-weight: 500;
   text-align: center;

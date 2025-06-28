@@ -10,7 +10,7 @@ interface UIState {
   // Display preferences
   showTimestamps: boolean
   showBadges: boolean
-  fontSize: 'small' | 'medium' | 'large'
+  fontSizeMultiplier: number
   
   // Actions
   toggleSettings: () => void
@@ -18,7 +18,7 @@ interface UIState {
   toggleFullscreen: () => void
   setShowTimestamps: (show: boolean) => void
   setShowBadges: (show: boolean) => void
-  setFontSize: (size: 'small' | 'medium' | 'large') => void
+  setFontSizeMultiplier: (multiplier: number) => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -31,7 +31,7 @@ export const useUIStore = create<UIState>()(
         isFullscreen: false,
         showTimestamps: true,
         showBadges: true,
-        fontSize: 'medium',
+        fontSizeMultiplier: 1,
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -50,14 +50,14 @@ export const useUIStore = create<UIState>()(
         
         setShowBadges: (show) => set({ showBadges: show }),
         
-        setFontSize: (size) => set({ fontSize: size })
+        setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier })
       }),
       {
         name: 'ui-storage',
         partialize: (state) => ({
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
-          fontSize: state.fontSize
+          fontSizeMultiplier: state.fontSizeMultiplier
         })
       }
     ),
