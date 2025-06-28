@@ -4,7 +4,7 @@ import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
 import { useThemeInitializer } from './store/useThemeInitializer'
 import { useTwitchChat } from './hooks/useTwitchChat'
-import { useQueryParams } from './hooks/useQueryParams'
+import { readSettingsFromURL } from './utils/urlParams'
 import { Settings } from './components/Settings/Settings'
 import './App.css'
 
@@ -15,11 +15,36 @@ function ChatApp() {
   // Initialize theme
   useThemeInitializer()
   
-  // Initialize from query params
-  const { syncFromURL } = useQueryParams()
+  // Initialize settings from URL params on mount
   useEffect(() => {
-    syncFromURL()
-  }, [syncFromURL])
+    const urlSettings = readSettingsFromURL()
+    
+    // Apply settings from URL if present
+    if (urlSettings.channel) {
+      useChatStore.getState().setCurrentChannel(urlSettings.channel)
+    }
+    if (urlSettings.theme) {
+      useThemeStore.getState().switchTheme(urlSettings.theme)
+    }
+    if (urlSettings.autoScroll !== null) {
+      useChatStore.getState().setAutoScroll(urlSettings.autoScroll)
+    }
+    if (urlSettings.showTimestamps !== null) {
+      useUIStore.getState().setShowTimestamps(urlSettings.showTimestamps)
+    }
+    if (urlSettings.showBadges !== null) {
+      useUIStore.getState().setShowBadges(urlSettings.showBadges)
+    }
+    if (urlSettings.fontSizeMultiplier) {
+      useUIStore.getState().setFontSizeMultiplier(urlSettings.fontSizeMultiplier)
+    }
+    if (urlSettings.messageDelay !== null) {
+      useChatStore.getState().setMessageDelay(urlSettings.messageDelay)
+    }
+    if (urlSettings.maxMessages !== null) {
+      useChatStore.getState().setMaxMessages(urlSettings.maxMessages)
+    }
+  }, [])
   
   // Zustand stores
   const {

@@ -19,7 +19,7 @@ export const useQueryParams = () => {
   const chatStore = useChatStore()
   const uiStore = useUIStore()
   const themeStore = useThemeStore()
-
+  
   // Read query params and update stores
   const syncFromURL = useCallback(() => {
     const params = new URLSearchParams(window.location.search)
@@ -113,7 +113,16 @@ export const useQueryParams = () => {
       : window.location.pathname
 
     window.history.replaceState({}, '', newURL)
-  }, [chatStore, uiStore, themeStore])
+  }, [
+    chatStore.currentChannel,
+    chatStore.autoScroll,
+    chatStore.messageDelay,
+    chatStore.maxMessages,
+    themeStore.currentThemeName,
+    uiStore.showTimestamps,
+    uiStore.showBadges,
+    uiStore.fontSizeMultiplier
+  ])
 
   // Initialize from URL on mount
   useEffect(() => {
