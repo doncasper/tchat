@@ -108,10 +108,10 @@ src/
 
 ### Animation System
 
-- Animations controlled globally via `useAnimationStyles` hook
-- CSS custom properties: `--animation-duration`, `--animation-duration-fast`, etc.
-- Theme-specific animations via CSS modules
-- Speed settings: slow, normal, fast
+- Animations are theme-specific, not globally controlled
+- Each theme can provide `animationStyles` string or `animationModule` CSS module
+- `useAnimationStyles` hook applies theme-specific animations to DOM
+- Themes have full control over their animation behavior
 
 ### State Management Patterns
 

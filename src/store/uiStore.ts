@@ -13,10 +13,6 @@ interface UIState {
   compactMode: boolean
   fontSize: 'small' | 'medium' | 'large'
   
-  // Animation settings
-  enableAnimations: boolean
-  animationSpeed: 'slow' | 'normal' | 'fast'
-  
   // Actions
   toggleSettings: () => void
   toggleSidebar: () => void
@@ -25,17 +21,12 @@ interface UIState {
   setShowBadges: (show: boolean) => void
   setCompactMode: (compact: boolean) => void
   setFontSize: (size: 'small' | 'medium' | 'large') => void
-  setEnableAnimations: (enable: boolean) => void
-  setAnimationSpeed: (speed: 'slow' | 'normal' | 'fast') => void
-  
-  // Computed
-  getAnimationDuration: () => number
 }
 
 export const useUIStore = create<UIState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         // Initial state
         isSettingsOpen: false,
         isSidebarOpen: false,
@@ -44,8 +35,6 @@ export const useUIStore = create<UIState>()(
         showBadges: true,
         compactMode: false,
         fontSize: 'medium',
-        enableAnimations: true,
-        animationSpeed: 'normal',
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -66,24 +55,7 @@ export const useUIStore = create<UIState>()(
         
         setCompactMode: (compact) => set({ compactMode: compact }),
         
-        setFontSize: (size) => set({ fontSize: size }),
-        
-        setEnableAnimations: (enable) => set({ enableAnimations: enable }),
-        
-        setAnimationSpeed: (speed) => set({ animationSpeed: speed }),
-        
-        // Computed
-        getAnimationDuration: () => {
-          const { animationSpeed, enableAnimations } = get()
-          
-          if (!enableAnimations) return 0
-          
-          switch (animationSpeed) {
-            case 'slow': return 500
-            case 'fast': return 150
-            default: return 300
-          }
-        }
+        setFontSize: (size) => set({ fontSize: size })
       }),
       {
         name: 'ui-storage',
@@ -91,9 +63,7 @@ export const useUIStore = create<UIState>()(
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
           compactMode: state.compactMode,
-          fontSize: state.fontSize,
-          enableAnimations: state.enableAnimations,
-          animationSpeed: state.animationSpeed
+          fontSize: state.fontSize
         })
       }
     ),

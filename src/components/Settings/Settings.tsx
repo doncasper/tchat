@@ -25,14 +25,10 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
     showBadges,
     compactMode,
     fontSize,
-    enableAnimations,
-    animationSpeed,
     setShowTimestamps,
     setShowBadges,
     setCompactMode,
-    setFontSize,
-    setEnableAnimations,
-    setAnimationSpeed
+    setFontSize
   } = useUIStore()
 
   const {
@@ -175,32 +171,6 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             </div>
           </section>
 
-          {/* Animation Settings */}
-          <section className={styles.settingsSection}>
-            <h3>Animations</h3>
-            <div className={styles.settingGroup}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={enableAnimations}
-                  onChange={(e) => setEnableAnimations(e.target.checked)}
-                />
-                Enable animations
-              </label>
-            </div>
-            <div className={styles.settingGroup}>
-              <label>Animation speed:</label>
-              <select
-                value={animationSpeed}
-                onChange={(e) => setAnimationSpeed(e.target.value as 'slow' | 'normal' | 'fast')}
-                disabled={!enableAnimations}
-              >
-                <option value="slow">Slow</option>
-                <option value="normal">Normal</option>
-                <option value="fast">Fast</option>
-              </select>
-            </div>
-          </section>
         </div>
       </div>
     </div>
