@@ -34,6 +34,7 @@ export interface ChatProps {
 export interface HeaderProps {
   streamTitle: string
   viewerCount: number
+  connectionStatus: string
   onSettingsClick: () => void
   onThemeSwitch: (theme: string) => void
   currentTheme: string

@@ -88,6 +88,7 @@ function ChatApp() {
   const headerProps = {
     streamTitle: `${currentChannel}'s Chat`,
     viewerCount: messages.length,
+    connectionStatus,
     onSettingsClick: handleSettingsClick,
     onThemeSwitch: handleThemeSwitch,
     currentTheme: currentThemeName,
@@ -105,15 +106,6 @@ function ChatApp() {
   return (
     <div className="chat-app">
       <HeaderComponent {...headerProps} />
-      <div className="connection-status-bar" style={{
-        padding: '8px 16px',
-        backgroundColor: connectionStatus.includes('Connected') ? '#00b300' : '#ff4444',
-        color: 'white',
-        fontSize: '14px',
-        textAlign: 'center'
-      }}>
-        {connectionStatus}
-      </div>
       <ChatComponent {...chatProps} />
       <Settings 
         isOpen={isSettingsOpen} 

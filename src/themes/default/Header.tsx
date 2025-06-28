@@ -6,11 +6,13 @@ import styles from './Header.module.css'
 
 const Header: ThemeComponent = {
   render: (props: HeaderProps): ReactNode => {
-    const { streamTitle, viewerCount, onSettingsClick, onThemeSwitch, currentTheme, availableThemes } = props
+    const { streamTitle, viewerCount, connectionStatus, onSettingsClick, onThemeSwitch, currentTheme, availableThemes } = props
     
     const formatThemeName = (themeName: string): string => {
       return themeName.charAt(0).toUpperCase() + themeName.slice(1)
     }
+    
+    const isConnected = connectionStatus.includes('Connected')
     
     return (
       <header className={styles.chatHeader}>
@@ -18,7 +20,16 @@ const Header: ThemeComponent = {
           <div className={styles.streamInfo}>
             <h1>{streamTitle}</h1>
             <div className={styles.streamStatus}>
-              <span className={styles.liveIndicator}>● LIVE</span>
+              <span 
+                className={styles.liveIndicator}
+                style={{
+                  color: isConnected ? '#e74c3c' : '#95a5a6',
+                  cursor: 'help'
+                }}
+                title={connectionStatus}
+              >
+                ● {isConnected ? 'LIVE' : 'OFFLINE'}
+              </span>
               <span className={styles.viewerCount}>{viewerCount.toLocaleString()} viewers</span>
             </div>
           </div>
