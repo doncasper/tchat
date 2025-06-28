@@ -3,7 +3,6 @@ import { useChatStore } from './store/chatStore'
 import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
 import { useThemeInitializer } from './store/useThemeInitializer'
-import { useAnimationStyles } from './hooks/useAnimationStyles'
 import { useTwitchChat } from './hooks/useTwitchChat'
 import { Settings } from './components/Settings/Settings'
 import './App.css'
@@ -16,9 +15,6 @@ function ChatApp() {
   
   // Initialize theme
   useThemeInitializer()
-  
-  // Initialize animations
-  useAnimationStyles()
   
   // Zustand stores
   const {

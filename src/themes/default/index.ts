@@ -10,7 +10,7 @@ import './Header.module.css'
 import './Chat.module.css'
 import './Message.module.css'
 import './Notification.module.css'
-import animations from './animations.module.css'
+import './animations.module.css'
 
 const DefaultTheme: Theme = {
   name: 'default',
@@ -18,10 +18,7 @@ const DefaultTheme: Theme = {
   Chat,
   Message,
   Notification,
-  globalStyles: ``,
-  
-  // Use CSS module for animations
-  animationModule: animations
+  globalStyles: ``
 }
 
 // Self-register the theme
