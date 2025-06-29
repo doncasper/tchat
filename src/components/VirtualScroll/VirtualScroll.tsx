@@ -98,7 +98,7 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     return offset
   }, [messages, visibleRange.start, averageItemHeight])
 
-  // Items to render
+  // Items to render (normal order for bottom display)
   const visibleItems = useMemo(() => {
     return messages.slice(visibleRange.start, visibleRange.end)
   }, [messages, visibleRange])
@@ -109,15 +109,15 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     const newScrollTop = target.scrollTop
     setScrollTop(newScrollTop)
 
-    // Check if at bottom
-    const isAtBottom = Math.abs(target.scrollHeight - target.scrollTop - target.clientHeight) < 10
+    // For flex-column-reverse, "bottom" is when scrollTop is near 0
+    const isAtBottom = newScrollTop < 10
     onScroll?.(isAtBottom)
   }, [onScroll])
 
-  // Scroll to bottom function
+  // Scroll to bottom function (for flex-column-reverse, bottom is scrollTop = 0)
   const scrollToBottom = useCallback(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+      scrollAreaRef.current.scrollTop = 0
     }
   }, [])
 
@@ -190,7 +190,6 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
         <div 
           ref={containerRef}
           className={styles.visibleArea}
-          style={{ transform: `translateY(${offsetY}px)` }}
         >
           {visibleItems.map((message, index) => (
             <div 
