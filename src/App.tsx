@@ -59,6 +59,7 @@ function ChatApp() {
 
   const {
     isSettingsOpen,
+    borderRadius,
     toggleSettings
   } = useUIStore()
 
@@ -158,7 +159,7 @@ function ChatApp() {
   }
 
   return (
-    <div className="chat-app">
+    <div className="chat-app" style={{ borderRadius: `${borderRadius}px`, overflow: 'hidden' }}>
       <HeaderComponent {...headerProps} />
       <ChatComponent {...chatProps} />
       <Settings 

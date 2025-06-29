@@ -11,6 +11,7 @@ interface UIState {
   showTimestamps: boolean
   showBadges: boolean
   fontSizeMultiplier: number
+  borderRadius: number
   
   // Actions
   toggleSettings: () => void
@@ -19,6 +20,7 @@ interface UIState {
   setShowTimestamps: (show: boolean) => void
   setShowBadges: (show: boolean) => void
   setFontSizeMultiplier: (multiplier: number) => void
+  setBorderRadius: (radius: number) => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -32,6 +34,7 @@ export const useUIStore = create<UIState>()(
         showTimestamps: true,
         showBadges: true,
         fontSizeMultiplier: 1,
+        borderRadius: 0,
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -50,14 +53,17 @@ export const useUIStore = create<UIState>()(
         
         setShowBadges: (show) => set({ showBadges: show }),
         
-        setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier })
+        setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier }),
+        
+        setBorderRadius: (radius) => set({ borderRadius: radius })
       }),
       {
         name: 'ui-storage',
         partialize: (state) => ({
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
-          fontSizeMultiplier: state.fontSizeMultiplier
+          fontSizeMultiplier: state.fontSizeMultiplier,
+          borderRadius: state.borderRadius
         })
       }
     ),

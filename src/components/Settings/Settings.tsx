@@ -27,9 +27,11 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     showTimestamps,
     showBadges,
     fontSizeMultiplier,
+    borderRadius,
     setShowTimestamps,
     setShowBadges,
-    setFontSizeMultiplier
+    setFontSizeMultiplier,
+    setBorderRadius
   } = useUIStore()
 
   const {
@@ -231,6 +233,34 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   <span>100%</span>
                   <span>150%</span>
                   <span>200%</span>
+                </div>
+              </div>
+            </div>
+            <div className={`${styles.settingGroup} ${styles.fontSizeSection}`}>
+              <div className={styles.fontSizeHeader}>
+                <label>
+                  Border radius:
+                  <span className={styles.tooltip}>
+                    <span className={styles.tooltipIcon}>ⓘ</span>
+                    <span className={styles.tooltipText}>Rounded corners for the chat container</span>
+                  </span>
+                </label>
+                <span className={styles.fontSizeValue}>{borderRadius}px</span>
+              </div>
+              <div className={styles.sliderContainer}>
+                <input
+                  type="range"
+                  min="0"
+                  max="30"
+                  step="1"
+                  value={borderRadius}
+                  onChange={(e) => setBorderRadius(Number(e.target.value))}
+                  className={styles.slider}
+                />
+                <div className={styles.sliderLabels}>
+                  <span>0px</span>
+                  <span>15px</span>
+                  <span>30px</span>
                 </div>
               </div>
             </div>
