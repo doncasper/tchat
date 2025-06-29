@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TChat is a modern, themeable Twitch chat viewer application built with React 19, TypeScript, and Zustand state management. The app connects to Twitch IRC WebSocket to display real-time chat messages with support for multiple themes, animations, and comprehensive customization options.
+TChat is a modern, themeable Twitch chat viewer application built with React 19, TypeScript, and Zustand state management. The app connects to Twitch IRC WebSocket to display real-time chat messages with full Twitch emote support, virtual scrolling performance optimization, comprehensive settings, and complete theme customization capabilities.
 
 ## Development Commands
 
@@ -43,11 +43,11 @@ npm run preview
 
 ### State Management (Zustand Stores)
 
-- **chatStore** (`src/store/chatStore.ts`): Messages, auto-scroll, connection status, channel management
-- **themeStore** (`src/store/themeStore.ts`): Current theme, available themes, theme switching
-- **uiStore** (`src/store/uiStore.ts`): Display preferences, animations, font size, compact mode
+- **chatStore** (`src/store/chatStore.ts`): Messages with duplicate detection, connection status, channel management, message limits
+- **themeStore** (`src/store/themeStore.ts`): Dynamic theme registration, available themes, theme switching with fallbacks
+- **uiStore** (`src/store/uiStore.ts`): Display preferences (timestamps, badges, header, background), font size, border radius
 
-All stores persist to localStorage automatically.
+All stores persist relevant settings to localStorage automatically with selective persistence strategies.
 
 ### Theme System Architecture
 
@@ -63,35 +63,44 @@ Themes are auto-discovered via Vite's glob imports and self-register with `Theme
 
 The `TwitchWebSocket` class handles:
 - Anonymous connection to Twitch IRC
-- Message parsing (PRIVMSG, USERNOTICE)
-- User type detection from badges
+- Advanced IRC message parsing (PRIVMSG, USERNOTICE) with full tag support
+- **Twitch Emote Parsing**: Complete emote position tracking and rendering data
+- User type detection from comprehensive badge system
 - Automatic reconnection with exponential backoff
 - Channel switching without reconnection
+- Color management with user color caching and auto-generation
+- Support for notifications: subs, raids, gifts, bits, and special events
 
 ### Component Structure
 
 ```
 src/
-├── App.tsx                    # Main application orchestrator
+├── App.tsx                    # Main application with URL params, keyboard shortcuts (Ctrl+M)
 ├── components/
-│   ├── Settings/             # Settings modal
-│   └── VirtualScroll/        # Virtual scrolling for performance
-│       ├── VirtualScroll.tsx      # Core windowing implementation
-│       └── VirtualChatWrapper.tsx # Theme-friendly wrapper
+│   ├── EmoteRenderer/         # Twitch emote rendering with fallback handling
+│   ├── Settings/              # Comprehensive settings modal with tooltips and sliders
+│   └── VirtualScroll/         # Virtual scrolling for performance optimization
+│       ├── VirtualScroll.tsx      # Core windowing with ResizeObserver
+│       └── VirtualChatWrapper.tsx # Theme-friendly wrapper with auto-scroll
 ├── hooks/
-│   ├── useTwitchChat.ts      # WebSocket connection hook
-│   └── useAnimationStyles.ts # Dynamic animation styles
-├── store/                    # Zustand state stores
-├── themes/                   # Theme implementations
-│   ├── ThemeFactory.ts       # Theme registration system
-│   ├── ThemeInterface.ts     # Type definitions
-│   ├── default/              # Default theme
-│   ├── minimal/              # Minimal theme
-│   └── tako/                 # Tako theme with animations
+│   ├── useTwitchChat.ts       # WebSocket singleton manager
+│   └── useQueryParams.ts      # URL parameter handling (legacy)
+├── store/                     # Zustand state stores with persistence
+│   ├── chatStore.ts           # Messages, connection, duplicate detection
+│   ├── themeStore.ts          # Dynamic theme management with fallbacks
+│   ├── uiStore.ts             # Display preferences and UI state
+│   └── useThemeInitializer.ts # Theme initialization hook
+├── themes/                    # Theme implementations
+│   ├── ThemeFactory.ts        # Dynamic theme registration system
+│   ├── ThemeInterface.ts      # Comprehensive type definitions
+│   ├── default/               # Default theme with gradient backgrounds
+│   └── tako/                  # Tako animated theme with custom graphics
 ├── services/
-│   └── twitchWebSocket.ts    # WebSocket client implementation
-└── types/
-    └── ChatTypes.ts          # Core data types
+│   └── twitchWebSocket.ts     # Enhanced WebSocket client with emote parsing
+├── types/
+│   └── ChatTypes.ts           # Core data types with TwitchEmote interface
+└── utils/
+    └── urlParams.ts           # URL parameter parsing and updating utilities
 ```
 
 ## Development Guidelines
@@ -105,10 +114,12 @@ src/
 
 ### Working with WebSocket Data
 
-- Messages arrive as parsed `ChatDataItem` objects
-- User types are derived from Twitch badges
+- Messages arrive as parsed `ChatDataItem` objects with optional `emotes` array
+- **Emote Data**: Each emote includes `id`, `name`, `start`, and `end` positions
+- User types are derived from comprehensive Twitch badge system
 - Connection status updates are handled automatically
 - Channel switching clears existing messages
+- Duplicate detection prevents identical messages within 1 second
 
 ### Animation System
 
@@ -136,7 +147,8 @@ src/
 
 - Use provided Zustand hooks: `useChatStore`, `useThemeStore`, `useUIStore`
 - Store updates trigger React re-renders automatically
-- Persist sensitive settings in localStorage
+- Selective persistence: only relevant settings saved to localStorage
+- Cross-store communication via React hooks and computed selectors
 
 ### Message Types and User Classifications
 
@@ -162,10 +174,49 @@ src/
 - CSS Modules: `ComponentName.module.css`
 - Types: PascalCase with `Types` suffix (e.g., `ChatTypes.ts`)
 
+## Key Features
+
+### Twitch Emote Support
+- **Complete Integration**: Parses emote positions from Twitch IRC tags
+- **EmoteRenderer Component**: Handles emote display with lazy loading and error fallback
+- **CDN Integration**: Uses Twitch CDN with size 3.0 (large emotes) for optimal visibility
+- **Performance**: Efficient rendering without empty spans or unnecessary DOM nodes
+
+### Comprehensive Settings System
+- **Display Controls**: Toggle timestamps, badges, header, background visibility
+- **Appearance**: Font size (1.0-2.0x), border radius (0-30px) with sliders
+- **URL Parameters**: All settings configurable via query string
+- **Keyboard Shortcuts**: `Ctrl+M` (or `Cmd+M`) opens settings modal
+- **Tooltips**: Helpful information for each setting
+
+### Advanced Theme System
+- **Current Themes**: Default (professional) and Tako (animated with custom graphics)
+- **Dynamic Registration**: Themes self-register via ThemeFactory
+- **Background Control**: Themes respect `showBackground` setting for overlay compatibility
+- **Component Interface**: Header, Chat, Message, Notification components required
+
+### Performance Optimizations
+- **Virtual Scrolling**: Handles thousands of messages without performance degradation
+- **Duplicate Detection**: Prevents identical messages within 1-second window
+- **Memory Management**: Automatic message limit enforcement
+- **Efficient Rendering**: Only visible messages rendered to DOM
+
+## URL Parameter Support
+
+All settings can be configured via URL parameters:
+- `ch=channelname` - Set channel
+- `th=themename` - Set theme
+- `ts=0` - Disable timestamps
+- `bd=0` - Disable badges
+- `fs=1.5` - Set font size multiplier
+- `md=1000` - Set message delay (ms)
+- `mm=150` - Set max messages
+
 ## WebSocket Connection Details
 
 - Connects to `wss://irc-ws.chat.twitch.tv:443`
 - Uses anonymous authentication (`justinfan` + random number)
 - Handles PING/PONG automatically
-- Parses IRC tags for user metadata
+- **Enhanced Parsing**: Complete IRC tags for user metadata and emotes
 - Supports channel switching without reconnection
+- **Singleton Pattern**: Single connection shared across all components
