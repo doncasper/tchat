@@ -86,18 +86,6 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     return { start, end }
   }, [messages, scrollTop, containerHeight, bufferSize, overscan, averageItemHeight])
 
-  // Calculate offset for visible items
-  const offsetY = useMemo(() => {
-    let offset = 0
-    for (let i = 0; i < visibleRange.start; i++) {
-      const message = messages[i]
-      if (message) {
-        offset += itemHeights.current.get(message.id) || averageItemHeight
-      }
-    }
-    return offset
-  }, [messages, visibleRange.start, averageItemHeight])
-
   // Items to render (normal order for bottom display)
   const visibleItems = useMemo(() => {
     return messages.slice(visibleRange.start, visibleRange.end)
