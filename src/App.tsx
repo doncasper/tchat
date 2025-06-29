@@ -74,6 +74,32 @@ function ChatApp() {
     }
   }, [messages])
 
+  // Add keyboard shortcut for settings modal (Ctrl+M)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'm') {
+        // Prevent default browser behavior
+        event.preventDefault()
+        // Don't trigger if user is typing in an input/textarea
+        const activeElement = document.activeElement
+        if (activeElement && (
+          activeElement.tagName === 'INPUT' || 
+          activeElement.tagName === 'TEXTAREA' || 
+          activeElement.getAttribute('contenteditable') === 'true'
+        )) {
+          return
+        }
+        toggleSettings()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [toggleSettings])
+
 
   const getBadgeText = (badge: string) => {
     switch (badge) {
