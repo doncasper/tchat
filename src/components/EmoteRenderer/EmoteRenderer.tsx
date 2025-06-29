@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import type { TwitchEmote } from '../../types/ChatTypes'
-import { useUIStore } from '../../store/uiStore'
 import styles from './EmoteRenderer.module.css'
 
 interface EmoteRendererProps {
@@ -12,9 +11,8 @@ export const EmoteRenderer: React.FC<EmoteRendererProps> = ({
   text, 
   emotes = []
 }) => {
-  const { showEmotes, emoteSize } = useUIStore()
   const segments = useMemo(() => {
-    if (!showEmotes || !emotes || emotes.length === 0) {
+    if (!emotes || emotes.length === 0) {
       return [{ type: 'text' as const, content: text }]
     }
 
@@ -52,7 +50,7 @@ export const EmoteRenderer: React.FC<EmoteRendererProps> = ({
     }
 
     return result
-  }, [text, emotes, showEmotes])
+  }, [text, emotes])
 
   return (
     <span className={styles.messageText}>
@@ -62,7 +60,7 @@ export const EmoteRenderer: React.FC<EmoteRendererProps> = ({
         }
 
         if (segment.type === 'emote' && segment.emote) {
-          const emoteUrl = `https://static-cdn.jtvnw.net/emoticons/v2/${segment.emote.id}/default/dark/${emoteSize}`
+          const emoteUrl = `https://static-cdn.jtvnw.net/emoticons/v2/${segment.emote.id}/default/dark/3.0`
           
           return (
             <img
