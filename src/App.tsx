@@ -26,9 +26,6 @@ function ChatApp() {
     if (urlSettings.theme) {
       useThemeStore.getState().switchTheme(urlSettings.theme)
     }
-    if (urlSettings.autoScroll !== null) {
-      useChatStore.getState().setAutoScroll(urlSettings.autoScroll)
-    }
     if (urlSettings.showTimestamps !== null) {
       useUIStore.getState().setShowTimestamps(urlSettings.showTimestamps)
     }
@@ -49,7 +46,6 @@ function ChatApp() {
   // Zustand stores
   const {
     messages,
-    autoScroll,
     connectionStatus,
     currentChannel,
   } = useChatStore()
@@ -73,10 +69,10 @@ function ChatApp() {
   })
 
   useEffect(() => {
-    if (autoScroll && messagesEndRef.current) {
+    if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }, [messages, autoScroll])
+  }, [messages])
 
 
   const getBadgeText = (badge: string) => {

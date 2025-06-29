@@ -7,7 +7,6 @@ import { useThemeStore } from '../store/themeStore'
 // const PARAM_MAPPING = {
 //   ch: 'channel',
 //   th: 'theme',
-//   as: 'autoScroll',
 //   ts: 'showTimestamps',
 //   bd: 'showBadges',
 //   fs: 'fontSizeMultiplier',
@@ -37,11 +36,6 @@ export const useQueryParams = () => {
     }
 
     // Boolean settings
-    const autoScroll = params.get('as')
-    if (autoScroll !== null) {
-      chatStore.setAutoScroll(autoScroll === '1')
-    }
-
     const showTimestamps = params.get('ts')
     if (showTimestamps !== null) {
       uiStore.setShowTimestamps(showTimestamps === '1')
@@ -89,9 +83,6 @@ export const useQueryParams = () => {
     if (themeStore.currentThemeName !== 'default') {
       params.set('th', themeStore.currentThemeName)
     }
-    if (!chatStore.autoScroll) {
-      params.set('as', '0')
-    }
     if (!uiStore.showTimestamps) {
       params.set('ts', '0')
     }
@@ -115,7 +106,6 @@ export const useQueryParams = () => {
     window.history.replaceState({}, '', newURL)
   }, [
     chatStore.currentChannel,
-    chatStore.autoScroll,
     chatStore.messageDelay,
     chatStore.maxMessages,
     themeStore.currentThemeName,

@@ -17,7 +17,6 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
   renderMessage,
   renderNotification
 }) => {
-  const { autoScroll } = useChatStore()
   const { fontSizeMultiplier } = useUIStore()
   const scrollToBottomRef = useRef<() => void>(() => {})
   const isUserScrolling = useRef(false)
@@ -56,9 +55,9 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
     }
   }, [])
 
-  // Auto-scroll effect
+  // Auto-scroll effect (always enabled)
   useEffect(() => {
-    if (autoScroll && !isUserScrolling.current && messages.length > 0) {
+    if (!isUserScrolling.current && messages.length > 0) {
       // Small delay to ensure DOM is updated
       const timeoutId = setTimeout(() => {
         scrollToBottomRef.current?.()
@@ -71,7 +70,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
 
       return () => clearTimeout(timeoutId)
     }
-  }, [messages, autoScroll, messagesEndRef])
+  }, [messages, messagesEndRef])
 
   // Cleanup on unmount
   useEffect(() => {

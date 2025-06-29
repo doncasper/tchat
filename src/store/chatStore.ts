@@ -14,7 +14,6 @@ interface ChatState {
   currentChannel: string
   
   // Chat settings
-  autoScroll: boolean
   messageDelay: number
   maxMessages: number
   
@@ -27,7 +26,6 @@ interface ChatState {
   setError: (error: string | null) => void
   setConnectionStatus: (status: string) => void
   setCurrentChannel: (channel: string) => void
-  setAutoScroll: (autoScroll: boolean) => void
   setMessageDelay: (delay: number) => void
   setMaxMessages: (max: number) => void
   
@@ -48,7 +46,6 @@ export const useChatStore = create<ChatState>()(
         error: null,
         connectionStatus: 'Disconnected',
         currentChannel: 'takotoken',
-        autoScroll: true,
         messageDelay: 1000,
         maxMessages: 1000,
         
@@ -100,8 +97,6 @@ export const useChatStore = create<ChatState>()(
         
         setCurrentChannel: (channel) => set({ currentChannel: channel }),
         
-        setAutoScroll: (autoScroll) => set({ autoScroll }),
-        
         setMessageDelay: (delay) => set({ messageDelay: delay }),
         
         setMaxMessages: (max) => set({ maxMessages: max }),
@@ -125,7 +120,6 @@ export const useChatStore = create<ChatState>()(
       {
         name: 'chat-storage',
         partialize: (state) => ({
-          autoScroll: state.autoScroll,
           messageDelay: state.messageDelay,
           maxMessages: state.maxMessages,
           currentChannel: state.currentChannel

@@ -14,11 +14,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
   const [channelInput, setChannelInput] = useState('')
   const [showChannelInput, setShowChannelInput] = useState(false)
   const {
-    autoScroll,
     messageDelay,
     maxMessages,
     currentChannel,
-    setAutoScroll,
     setMessageDelay,
     setMaxMessages,
     setCurrentChannel,
@@ -69,7 +67,13 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
           <section className={styles.settingsSection}>
             <h3>Theme</h3>
             <div className={styles.settingGroup}>
-              <label>Theme:</label>
+              <label>
+                Theme:
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Query param: ?th=themename</span>
+                </span>
+              </label>
               <select
                 value={currentThemeName}
                 onChange={(e) => switchTheme(e.target.value)}
@@ -85,7 +89,13 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
 
           {/* Channel Settings */}
           <section className={styles.settingsSection}>
-            <h3>Channel: <strong>{currentChannel}</strong></h3>
+            <h3>
+              Channel: <strong>{currentChannel}</strong>
+              <span className={styles.tooltip}>
+                <span className={styles.tooltipIcon}>ⓘ</span>
+                <span className={styles.tooltipText}>Query param: ?ch=channelname</span>
+              </span>
+            </h3>
             <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
               {showChannelInput ? (
                 <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '8px', marginTop: '8px', width: '100%' }}>
@@ -131,16 +141,12 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
             <h3>Chat</h3>
             <div className={styles.settingGroup}>
               <label>
-                <input
-                  type="checkbox"
-                  checked={autoScroll}
-                  onChange={(e) => setAutoScroll(e.target.checked)}
-                />
-                Auto-scroll to bottom
+                Message delay (ms):
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Query param: ?md=1000</span>
+                </span>
               </label>
-            </div>
-            <div className={styles.settingGroup}>
-              <label>Message delay (ms):</label>
               <input
                 type="number"
                 min="0"
@@ -151,7 +157,13 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
               />
             </div>
             <div className={styles.settingGroup}>
-              <label>Max messages:</label>
+              <label>
+                Max messages:
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Query param: ?mm=150</span>
+                </span>
+              </label>
               <input
                 type="number"
                 min="1"
@@ -182,6 +194,10 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   onChange={(e) => setShowTimestamps(e.target.checked)}
                 />
                 Show timestamps
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Query param: ?ts=0 (to disable)</span>
+                </span>
               </label>
             </div>
             <div className={styles.settingGroup}>
@@ -192,11 +208,21 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   onChange={(e) => setShowBadges(e.target.checked)}
                 />
                 Show badges
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Query param: ?bd=0 (to disable)</span>
+                </span>
               </label>
             </div>
             <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                <label>Font size:</label>
+                <label>
+                  Font size:
+                  <span className={styles.tooltip}>
+                    <span className={styles.tooltipIcon}>ⓘ</span>
+                    <span className={styles.tooltipText}>Query param: ?fs=1.25</span>
+                  </span>
+                </label>
                 <span style={{ fontWeight: '600' }}>{Math.round(fontSizeMultiplier * 100)}%</span>
               </div>
               <div style={{ width: '100%' }}>

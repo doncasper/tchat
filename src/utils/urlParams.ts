@@ -6,7 +6,6 @@ export const readSettingsFromURL = () => {
   return {
     channel: params.get('ch'),
     theme: params.get('th'),
-    autoScroll: params.get('as') !== null ? params.get('as') === '1' : null,
     showTimestamps: params.get('ts') !== null ? params.get('ts') === '1' : null,
     showBadges: params.get('bd') !== null ? params.get('bd') === '1' : null,
     fontSizeMultiplier: params.get('fs') ? parseFloat(params.get('fs')!) : null,
@@ -18,7 +17,6 @@ export const readSettingsFromURL = () => {
 export const updateURLWithSettings = (settings: {
   channel?: string
   theme?: string
-  autoScroll?: boolean
   showTimestamps?: boolean
   showBadges?: boolean
   fontSizeMultiplier?: number
@@ -33,9 +31,6 @@ export const updateURLWithSettings = (settings: {
   }
   if (settings.theme && settings.theme !== 'default') {
     params.set('th', settings.theme)
-  }
-  if (settings.autoScroll === false) {
-    params.set('as', '0')
   }
   if (settings.showTimestamps === false) {
     params.set('ts', '0')
