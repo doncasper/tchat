@@ -60,6 +60,8 @@ function ChatApp() {
   const {
     isSettingsOpen,
     borderRadius,
+    showHeader,
+    showBackground,
     toggleSettings
   } = useUIStore()
 
@@ -159,8 +161,15 @@ function ChatApp() {
   }
 
   return (
-    <div className="chat-app" style={{ borderRadius: `${borderRadius}px`, overflow: 'hidden' }}>
-      <HeaderComponent {...headerProps} />
+    <div 
+      className="chat-app" 
+      style={{ 
+        borderRadius: `${borderRadius}px`, 
+        overflow: 'hidden',
+        background: showBackground ? undefined : 'transparent'
+      }}
+    >
+      {showHeader && <HeaderComponent {...headerProps} />}
       <ChatComponent {...chatProps} />
       <Settings 
         isOpen={isSettingsOpen} 

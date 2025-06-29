@@ -12,6 +12,8 @@ interface UIState {
   showBadges: boolean
   fontSizeMultiplier: number
   borderRadius: number
+  showHeader: boolean
+  showBackground: boolean
   
   // Actions
   toggleSettings: () => void
@@ -21,6 +23,8 @@ interface UIState {
   setShowBadges: (show: boolean) => void
   setFontSizeMultiplier: (multiplier: number) => void
   setBorderRadius: (radius: number) => void
+  setShowHeader: (show: boolean) => void
+  setShowBackground: (show: boolean) => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -35,6 +39,8 @@ export const useUIStore = create<UIState>()(
         showBadges: true,
         fontSizeMultiplier: 1,
         borderRadius: 0,
+        showHeader: true,
+        showBackground: true,
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -55,7 +61,11 @@ export const useUIStore = create<UIState>()(
         
         setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier }),
         
-        setBorderRadius: (radius) => set({ borderRadius: radius })
+        setBorderRadius: (radius) => set({ borderRadius: radius }),
+        
+        setShowHeader: (show) => set({ showHeader: show }),
+        
+        setShowBackground: (show) => set({ showBackground: show })
       }),
       {
         name: 'ui-storage',
@@ -63,7 +73,9 @@ export const useUIStore = create<UIState>()(
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
           fontSizeMultiplier: state.fontSizeMultiplier,
-          borderRadius: state.borderRadius
+          borderRadius: state.borderRadius,
+          showHeader: state.showHeader,
+          showBackground: state.showBackground
         })
       }
     ),

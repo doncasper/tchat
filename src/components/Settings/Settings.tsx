@@ -28,10 +28,14 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     showBadges,
     fontSizeMultiplier,
     borderRadius,
+    showHeader,
+    showBackground,
     setShowTimestamps,
     setShowBadges,
     setFontSizeMultiplier,
-    setBorderRadius
+    setBorderRadius,
+    setShowHeader,
+    setShowBackground
   } = useUIStore()
 
   const {
@@ -205,6 +209,34 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
                   <span className={styles.tooltipText}>Query param: ?bd=0 (to disable)</span>
+                </span>
+              </label>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showHeader}
+                  onChange={(e) => setShowHeader(e.target.checked)}
+                />
+                Show header
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Toggle chat header visibility</span>
+                </span>
+              </label>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showBackground}
+                  onChange={(e) => setShowBackground(e.target.checked)}
+                />
+                Show background
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Toggle chat background visibility</span>
                 </span>
               </label>
             </div>
