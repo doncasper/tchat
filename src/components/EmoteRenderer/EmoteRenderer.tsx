@@ -23,7 +23,7 @@ export const EmoteRenderer: React.FC<EmoteRendererProps> = ({
     const sortedEmotes = [...emotes].sort((a, b) => a.start - b.start)
 
     for (const emote of sortedEmotes) {
-      // Add text before emote
+      // Add text before emote (preserve spaces but avoid empty content)
       if (emote.start > lastIndex) {
         const textContent = text.substring(lastIndex, emote.start)
         if (textContent) {
@@ -56,7 +56,7 @@ export const EmoteRenderer: React.FC<EmoteRendererProps> = ({
     <span className={styles.messageText}>
       {segments.map((segment, index) => {
         if (segment.type === 'text') {
-          return <span key={index}>{segment.content}</span>
+          return segment.content
         }
 
         if (segment.type === 'emote' && segment.emote) {

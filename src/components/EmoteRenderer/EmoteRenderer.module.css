@@ -6,10 +6,9 @@
 
 .emote {
   display: inline-block;
-  height: 1.8em;
+  height: 1.9em;
   width: auto;
   vertical-align: middle;
-  margin: 0 0.1em;
   object-fit: contain;
 }
 
