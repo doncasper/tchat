@@ -46,8 +46,8 @@ export const useChatStore = create<ChatState>()(
         error: null,
         connectionStatus: 'Disconnected',
         currentChannel: 'takotoken',
-        messageDelay: 1000,
-        maxMessages: 1000,
+        messageDelay: 5000,
+        maxMessages: 15,
         
         // Actions
         addMessage: (message) => set((state) => {

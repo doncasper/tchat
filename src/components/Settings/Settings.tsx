@@ -61,8 +61,49 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
             ✕
           </button>
         </div>
-
         <div className={styles.settingsContent}>
+          {/* Channel Settings */}
+          <section className={styles.settingsSection}>
+            <h3>
+              Channel: <strong>{currentChannel}</strong>
+              <span className={styles.tooltip}>
+                <span className={styles.tooltipIcon}>ⓘ</span>
+                <span className={styles.tooltipText}>Query param: ?ch=channelname</span>
+              </span>
+            </h3>
+            <div className={`${styles.settingGroup} ${styles.settingGroupColumn}`}>
+              {showChannelInput ? (
+                <form onSubmit={handleChannelSubmit} className={styles.channelForm}>
+                  <input
+                    type="text"
+                    value={channelInput}
+                    onChange={(e) => setChannelInput(e.target.value)}
+                    placeholder="Channel name"
+                    className={styles.channelInput}
+                    autoFocus
+                  />
+                  <button type="submit" className={styles.primaryButton}>
+                    Join
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowChannelInput(false)} 
+                    className={styles.secondaryButton}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              ) : (
+                <button 
+                  onClick={() => setShowChannelInput(true)} 
+                  className={`${styles.primaryButton} ${styles.changeChannelButton}`}
+                >
+                  Change Channel
+                </button>
+              )}
+            </div>
+          </section>
+
           {/* Theme Settings */}
           <section className={styles.settingsSection}>
             <h3>Theme</h3>
@@ -84,55 +125,6 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   </option>
                 ))}
               </select>
-            </div>
-          </section>
-
-          {/* Channel Settings */}
-          <section className={styles.settingsSection}>
-            <h3>
-              Channel: <strong>{currentChannel}</strong>
-              <span className={styles.tooltip}>
-                <span className={styles.tooltipIcon}>ⓘ</span>
-                <span className={styles.tooltipText}>Query param: ?ch=channelname</span>
-              </span>
-            </h3>
-            <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              {showChannelInput ? (
-                <form onSubmit={handleChannelSubmit} style={{ display: 'flex', gap: '8px', marginTop: '8px', width: '100%' }}>
-                  <input
-                    type="text"
-                    value={channelInput}
-                    onChange={(e) => setChannelInput(e.target.value)}
-                    placeholder="Channel name"
-                    style={{
-                      flex: 1,
-                      padding: '8px',
-                      borderRadius: '4px',
-                      border: '1px solid #ccc',
-                      fontSize: '14px'
-                    }}
-                    autoFocus
-                  />
-                  <button type="submit" className={styles.primaryButton}>
-                    Join
-                  </button>
-                  <button 
-                    type="button" 
-                    onClick={() => setShowChannelInput(false)} 
-                    className={styles.secondaryButton}
-                  >
-                    Cancel
-                  </button>
-                </form>
-              ) : (
-                <button 
-                  onClick={() => setShowChannelInput(true)} 
-                  className={styles.primaryButton}
-                  style={{ marginTop: '8px' }}
-                >
-                  Change Channel
-                </button>
-              )}
             </div>
           </section>
 
@@ -214,8 +206,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 </span>
               </label>
             </div>
-            <div className={styles.settingGroup} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div className={`${styles.settingGroup} ${styles.fontSizeSection}`}>
+              <div className={styles.fontSizeHeader}>
                 <label>
                   Font size:
                   <span className={styles.tooltip}>
@@ -223,9 +215,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                     <span className={styles.tooltipText}>Query param: ?fs=1.25</span>
                   </span>
                 </label>
-                <span style={{ fontWeight: '600' }}>{Math.round(fontSizeMultiplier * 100)}%</span>
+                <span className={styles.fontSizeValue}>{Math.round(fontSizeMultiplier * 100)}%</span>
               </div>
-              <div style={{ width: '100%' }}>
+              <div className={styles.sliderContainer}>
                 <input
                   type="range"
                   min="1"
@@ -234,9 +226,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   value={fontSizeMultiplier}
                   onChange={(e) => setFontSizeMultiplier(Number(e.target.value))}
                   className={styles.slider}
-                  style={{ width: '100%' }}
                 />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>
+                <div className={styles.sliderLabels}>
                   <span>100%</span>
                   <span>150%</span>
                   <span>200%</span>

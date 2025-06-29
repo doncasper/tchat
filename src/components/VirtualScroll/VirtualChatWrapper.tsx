@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useEffect } from 'react'
 import type { ChatDataItem } from '../../types/ChatTypes'
 import { VirtualScroll } from './VirtualScroll'
-import { useChatStore } from '../../store/chatStore'
 import { useUIStore } from '../../store/uiStore'
 
 interface VirtualChatWrapperProps {
