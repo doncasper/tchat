@@ -1,0 +1,20 @@
+.messageText {
+  color: inherit;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.emote {
+  display: inline-block;
+  height: 1.5em;
+  width: auto;
+  vertical-align: middle;
+  margin: 0 0.1em;
+  object-fit: contain;
+}
+
+/* Prevent layout shift while emotes are loading */
+.emote[loading="lazy"] {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}

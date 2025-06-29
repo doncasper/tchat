@@ -1,4 +1,4 @@
-import type { ChatDataItem } from '../types/ChatTypes'
+import type { ChatDataItem, TwitchEmote } from '../types/ChatTypes'
 
 
 interface TwitchTags {
@@ -159,6 +159,9 @@ export class TwitchWebSocket {
       this.config.onMessage(bitMessage)
     }
 
+    // Parse emotes from tags
+    const emotes = this.parseEmotes(tags.emotes, message)
+
     // Regular message
     const chatMessage: ChatDataItem = {
       id: `${Date.now()}-${Math.random()}`,
@@ -169,7 +172,7 @@ export class TwitchWebSocket {
       userType,
       time: new Date(),
       badges,
-      // Note: Emote rendering would be handled by the UI component
+      emotes
     }
 
     this.config.onMessage(chatMessage)
@@ -287,6 +290,44 @@ export class TwitchWebSocket {
     if (badges.includes('artist')) return 'artist'
     if (badges.includes('turbo')) return 'turbo'
     return undefined
+  }
+
+  private parseEmotes(emotesString?: string, message?: string): TwitchEmote[] {
+    if (!emotesString || !message) return []
+    
+    const emotes: TwitchEmote[] = []
+    const emoteList = emotesString.split('/')
+    
+    emoteList.forEach(emoteData => {
+      if (!emoteData) return
+      
+      const [emoteId, positions] = emoteData.split(':')
+      if (!positions || !emoteId) return
+      
+      const positionList = positions.split(',')
+      positionList.forEach(position => {
+        const [startStr, endStr] = position.split('-')
+        if (!startStr || !endStr) return
+        
+        const start = parseInt(startStr)
+        const end = parseInt(endStr)
+        if (isNaN(start) || isNaN(end)) return
+        
+        const emoteName = message.substring(start, end + 1)
+        
+        emotes.push({
+          id: emoteId,
+          name: emoteName,
+          start: start,
+          end: end
+        })
+      })
+    })
+    
+    // Sort emotes by position (left to right for proper rendering)
+    emotes.sort((a, b) => a.start - b.start)
+    
+    return emotes
   }
 
   private parseColor(colorTag?: string, username?: string): string {

@@ -1,3 +1,11 @@
+// Emote represents a Twitch emote in a message
+export interface TwitchEmote {
+  id: string
+  name: string
+  start: number
+  end: number
+}
+
 // ChatDataItem represents a message or notification in the chat
 export interface ChatDataItem {
   id: string
@@ -10,4 +18,5 @@ export interface ChatDataItem {
   time: Date
   badges?: string[]
   count?: number
+  emotes?: TwitchEmote[]
 } 

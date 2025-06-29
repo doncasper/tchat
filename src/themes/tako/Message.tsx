@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
+import { EmoteRenderer } from '../../components/EmoteRenderer'
 import styles from './Message.module.css'
 import broadcasterImage from './img/chill.png'
 import moderatorImage from './img/coffee.png'
@@ -45,7 +46,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
           )}
         </div>
         <div className={styles.messageContent}>
-          {message.text}
+          <EmoteRenderer text={message.text} emotes={message.emotes} />
         </div>
       </div>
     </div>

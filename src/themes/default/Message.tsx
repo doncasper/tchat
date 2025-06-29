@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
+import { EmoteRenderer } from '../../components/EmoteRenderer'
 import styles from './Message.module.css'
 
 const MessageComponent = (props: MessageProps): ReactNode => {
@@ -32,7 +33,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
         )}
       </div>
       <div className={styles.messageContent}>
-        {message.text}
+        <EmoteRenderer text={message.text} emotes={message.emotes} />
       </div>
     </div>
   )
