@@ -11,6 +11,8 @@ interface UIState {
   showTimestamps: boolean
   showBadges: boolean
   fontSizeMultiplier: number
+  showEmotes: boolean
+  emoteSize: '1.0' | '2.0' | '3.0'
   
   // Actions
   toggleSettings: () => void
@@ -19,6 +21,8 @@ interface UIState {
   setShowTimestamps: (show: boolean) => void
   setShowBadges: (show: boolean) => void
   setFontSizeMultiplier: (multiplier: number) => void
+  setShowEmotes: (show: boolean) => void
+  setEmoteSize: (size: '1.0' | '2.0' | '3.0') => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -32,6 +36,8 @@ export const useUIStore = create<UIState>()(
         showTimestamps: true,
         showBadges: true,
         fontSizeMultiplier: 1,
+        showEmotes: true,
+        emoteSize: '3.0',
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -50,14 +56,20 @@ export const useUIStore = create<UIState>()(
         
         setShowBadges: (show) => set({ showBadges: show }),
         
-        setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier })
+        setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier }),
+        
+        setShowEmotes: (show) => set({ showEmotes: show }),
+        
+        setEmoteSize: (size) => set({ emoteSize: size })
       }),
       {
         name: 'ui-storage',
         partialize: (state) => ({
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
-          fontSizeMultiplier: state.fontSizeMultiplier
+          fontSizeMultiplier: state.fontSizeMultiplier,
+          showEmotes: state.showEmotes,
+          emoteSize: state.emoteSize
         })
       }
     ),

@@ -27,9 +27,13 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     showTimestamps,
     showBadges,
     fontSizeMultiplier,
+    showEmotes,
+    emoteSize,
     setShowTimestamps,
     setShowBadges,
-    setFontSizeMultiplier
+    setFontSizeMultiplier,
+    setShowEmotes,
+    setEmoteSize
   } = useUIStore()
 
   const {
@@ -233,6 +237,38 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   <span>200%</span>
                 </div>
               </div>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showEmotes}
+                  onChange={(e) => setShowEmotes(e.target.checked)}
+                />
+                Show emotes
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Display Twitch emotes in chat messages</span>
+                </span>
+              </label>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                Emote size:
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Size of emotes in chat</span>
+                </span>
+              </label>
+              <select
+                value={emoteSize}
+                onChange={(e) => setEmoteSize(e.target.value as '1.0' | '2.0' | '3.0')}
+                disabled={!showEmotes}
+              >
+                <option value="1.0">Small</option>
+                <option value="2.0">Medium</option>
+                <option value="3.0">Large</option>
+              </select>
             </div>
           </section>
 
