@@ -11,6 +11,7 @@ interface VirtualScrollProps {
   onScroll?: (isAtBottom: boolean) => void
   scrollToBottomRef?: React.RefObject<() => void>
   className?: string
+  onlyFullyVisible?: boolean // Only render fully visible messages
 }
 
 export const VirtualScroll: React.FC<VirtualScrollProps> = ({
@@ -21,7 +22,8 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
   renderMessage,
   onScroll,
   scrollToBottomRef,
-  className
+  className,
+  onlyFullyVisible = false
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -54,37 +56,71 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     let start = 0
     let end = messages.length
 
-    // Find start index
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i]
-      if (message) {
-        const height = itemHeights.current.get(message.id) || averageItemHeight
-        
-        if (accumulatedHeight + height > scrollTop) {
-          start = Math.max(0, i - bufferSize - overscan)
-          break
+    if (onlyFullyVisible) {
+      // Find first fully visible message
+      for (let i = 0; i < messages.length; i++) {
+        const message = messages[i]
+        if (message) {
+          const height = itemHeights.current.get(message.id) || averageItemHeight
+          
+          // Check if message top is below viewport top
+          if (accumulatedHeight >= scrollTop) {
+            start = i
+            break
+          }
+          accumulatedHeight += height
         }
-        accumulatedHeight += height
       }
-    }
 
-    // Find end index
-    accumulatedHeight = 0
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i]
-      if (message) {
-        const height = itemHeights.current.get(message.id) || averageItemHeight
-        accumulatedHeight += height
-        
-        if (accumulatedHeight > scrollTop + containerHeight) {
-          end = Math.min(messages.length, i + bufferSize + overscan)
-          break
+      // Find last fully visible message
+      accumulatedHeight = 0
+      for (let i = 0; i < messages.length; i++) {
+        const message = messages[i]
+        if (message) {
+          const height = itemHeights.current.get(message.id) || averageItemHeight
+          
+          // Check if message bottom is above viewport bottom
+          if (accumulatedHeight + height > scrollTop + containerHeight) {
+            end = i
+            break
+          }
+          accumulatedHeight += height
+        }
+      }
+    } else {
+      // Original logic with partial visibility
+      // Find start index
+      for (let i = 0; i < messages.length; i++) {
+        const message = messages[i]
+        if (message) {
+          const height = itemHeights.current.get(message.id) || averageItemHeight
+          
+          if (accumulatedHeight + height > scrollTop) {
+            start = Math.max(0, i - bufferSize - overscan)
+            break
+          }
+          accumulatedHeight += height
+        }
+      }
+
+      // Find end index
+      accumulatedHeight = 0
+      for (let i = 0; i < messages.length; i++) {
+        const message = messages[i]
+        if (message) {
+          const height = itemHeights.current.get(message.id) || averageItemHeight
+          accumulatedHeight += height
+          
+          if (accumulatedHeight > scrollTop + containerHeight) {
+            end = Math.min(messages.length, i + bufferSize + overscan)
+            break
+          }
         }
       }
     }
 
     return { start, end }
-  }, [messages, scrollTop, containerHeight, bufferSize, overscan, averageItemHeight])
+  }, [messages, scrollTop, containerHeight, bufferSize, overscan, averageItemHeight, onlyFullyVisible])
 
   // Items to render (normal order for bottom display)
   const visibleItems = useMemo(() => {

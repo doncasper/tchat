@@ -10,10 +10,12 @@ interface UIState {
   // Display preferences
   showTimestamps: boolean
   showBadges: boolean
+  badgeDisplayMode: 'text' | 'image'
   fontSizeMultiplier: number
   borderRadius: number
   showHeader: boolean
   showBackground: boolean
+  onlyFullyVisible: boolean
   
   // Actions
   toggleSettings: () => void
@@ -21,10 +23,12 @@ interface UIState {
   toggleFullscreen: () => void
   setShowTimestamps: (show: boolean) => void
   setShowBadges: (show: boolean) => void
+  setBadgeDisplayMode: (mode: 'text' | 'image') => void
   setFontSizeMultiplier: (multiplier: number) => void
   setBorderRadius: (radius: number) => void
   setShowHeader: (show: boolean) => void
   setShowBackground: (show: boolean) => void
+  setOnlyFullyVisible: (show: boolean) => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -37,10 +41,12 @@ export const useUIStore = create<UIState>()(
         isFullscreen: false,
         showTimestamps: true,
         showBadges: true,
+        badgeDisplayMode: 'text',
         fontSizeMultiplier: 1,
         borderRadius: 0,
         showHeader: true,
         showBackground: true,
+        onlyFullyVisible: false,
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -59,23 +65,29 @@ export const useUIStore = create<UIState>()(
         
         setShowBadges: (show) => set({ showBadges: show }),
         
+        setBadgeDisplayMode: (mode) => set({ badgeDisplayMode: mode }),
+        
         setFontSizeMultiplier: (multiplier) => set({ fontSizeMultiplier: multiplier }),
         
         setBorderRadius: (radius) => set({ borderRadius: radius }),
         
         setShowHeader: (show) => set({ showHeader: show }),
         
-        setShowBackground: (show) => set({ showBackground: show })
+        setShowBackground: (show) => set({ showBackground: show }),
+        
+        setOnlyFullyVisible: (show) => set({ onlyFullyVisible: show })
       }),
       {
         name: 'ui-storage',
         partialize: (state) => ({
           showTimestamps: state.showTimestamps,
           showBadges: state.showBadges,
+          badgeDisplayMode: state.badgeDisplayMode,
           fontSizeMultiplier: state.fontSizeMultiplier,
           borderRadius: state.borderRadius,
           showHeader: state.showHeader,
-          showBackground: state.showBackground
+          showBackground: state.showBackground,
+          onlyFullyVisible: state.onlyFullyVisible
         })
       }
     ),

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { TwitchWebSocket } from '../services/twitchWebSocket'
 import { useChatStore } from '../store/chatStore'
+import { useUserFilterStore } from '../store/userFilterStore'
 import type { ChatDataItem } from '../types/ChatTypes'
 
 interface UseTwitchChatOptions {
@@ -95,12 +96,28 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
   } = options
 
   const { addMessage, setConnectionStatus, clearMessages } = useChatStore()
+  const { isBotUser, isBlockedUser } = useUserFilterStore()
   const managerRef = useRef<WebSocketManager | null>(null)
   const unsubscribeRef = useRef<(() => void) | null>(null)
 
   const handleMessage = useCallback((message: ChatDataItem) => {
-    addMessage(message)
-  }, [addMessage])
+    // Filter out blocked users
+    if (isBlockedUser(message.nickname)) {
+      return
+    }
+    
+    // Convert bot messages to notifications
+    if (message.type === 'message' && isBotUser(message.nickname)) {
+      const notification: ChatDataItem = {
+        ...message,
+        type: 'notification',
+        notificationType: 'alert'
+      }
+      addMessage(notification)
+    } else {
+      addMessage(message)
+    }
+  }, [addMessage, isBotUser, isBlockedUser])
 
   const handleStatusChange = useCallback((status: string) => {
     setConnectionStatus(status)

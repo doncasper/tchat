@@ -2,11 +2,12 @@ import type { ReactNode } from 'react'
 import type { ThemeComponent, MessageProps } from '../ThemeInterface'
 import { useUIStore } from '../../store/uiStore'
 import { EmoteRenderer } from '../../components/EmoteRenderer'
+import { BadgeRenderer } from '../../components/BadgeRenderer/BadgeRenderer'
 import styles from './Message.module.css'
 
 const MessageComponent = (props: MessageProps): ReactNode => {
-  const { message, getBadgeText } = props
-  const { showTimestamps, showBadges, fontSizeMultiplier } = useUIStore()
+  const { message } = props
+  const { showTimestamps, fontSizeMultiplier } = useUIStore()
   
   return (
     <div 
@@ -16,15 +17,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
       <div className={styles.messageHeader}>
         <div className={styles.authorInfo}>
           <span className={styles.authorName}>{message.nickname}</span>
-          {showBadges && (
-            <div className={styles.badges}>
-              {message.badges?.map((badge: string, index: number) => (
-                <span key={index} className={`${styles.badge} ${styles[badge]}`} title={badge}>
-                  {getBadgeText(badge)}
-                </span>
-              ))}
-            </div>
-          )}
+          {message.badges && <BadgeRenderer badges={message.badges} />}
         </div>
         {showTimestamps && (
           <span className={styles.messageTime}>

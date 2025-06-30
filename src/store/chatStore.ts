@@ -16,6 +16,7 @@ interface ChatState {
   // Chat settings
   messageDelay: number
   maxMessages: number
+  disappearingDelay: number // Time in ms before messages disappear (0 = disabled)
   
   // Actions
   addMessage: (message: ChatDataItem) => void
@@ -28,6 +29,8 @@ interface ChatState {
   setCurrentChannel: (channel: string) => void
   setMessageDelay: (delay: number) => void
   setMaxMessages: (max: number) => void
+  setDisappearingDelay: (delay: number) => void
+  removeMessage: (messageId: string) => void
   
   // Computed actions
   getMessagesByType: (type: 'message' | 'notification') => ChatDataItem[]
@@ -48,6 +51,7 @@ export const useChatStore = create<ChatState>()(
         currentChannel: 'takotoken',
         messageDelay: 5000,
         maxMessages: 15,
+        disappearingDelay: 0,
         
         // Actions
         addMessage: (message) => set((state) => {
@@ -101,6 +105,12 @@ export const useChatStore = create<ChatState>()(
         
         setMaxMessages: (max) => set({ maxMessages: max }),
         
+        setDisappearingDelay: (delay) => set({ disappearingDelay: delay }),
+        
+        removeMessage: (messageId) => set((state) => ({
+          messages: state.messages.filter(msg => msg.id !== messageId)
+        })),
+        
         // Computed actions
         getMessagesByType: (type) => {
           const { messages } = get()
@@ -122,7 +132,8 @@ export const useChatStore = create<ChatState>()(
         partialize: (state) => ({
           messageDelay: state.messageDelay,
           maxMessages: state.maxMessages,
-          currentChannel: state.currentChannel
+          currentChannel: state.currentChannel,
+          disappearingDelay: state.disappearingDelay
         })
       }
     ),

@@ -372,4 +372,87 @@
   font-size: 0.75rem;
   color: #6b7280;
   margin-top: 4px;
+}
+
+/* User filtering styles */
+.filterSection {
+  margin-bottom: 20px;
+}
+
+.filterSection h4 {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.userList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+  min-height: 32px;
+  padding: 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.removeButton:hover {
+  color: #dc2626;
+}
+
+.addUserForm {
+  display: flex;
+  gap: 8px;
+}
+
+.userInput {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.userInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.addButton {
+  padding: 6px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.addButton:hover {
+  background: #2563eb;
 } 

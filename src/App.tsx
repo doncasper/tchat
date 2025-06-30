@@ -4,6 +4,7 @@ import { useThemeStore } from './store/themeStore'
 import { useUIStore } from './store/uiStore'
 import { useThemeInitializer } from './store/useThemeInitializer'
 import { useTwitchChat } from './hooks/useTwitchChat'
+import { useDisappearingMessages } from './hooks/useDisappearingMessages'
 import { readSettingsFromURL } from './utils/urlParams'
 import { Settings } from './components/Settings/Settings'
 import './App.css'
@@ -14,6 +15,9 @@ function ChatApp() {
   
   // Initialize theme
   useThemeInitializer()
+  
+  // Initialize disappearing messages
+  useDisappearingMessages()
   
   // Initialize settings from URL params on mount
   useEffect(() => {

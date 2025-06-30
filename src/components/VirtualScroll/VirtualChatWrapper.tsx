@@ -16,7 +16,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
   renderMessage,
   renderNotification
 }) => {
-  const { fontSizeMultiplier } = useUIStore()
+  const { fontSizeMultiplier, onlyFullyVisible } = useUIStore()
   const scrollToBottomRef = useRef<() => void>(() => {})
   const isUserScrolling = useRef(false)
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -92,6 +92,7 @@ export const VirtualChatWrapper: React.FC<VirtualChatWrapperProps> = ({
         onScroll={handleScroll}
         scrollToBottomRef={scrollToBottomRef}
         className=""
+        onlyFullyVisible={onlyFullyVisible}
       />
       {/* Hidden ref for compatibility */}
       <div ref={messagesEndRef} style={{ height: 0, overflow: 'hidden', position: 'absolute' }} />

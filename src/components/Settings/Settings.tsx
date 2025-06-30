@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useChatStore } from '../../store/chatStore'
 import { useUIStore } from '../../store/uiStore'
 import { useThemeStore } from '../../store/themeStore'
+import { useUserFilterStore } from '../../store/userFilterStore'
 import styles from './Settings.module.css'
 
 interface SettingsProps {
@@ -13,29 +14,38 @@ interface SettingsProps {
 export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChannel }) => {
   const [channelInput, setChannelInput] = useState('')
   const [showChannelInput, setShowChannelInput] = useState(false)
+  const [botUserInput, setBotUserInput] = useState('')
+  const [blockedUserInput, setBlockedUserInput] = useState('')
+  
   const {
     messageDelay,
     maxMessages,
     currentChannel,
+    disappearingDelay,
     setMessageDelay,
     setMaxMessages,
     setCurrentChannel,
+    setDisappearingDelay,
     clearMessages
   } = useChatStore()
 
   const {
     showTimestamps,
     showBadges,
+    badgeDisplayMode,
     fontSizeMultiplier,
     borderRadius,
     showHeader,
     showBackground,
+    onlyFullyVisible,
     setShowTimestamps,
     setShowBadges,
+    setBadgeDisplayMode,
     setFontSizeMultiplier,
     setBorderRadius,
     setShowHeader,
-    setShowBackground
+    setShowBackground,
+    setOnlyFullyVisible
   } = useUIStore()
 
   const {
@@ -43,6 +53,15 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     availableThemes,
     switchTheme
   } = useThemeStore()
+  
+  const {
+    botUsers,
+    blockedUsers,
+    addBotUser,
+    removeBotUser,
+    addBlockedUser,
+    removeBlockedUser
+  } = useUserFilterStore()
 
   const handleChannelSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -172,6 +191,23 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
               />
             </div>
             <div className={styles.settingGroup}>
+              <label>
+                Disappearing delay (ms):
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Messages disappear after this delay (0 = disabled)</span>
+                </span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="60000"
+                step="1000"
+                value={disappearingDelay}
+                onChange={(e) => setDisappearingDelay(Number(e.target.value))}
+              />
+            </div>
+            <div className={styles.settingGroup}>
               <button
                 className={styles.dangerButton}
                 onClick={clearMessages}
@@ -240,6 +276,36 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 </span>
               </label>
             </div>
+            <div className={styles.settingGroup}>
+              <label>
+                Badge display:
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Show badges as text or images</span>
+                </span>
+              </label>
+              <select
+                value={badgeDisplayMode}
+                onChange={(e) => setBadgeDisplayMode(e.target.value as 'text' | 'image')}
+              >
+                <option value="text">Text</option>
+                <option value="image">Images</option>
+              </select>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={onlyFullyVisible}
+                  onChange={(e) => setOnlyFullyVisible(e.target.checked)}
+                />
+                Only show fully visible messages
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Hide partially visible messages at edges</span>
+                </span>
+              </label>
+            </div>
             <div className={`${styles.settingGroup} ${styles.fontSizeSection}`}>
               <div className={styles.fontSizeHeader}>
                 <label>
@@ -295,6 +361,89 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                   <span>30px</span>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* User Filtering */}
+          <section className={styles.settingsSection}>
+            <h3>User Filtering</h3>
+            
+            {/* Bot Users */}
+            <div className={styles.filterSection}>
+              <h4>Bot Users (Convert to Notifications)</h4>
+              <div className={styles.userList}>
+                {botUsers.map((user) => (
+                  <div key={user} className={styles.userItem}>
+                    <span>{user}</span>
+                    <button
+                      onClick={() => removeBotUser(user)}
+                      className={styles.removeButton}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (botUserInput.trim()) {
+                    addBotUser(botUserInput.trim())
+                    setBotUserInput('')
+                  }
+                }}
+                className={styles.addUserForm}
+              >
+                <input
+                  type="text"
+                  value={botUserInput}
+                  onChange={(e) => setBotUserInput(e.target.value)}
+                  placeholder="Add bot username"
+                  className={styles.userInput}
+                />
+                <button type="submit" className={styles.addButton}>
+                  Add
+                </button>
+              </form>
+            </div>
+            
+            {/* Blocked Users */}
+            <div className={styles.filterSection}>
+              <h4>Blocked Users (Hide Messages)</h4>
+              <div className={styles.userList}>
+                {blockedUsers.map((user) => (
+                  <div key={user} className={styles.userItem}>
+                    <span>{user}</span>
+                    <button
+                      onClick={() => removeBlockedUser(user)}
+                      className={styles.removeButton}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (blockedUserInput.trim()) {
+                    addBlockedUser(blockedUserInput.trim())
+                    setBlockedUserInput('')
+                  }
+                }}
+                className={styles.addUserForm}
+              >
+                <input
+                  type="text"
+                  value={blockedUserInput}
+                  onChange={(e) => setBlockedUserInput(e.target.value)}
+                  placeholder="Add blocked username"
+                  className={styles.userInput}
+                />
+                <button type="submit" className={styles.addButton}>
+                  Add
+                </button>
+              </form>
             </div>
           </section>
 
