@@ -163,7 +163,7 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     }
   }, [scrollToBottom, scrollToBottomRef])
 
-  // Update container height on resize
+  // Update container height on resize and layout changes
   useEffect(() => {
     const updateHeight = () => {
       if (scrollAreaRef.current) {
@@ -172,14 +172,38 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
       }
     }
 
-    // Use a small delay to ensure DOM is ready
-    setTimeout(updateHeight, 0)
-    window.addEventListener('resize', updateHeight)
-    
-    // Also update on messages change in case container size changes
+    // Initial height measurement
     updateHeight()
     
-    return () => window.removeEventListener('resize', updateHeight)
+    // Listen for window resize
+    window.addEventListener('resize', updateHeight)
+    
+    // Use ResizeObserver to detect height changes in the scroll area itself
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.contentRect.height
+        const previousHeight = containerHeight
+        setContainerHeight(height)
+        
+        // If user is at bottom and height changed, maintain bottom position
+        if (shouldAutoScroll.current && height !== previousHeight && scrollAreaRef.current) {
+          setTimeout(() => {
+            if (scrollAreaRef.current) {
+              scrollAreaRef.current.scrollTop = 0
+            }
+          }, 0)
+        }
+      }
+    })
+    
+    if (scrollAreaRef.current) {
+      resizeObserver.observe(scrollAreaRef.current)
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updateHeight)
+      resizeObserver.disconnect()
+    }
   }, [messages.length])
 
   // Track if we should auto-scroll to bottom
