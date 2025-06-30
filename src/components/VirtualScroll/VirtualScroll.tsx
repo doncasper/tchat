@@ -87,8 +87,12 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
       
       // Set the range to show only these fully visible messages
       if (visibleMessagesFromBottom.length > 0) {
-        start = visibleMessagesFromBottom[0]
-        end = visibleMessagesFromBottom[visibleMessagesFromBottom.length - 1] + 1
+        const firstVisible = visibleMessagesFromBottom[0]
+        const lastVisible = visibleMessagesFromBottom[visibleMessagesFromBottom.length - 1]
+        if (firstVisible !== undefined && lastVisible !== undefined) {
+          start = firstVisible
+          end = lastVisible + 1
+        }
       } else {
         // If no messages fit, show the last message (partially)
         start = Math.max(0, messages.length - 1)
@@ -204,7 +208,7 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
       window.removeEventListener('resize', updateHeight)
       resizeObserver.disconnect()
     }
-  }, [messages.length])
+  }, [messages.length, containerHeight])
 
   // Track if we should auto-scroll to bottom
   const shouldAutoScroll = useRef(true)

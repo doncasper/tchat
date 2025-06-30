@@ -32,10 +32,13 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges }) => {
                 const target = e.target as HTMLImageElement
                 target.style.display = 'none'
                 const textSpan = document.createElement('span')
-                textSpan.className = styles.badgeText
+                textSpan.className = styles.badgeText || 'badge-text-fallback'
                 textSpan.style.backgroundColor = badgeInfo.color
                 textSpan.textContent = badgeInfo.displayName
-                target.parentNode?.replaceChild(textSpan, target)
+                const parentNode = target.parentNode
+                if (parentNode) {
+                  parentNode.replaceChild(textSpan, target)
+                }
               }}
             />
           )
