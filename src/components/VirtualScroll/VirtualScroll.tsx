@@ -34,6 +34,11 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
 
   // Calculate total height based on actual measured heights
   const totalHeight = useMemo(() => {
+    if (onlyFullyVisible) {
+      // When showing only fully visible messages, use container height to prevent gaps
+      return Math.max(containerHeight, 1)
+    }
+    
     let height = 0
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i]
@@ -43,7 +48,7 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
       }
     }
     return height
-  }, [messages, averageItemHeight])
+  }, [messages, averageItemHeight, onlyFullyVisible, containerHeight])
 
   // Calculate which items are visible
   const visibleRange = useMemo(() => {
@@ -57,35 +62,37 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     let end = messages.length
 
     if (onlyFullyVisible) {
-      // Find first fully visible message
-      for (let i = 0; i < messages.length; i++) {
+      // For "only fully visible", we need to ensure messages stick to bottom
+      // and don't create gaps. Start from the end and work backwards.
+      
+      // First, find how many messages can fit fully in the viewport
+      const visibleMessagesFromBottom = []
+      let totalHeightFromBottom = 0
+      
+      // Work backwards from the newest messages
+      for (let i = messages.length - 1; i >= 0; i--) {
         const message = messages[i]
         if (message) {
           const height = itemHeights.current.get(message.id) || averageItemHeight
           
-          // Check if message top is below viewport top
-          if (accumulatedHeight >= scrollTop) {
-            start = i
+          // If adding this message would exceed viewport height, stop
+          if (totalHeightFromBottom + height > containerHeight) {
             break
           }
-          accumulatedHeight += height
+          
+          totalHeightFromBottom += height
+          visibleMessagesFromBottom.unshift(i) // Add to beginning
         }
       }
-
-      // Find last fully visible message
-      accumulatedHeight = 0
-      for (let i = 0; i < messages.length; i++) {
-        const message = messages[i]
-        if (message) {
-          const height = itemHeights.current.get(message.id) || averageItemHeight
-          
-          // Check if message bottom is above viewport bottom
-          if (accumulatedHeight + height > scrollTop + containerHeight) {
-            end = i
-            break
-          }
-          accumulatedHeight += height
-        }
+      
+      // Set the range to show only these fully visible messages
+      if (visibleMessagesFromBottom.length > 0) {
+        start = visibleMessagesFromBottom[0]
+        end = visibleMessagesFromBottom[visibleMessagesFromBottom.length - 1] + 1
+      } else {
+        // If no messages fit, show the last message (partially)
+        start = Math.max(0, messages.length - 1)
+        end = messages.length
       }
     } else {
       // Original logic with partial visibility
@@ -135,6 +142,10 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
 
     // For flex-column-reverse, "bottom" is when scrollTop is near 0
     const isAtBottom = newScrollTop < 10
+    
+    // Update auto-scroll flag based on user's scroll position
+    shouldAutoScroll.current = isAtBottom
+    
     onScroll?.(isAtBottom)
   }, [onScroll])
 
@@ -147,8 +158,8 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
 
   // Expose scroll to bottom function
   useEffect(() => {
-    if (scrollToBottomRef) {
-      (scrollToBottomRef as React.MutableRefObject<() => void>).current = scrollToBottom
+    if (scrollToBottomRef && 'current' in scrollToBottomRef) {
+      scrollToBottomRef.current = scrollToBottom
     }
   }, [scrollToBottom, scrollToBottomRef])
 
@@ -171,17 +182,37 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
     return () => window.removeEventListener('resize', updateHeight)
   }, [messages.length])
 
+  // Track if we should auto-scroll to bottom
+  const shouldAutoScroll = useRef(true)
+  const previousScrollHeight = useRef(0)
+
+  // Check if user is at bottom before height changes
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const isAtBottom = scrollAreaRef.current.scrollTop < 10
+      shouldAutoScroll.current = isAtBottom
+      previousScrollHeight.current = scrollAreaRef.current.scrollHeight
+    }
+  }, [messages.length])
+
   // Observer to measure item heights
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
       let measuredCount = 0
+      let heightChanged = false
 
       for (const entry of entries) {
         const element = entry.target as HTMLElement
         const messageId = element.getAttribute('data-message-id')
         if (messageId) {
-          const height = entry.contentRect.height
-          itemHeights.current.set(messageId, height)
+          const newHeight = entry.contentRect.height
+          const oldHeight = itemHeights.current.get(messageId)
+          
+          if (oldHeight !== newHeight) {
+            heightChanged = true
+          }
+          
+          itemHeights.current.set(messageId, newHeight)
           measuredCount++
         }
       }
@@ -192,6 +223,16 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
         const newAverage = allHeights.reduce((a, b) => a + b, 0) / allHeights.length
         setAverageItemHeight(newAverage)
       }
+
+      // If heights changed and we should auto-scroll, maintain bottom position
+      if (heightChanged && shouldAutoScroll.current && scrollAreaRef.current) {
+        // Small delay to ensure DOM is updated
+        setTimeout(() => {
+          if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = 0 // For column-reverse, 0 is bottom
+          }
+        }, 0)
+      }
     })
 
     // Observe all message elements
@@ -200,6 +241,37 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
 
     return () => observer.disconnect()
   }, [visibleItems])
+
+  // Auto-scroll to bottom when new messages arrive or when onlyFullyVisible changes
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const currentScrollHeight = scrollAreaRef.current.scrollHeight
+      
+      // Always scroll to bottom when onlyFullyVisible is enabled or when new messages arrive
+      if (onlyFullyVisible || (shouldAutoScroll.current && currentScrollHeight > previousScrollHeight.current)) {
+        setTimeout(() => {
+          if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = 0
+            shouldAutoScroll.current = true // Ensure we're tracking as at bottom
+          }
+        }, 0)
+      }
+      
+      previousScrollHeight.current = currentScrollHeight
+    }
+  }, [messages, onlyFullyVisible])
+
+  // Force scroll to bottom when switching to onlyFullyVisible mode
+  useEffect(() => {
+    if (onlyFullyVisible && scrollAreaRef.current) {
+      setTimeout(() => {
+        if (scrollAreaRef.current) {
+          scrollAreaRef.current.scrollTop = 0
+          shouldAutoScroll.current = true
+        }
+      }, 0)
+    }
+  }, [onlyFullyVisible])
 
   return (
     <div 
@@ -214,6 +286,10 @@ export const VirtualScroll: React.FC<VirtualScrollProps> = ({
         <div 
           ref={containerRef}
           className={styles.visibleArea}
+          style={{ 
+            justifyContent: onlyFullyVisible ? 'flex-end' : 'flex-start',
+            minHeight: onlyFullyVisible ? '100%' : 'auto'
+          }}
         >
           {visibleItems.map((message, index) => (
             <div 
