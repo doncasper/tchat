@@ -25,7 +25,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
         {message.nickname}
       </span>
       <span className={styles.badges}>
-        {message.badges && <BadgeRenderer badges={message.badges} />}
+        {message.badges && <BadgeRenderer badges={message.badges} className={styles.badge} />}
       </span>
       <div 
         className={`${styles.message} ${styles[message.userType || '']}`}

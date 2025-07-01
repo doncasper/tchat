@@ -67,6 +67,13 @@
   transition: transform var(--animation-duration-fast, 0.2s) ease;
 }
 
+.badge img {
+  height: 18px;
+  width: 18px;
+  vertical-align: middle;
+  margin: 0;
+}
+
 .badge.broadcaster {
   background-color: #db1600;
 }

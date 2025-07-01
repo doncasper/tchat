@@ -17,7 +17,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
       <div className={styles.messageHeader}>
         <div className={styles.authorInfo}>
           <span className={styles.authorName}>{message.nickname}</span>
-          {message.badges && <BadgeRenderer badges={message.badges} />}
+          {message.badges && <BadgeRenderer badges={message.badges} className={styles.badge} />}
         </div>
         {showTimestamps && (
           <span className={styles.messageTime}>
