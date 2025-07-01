@@ -45,6 +45,12 @@ function ChatApp() {
     if (urlSettings.maxMessages !== null) {
       useChatStore.getState().setMaxMessages(urlSettings.maxMessages)
     }
+    if (urlSettings.showHeader !== null) {
+      useUIStore.getState().setShowHeader(urlSettings.showHeader)
+    }
+    if (urlSettings.showBackground !== null) {
+      useUIStore.getState().setShowBackground(urlSettings.showBackground)
+    }
   }, [])
   
   // Zustand stores

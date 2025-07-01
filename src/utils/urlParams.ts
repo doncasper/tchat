@@ -10,7 +10,9 @@ export const readSettingsFromURL = () => {
     showBadges: params.get('bd') !== null ? params.get('bd') === '1' : null,
     fontSizeMultiplier: params.get('fs') ? parseFloat(params.get('fs')!) : null,
     messageDelay: params.get('md') ? parseInt(params.get('md')!, 10) : null,
-    maxMessages: params.get('mm') ? parseInt(params.get('mm')!, 10) : null
+    maxMessages: params.get('mm') ? parseInt(params.get('mm')!, 10) : null,
+    showHeader: params.get('hd') !== null ? params.get('hd') === '1' : null,
+    showBackground: params.get('bg') !== null ? params.get('bg') === '1' : null
   }
 }
 
@@ -22,6 +24,8 @@ export const updateURLWithSettings = (settings: {
   fontSizeMultiplier?: number
   messageDelay?: number
   maxMessages?: number
+  showHeader?: boolean
+  showBackground?: boolean
 }) => {
   const params = new URLSearchParams()
 
@@ -46,6 +50,12 @@ export const updateURLWithSettings = (settings: {
   }
   if (settings.maxMessages && settings.maxMessages !== 100) {
     params.set('mm', settings.maxMessages.toString())
+  }
+  if (settings.showHeader === false) {
+    params.set('hd', '0')
+  }
+  if (settings.showBackground === false) {
+    params.set('bg', '0')
   }
 
   const newURL = params.toString() 
