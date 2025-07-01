@@ -258,7 +258,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 Show header
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
-                  <span className={styles.tooltipText}>Toggle chat header visibility</span>
+                  <span className={styles.tooltipText}>Toggle chat header visibility. Query param: ?hd=0 (to disable)</span>
                 </span>
               </label>
             </div>
@@ -272,7 +272,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 Show background
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
-                  <span className={styles.tooltipText}>Toggle chat background visibility</span>
+                  <span className={styles.tooltipText}>Toggle chat background visibility. Query param: ?bg=0 (to disable)</span>
                 </span>
               </label>
             </div>
@@ -302,7 +302,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 Only show fully visible messages
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
-                  <span className={styles.tooltipText}>Hide partially visible messages at edges</span>
+                  <span className={styles.tooltipText}>Hide partially visible messages at edges. Query param: ?ov=1 (to enable)</span>
                 </span>
               </label>
             </div>

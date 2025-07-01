@@ -51,6 +51,9 @@ function ChatApp() {
     if (urlSettings.showBackground !== null) {
       useUIStore.getState().setShowBackground(urlSettings.showBackground)
     }
+    if (urlSettings.onlyFullyVisible !== null) {
+      useUIStore.getState().setOnlyFullyVisible(urlSettings.onlyFullyVisible)
+    }
   }, [])
   
   // Zustand stores

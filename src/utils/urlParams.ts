@@ -12,7 +12,8 @@ export const readSettingsFromURL = () => {
     messageDelay: params.get('md') ? parseInt(params.get('md')!, 10) : null,
     maxMessages: params.get('mm') ? parseInt(params.get('mm')!, 10) : null,
     showHeader: params.get('hd') !== null ? params.get('hd') === '1' : null,
-    showBackground: params.get('bg') !== null ? params.get('bg') === '1' : null
+    showBackground: params.get('bg') !== null ? params.get('bg') === '1' : null,
+    onlyFullyVisible: params.get('ov') !== null ? params.get('ov') === '1' : null
   }
 }
 
@@ -26,6 +27,7 @@ export const updateURLWithSettings = (settings: {
   maxMessages?: number
   showHeader?: boolean
   showBackground?: boolean
+  onlyFullyVisible?: boolean
 }) => {
   const params = new URLSearchParams()
 
@@ -56,6 +58,9 @@ export const updateURLWithSettings = (settings: {
   }
   if (settings.showBackground === false) {
     params.set('bg', '0')
+  }
+  if (settings.onlyFullyVisible === true) {
+    params.set('ov', '1')
   }
 
   const newURL = params.toString() 
