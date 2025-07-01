@@ -12,7 +12,7 @@ const MessageComponent = (props: MessageProps): ReactNode => {
   const { showTimestamps, fontSizeMultiplier } = useUIStore()
   
   return (
-    <div>
+    <div className={styles.messageContainer}>
       <div className={`${styles.userTypeLogo} ${styles[message.userType || '']}`}>
         {message.userType === 'moderator' && (
           <img src={moderatorImage} alt="Tako Moderator" />
@@ -21,21 +21,21 @@ const MessageComponent = (props: MessageProps): ReactNode => {
           <img src={broadcasterImage} alt="Tako Broadcaster" />
         )}
       </div>
-      <span className={styles.authorName} style={{ backgroundColor: message.color }}>{message.nickname}</span>
+      <span className={styles.authorName} style={{ backgroundColor: message.color }}>
+        {message.nickname}
+      </span>
+      <span className={styles.badges}>
+        {message.badges && <BadgeRenderer badges={message.badges} />}
+      </span>
       <div 
         className={`${styles.message} ${styles[message.userType || '']}`}
         style={{ fontSize: `${fontSizeMultiplier}em` }}
       >
-        <div className={styles.messageHeader}>
-          <div className={styles.authorInfo}>
-            {message.badges && <BadgeRenderer badges={message.badges} />}
-          </div>
-          {showTimestamps && (
-            <span className={styles.messageTime}>
-              {message.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
-            </span>
-          )}
-        </div>
+        {showTimestamps && (
+          <span className={styles.messageTime}>
+            {message.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
+          </span>
+        )}
         <div className={styles.messageContent}>
           <EmoteRenderer text={message.text} emotes={message.emotes} />
         </div>
