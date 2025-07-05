@@ -39,9 +39,6 @@ function ChatApp() {
     if (urlSettings.fontSizeMultiplier) {
       useUIStore.getState().setFontSizeMultiplier(urlSettings.fontSizeMultiplier)
     }
-    if (urlSettings.messageDelay !== null) {
-      useChatStore.getState().setMessageDelay(urlSettings.messageDelay)
-    }
     if (urlSettings.maxMessages !== null) {
       useChatStore.getState().setMaxMessages(urlSettings.maxMessages)
     }
@@ -53,6 +50,9 @@ function ChatApp() {
     }
     if (urlSettings.onlyFullyVisible !== null) {
       useUIStore.getState().setOnlyFullyVisible(urlSettings.onlyFullyVisible)
+    }
+    if (urlSettings.hideCommandMessages !== null) {
+      useUIStore.getState().setHideCommandMessages(urlSettings.hideCommandMessages)
     }
   }, [])
   

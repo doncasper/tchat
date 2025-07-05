@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { TwitchWebSocket } from '../services/twitchWebSocket'
 import { useChatStore } from '../store/chatStore'
 import { useUserFilterStore } from '../store/userFilterStore'
+import { useUIStore } from '../store/uiStore'
 import type { ChatDataItem } from '../types/ChatTypes'
 
 interface UseTwitchChatOptions {
@@ -97,12 +98,18 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
 
   const { addMessage, setConnectionStatus, clearMessages } = useChatStore()
   const { isBotUser, isBlockedUser } = useUserFilterStore()
+  const { hideCommandMessages } = useUIStore()
   const managerRef = useRef<WebSocketManager | null>(null)
   const unsubscribeRef = useRef<(() => void) | null>(null)
 
   const handleMessage = useCallback((message: ChatDataItem) => {
     // Filter out blocked users
     if (isBlockedUser(message.nickname)) {
+      return
+    }
+    
+    // Filter out command messages if hideCommandMessages is enabled
+    if (hideCommandMessages && message.type === 'message' && message.message.startsWith('!')) {
       return
     }
     
@@ -117,7 +124,7 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
     } else {
       addMessage(message)
     }
-  }, [addMessage, isBotUser, isBlockedUser])
+  }, [addMessage, isBotUser, isBlockedUser, hideCommandMessages])
 
   const handleStatusChange = useCallback((status: string) => {
     setConnectionStatus(status)

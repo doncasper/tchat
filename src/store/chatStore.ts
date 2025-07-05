@@ -14,7 +14,6 @@ interface ChatState {
   currentChannel: string
   
   // Chat settings
-  messageDelay: number
   maxMessages: number
   disappearingDelay: number // Time in ms before messages disappear (0 = disabled)
   
@@ -27,7 +26,6 @@ interface ChatState {
   setError: (error: string | null) => void
   setConnectionStatus: (status: string) => void
   setCurrentChannel: (channel: string) => void
-  setMessageDelay: (delay: number) => void
   setMaxMessages: (max: number) => void
   setDisappearingDelay: (delay: number) => void
   removeMessage: (messageId: string) => void
@@ -49,7 +47,6 @@ export const useChatStore = create<ChatState>()(
         error: null,
         connectionStatus: 'Disconnected',
         currentChannel: 'takotoken',
-        messageDelay: 5000,
         maxMessages: 15,
         disappearingDelay: 0,
         
@@ -101,8 +98,6 @@ export const useChatStore = create<ChatState>()(
         
         setCurrentChannel: (channel) => set({ currentChannel: channel }),
         
-        setMessageDelay: (delay) => set({ messageDelay: delay }),
-        
         setMaxMessages: (max) => set({ maxMessages: max }),
         
         setDisappearingDelay: (delay) => set({ disappearingDelay: delay }),
@@ -130,7 +125,6 @@ export const useChatStore = create<ChatState>()(
       {
         name: 'chat-storage',
         partialize: (state) => ({
-          messageDelay: state.messageDelay,
           maxMessages: state.maxMessages,
           currentChannel: state.currentChannel,
           disappearingDelay: state.disappearingDelay

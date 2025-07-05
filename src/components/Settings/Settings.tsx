@@ -18,11 +18,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
   const [blockedUserInput, setBlockedUserInput] = useState('')
   
   const {
-    messageDelay,
     maxMessages,
     currentChannel,
     disappearingDelay,
-    setMessageDelay,
     setMaxMessages,
     setCurrentChannel,
     setDisappearingDelay,
@@ -38,6 +36,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     showHeader,
     showBackground,
     onlyFullyVisible,
+    hideCommandMessages,
     setShowTimestamps,
     setShowBadges,
     setBadgeDisplayMode,
@@ -45,7 +44,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
     setBorderRadius,
     setShowHeader,
     setShowBackground,
-    setOnlyFullyVisible
+    setOnlyFullyVisible,
+    setHideCommandMessages
   } = useUIStore()
 
   const {
@@ -158,23 +158,6 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
             <h3>Chat</h3>
             <div className={styles.settingGroup}>
               <label>
-                Message delay (ms):
-                <span className={styles.tooltip}>
-                  <span className={styles.tooltipIcon}>ⓘ</span>
-                  <span className={styles.tooltipText}>Query param: ?md=1000</span>
-                </span>
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="50000"
-                step="10"
-                value={messageDelay}
-                onChange={(e) => setMessageDelay(Number(e.target.value))}
-              />
-            </div>
-            <div className={styles.settingGroup}>
-              <label>
                 Max messages:
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
@@ -273,6 +256,20 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
                   <span className={styles.tooltipText}>Toggle chat background visibility. Query param: ?bg=0 (to disable)</span>
+                </span>
+              </label>
+            </div>
+            <div className={styles.settingGroup}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={hideCommandMessages}
+                  onChange={(e) => setHideCommandMessages(e.target.checked)}
+                />
+                Hide command messages (!)
+                <span className={styles.tooltip}>
+                  <span className={styles.tooltipIcon}>ⓘ</span>
+                  <span className={styles.tooltipText}>Hide messages starting with ! (bot commands). Query param: ?hc=1 (to enable)</span>
                 </span>
               </label>
             </div>

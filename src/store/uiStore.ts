@@ -16,6 +16,7 @@ interface UIState {
   showHeader: boolean
   showBackground: boolean
   onlyFullyVisible: boolean
+  hideCommandMessages: boolean
   
   // Actions
   toggleSettings: () => void
@@ -29,6 +30,7 @@ interface UIState {
   setShowHeader: (show: boolean) => void
   setShowBackground: (show: boolean) => void
   setOnlyFullyVisible: (show: boolean) => void
+  setHideCommandMessages: (hide: boolean) => void
 }
 
 export const useUIStore = create<UIState>()(
@@ -47,6 +49,7 @@ export const useUIStore = create<UIState>()(
         showHeader: true,
         showBackground: true,
         onlyFullyVisible: false,
+        hideCommandMessages: false,
         
         // Actions
         toggleSettings: () => set((state) => ({ 
@@ -75,7 +78,9 @@ export const useUIStore = create<UIState>()(
         
         setShowBackground: (show) => set({ showBackground: show }),
         
-        setOnlyFullyVisible: (show) => set({ onlyFullyVisible: show })
+        setOnlyFullyVisible: (show) => set({ onlyFullyVisible: show }),
+        
+        setHideCommandMessages: (hide) => set({ hideCommandMessages: hide })
       }),
       {
         name: 'ui-storage',
@@ -87,7 +92,8 @@ export const useUIStore = create<UIState>()(
           borderRadius: state.borderRadius,
           showHeader: state.showHeader,
           showBackground: state.showBackground,
-          onlyFullyVisible: state.onlyFullyVisible
+          onlyFullyVisible: state.onlyFullyVisible,
+          hideCommandMessages: state.hideCommandMessages
         })
       }
     ),

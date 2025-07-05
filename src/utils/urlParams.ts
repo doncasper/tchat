@@ -9,11 +9,11 @@ export const readSettingsFromURL = () => {
     showTimestamps: params.get('ts') !== null ? params.get('ts') === '1' : null,
     showBadges: params.get('bd') !== null ? params.get('bd') === '1' : null,
     fontSizeMultiplier: params.get('fs') ? parseFloat(params.get('fs')!) : null,
-    messageDelay: params.get('md') ? parseInt(params.get('md')!, 10) : null,
     maxMessages: params.get('mm') ? parseInt(params.get('mm')!, 10) : null,
     showHeader: params.get('hd') !== null ? params.get('hd') === '1' : null,
     showBackground: params.get('bg') !== null ? params.get('bg') === '1' : null,
-    onlyFullyVisible: params.get('ov') !== null ? params.get('ov') === '1' : null
+    onlyFullyVisible: params.get('ov') !== null ? params.get('ov') === '1' : null,
+    hideCommandMessages: params.get('hc') !== null ? params.get('hc') === '1' : null
   }
 }
 
@@ -23,11 +23,11 @@ export const updateURLWithSettings = (settings: {
   showTimestamps?: boolean
   showBadges?: boolean
   fontSizeMultiplier?: number
-  messageDelay?: number
   maxMessages?: number
   showHeader?: boolean
   showBackground?: boolean
   onlyFullyVisible?: boolean
+  hideCommandMessages?: boolean
 }) => {
   const params = new URLSearchParams()
 
@@ -47,10 +47,7 @@ export const updateURLWithSettings = (settings: {
   if (settings.fontSizeMultiplier && settings.fontSizeMultiplier !== 1) {
     params.set('fs', settings.fontSizeMultiplier.toFixed(2))
   }
-  if (settings.messageDelay && settings.messageDelay !== 0) {
-    params.set('md', settings.messageDelay.toString())
-  }
-  if (settings.maxMessages && settings.maxMessages !== 100) {
+  if (settings.maxMessages && settings.maxMessages !== 15) {
     params.set('mm', settings.maxMessages.toString())
   }
   if (settings.showHeader === false) {
@@ -61,6 +58,9 @@ export const updateURLWithSettings = (settings: {
   }
   if (settings.onlyFullyVisible === true) {
     params.set('ov', '1')
+  }
+  if (settings.hideCommandMessages === true) {
+    params.set('hc', '1')
   }
 
   const newURL = params.toString() 
