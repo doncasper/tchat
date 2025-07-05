@@ -22,25 +22,37 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, className 
 
         if (badgeDisplayMode === 'image') {
           return (
-            <img
+            <span
               key={badge}
-              src={getBadgeImageUrl(badge)}
-              alt={badgeInfo.displayName}
               className={className}
-              onError={(e) => {
-                // Fallback to text if image fails to load
-                const target = e.target as HTMLImageElement
-                target.style.display = 'none'
-                const textSpan = document.createElement('span')
-                textSpan.className = className
-                textSpan.style.backgroundColor = badgeInfo.color
-                textSpan.textContent = badgeInfo.displayName
-                const parentNode = target.parentNode
-                if (parentNode) {
-                  parentNode.replaceChild(textSpan, target)
-                }
+              style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0,
+                backgroundColor: 'transparent'
               }}
-            />
+            >
+              <img
+                src={getBadgeImageUrl(badge)}
+                alt={badgeInfo.displayName}
+                style={{ 
+                  height: '18px', 
+                  width: '18px',
+                  display: 'block'
+                }}
+                onError={(e) => {
+                  // Fallback to text if image fails to load
+                  const target = e.target as HTMLImageElement
+                  const parent = target.parentElement
+                  if (parent) {
+                    parent.style.backgroundColor = badgeInfo.color
+                    parent.style.padding = '0 4px'
+                    parent.innerHTML = badgeInfo.displayName
+                  }
+                }}
+              />
+            </span>
           )
         }
 
