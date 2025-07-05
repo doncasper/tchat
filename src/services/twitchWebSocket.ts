@@ -273,11 +273,13 @@ export class TwitchWebSocket {
 
     badgeList.forEach(badge => {
       const [type, version] = badge.split('/')
-      if (type) {
+      if (type && version) {
+        // Store the full badge ID (e.g., "subscriber/0", "legendus/1") for BADGE_CONFIG lookup
+        badges.push(`${type}/${version}`)
+        badgeInfo.push({ type, version })
+      } else if (type) {
+        // Fallback for badges without version
         badges.push(type)
-        if (version) {
-          badgeInfo.push({ type, version })
-        }
       }
     })
 
@@ -285,15 +287,18 @@ export class TwitchWebSocket {
   }
 
   private getUserType(tags: TwitchTags, badges: string[]): ChatDataItem['userType'] {
-    if (badges.includes('broadcaster')) return 'broadcaster'
-    if (badges.includes('moderator') || tags.mod === '1') return 'moderator'
-    if (badges.includes('vip')) return 'vip'
-    if (badges.includes('subscriber') || tags.subscriber === '1') return 'subscriber'
-    if (badges.includes('staff')) return 'staff'
-    if (badges.includes('partner')) return 'partner'
-    if (badges.includes('founder')) return 'founder'
-    if (badges.includes('artist')) return 'artist'
-    if (badges.includes('turbo')) return 'turbo'
+    // Check if any badge starts with the given type (handles versioned badges)
+    const hasBadgeType = (type: string) => badges.some(badge => badge.startsWith(`${type}/`) || badge === type)
+    
+    if (hasBadgeType('broadcaster')) return 'broadcaster'
+    if (hasBadgeType('moderator') || tags.mod === '1') return 'moderator'
+    if (hasBadgeType('vip')) return 'vip'
+    if (hasBadgeType('subscriber') || tags.subscriber === '1') return 'subscriber'
+    if (hasBadgeType('staff')) return 'staff'
+    if (hasBadgeType('partner')) return 'partner'
+    if (hasBadgeType('founder')) return 'founder'
+    if (hasBadgeType('artist')) return 'artist'
+    if (hasBadgeType('turbo')) return 'turbo'
     return undefined
   }
 

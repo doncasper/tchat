@@ -17,7 +17,9 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
 
   // Helper function to get badge URL from Twitch CDN
   const getTwitchBadgeUrl = (type: string, version: string) => {
-    return `https://static-cdn.jtvnw.net/badges/v1/${type}/${version}/3`
+    // Handle special cases where badge type needs mapping
+    const mappedType = type.replace('_', '-') // Convert underscore to dash
+    return `https://static-cdn.jtvnw.net/badges/v1/${mappedType}/${version}/3`
   }
 
   if (badgeDisplayMode === 'image' && badgeInfo && badgeInfo.length > 0) {
@@ -25,7 +27,9 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
     return (
       <>
         {badgeInfo.map((badge, index) => {
-          const knownBadge = BADGE_CONFIG[badge.type]
+          // Look up the badge using the full ID (type/version)
+          const fullBadgeId = `${badge.type}/${badge.version}`
+          const knownBadge = BADGE_CONFIG[fullBadgeId]
           
           return (
             <span
@@ -40,8 +44,9 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
               }}
             >
               <img
-                src={knownBadge?.imageId ? getBadgeImageUrl(badge.type) : getTwitchBadgeUrl(badge.type, badge.version)}
+                src={knownBadge?.imageId ? getBadgeImageUrl(fullBadgeId) : getTwitchBadgeUrl(badge.type, badge.version)}
                 alt={knownBadge?.displayName || badge.type}
+                title={knownBadge?.displayName || badge.type}
                 style={{ 
                   height: '18px', 
                   width: '18px',
@@ -72,24 +77,26 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
   // Text mode - use badges array
   return (
     <>
-      {badges.map((badge) => {
+      {badges.map((badge, index) => {
         const badgeConfig = BADGE_CONFIG[badge]
         if (!badgeConfig) {
           // Unknown badge - display with default styling
+          // Extract the badge type from versioned badges (e.g., "subscriber/0" -> "subscriber")
+          const badgeType = badge.includes('/') ? badge.split('/')[0] : badge
           return (
             <span
-              key={badge}
+              key={`${badge}-${index}`}
               className={className}
               style={{ backgroundColor: '#6441a5' }}
             >
-              {badge.toUpperCase()}
+              {badgeType?.toUpperCase() || 'BADGE'}
             </span>
           )
         }
 
         return (
           <span
-            key={badge}
+            key={`${badge}-${index}`}
             className={className}
             style={{ backgroundColor: badgeConfig.color }}
           >
