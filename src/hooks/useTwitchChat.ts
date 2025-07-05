@@ -109,7 +109,7 @@ export const useTwitchChat = (options: UseTwitchChatOptions = {}) => {
     }
     
     // Filter out command messages if hideCommandMessages is enabled
-    if (hideCommandMessages && message.type === 'message' && message.message.startsWith('!')) {
+    if (hideCommandMessages && message.type === 'message' && message.text.startsWith('!')) {
       return
     }
     

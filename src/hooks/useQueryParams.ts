@@ -10,7 +10,6 @@ import { useThemeStore } from '../store/themeStore'
 //   ts: 'showTimestamps',
 //   bd: 'showBadges',
 //   fs: 'fontSizeMultiplier',
-//   md: 'messageDelay',
 //   mm: 'maxMessages'
 // } as const
 
@@ -55,14 +54,6 @@ export const useQueryParams = () => {
       }
     }
 
-    const messageDelay = params.get('md')
-    if (messageDelay !== null) {
-      const value = parseInt(messageDelay, 10)
-      if (!isNaN(value) && value >= 0 && value <= 50000) {
-        chatStore.setMessageDelay(value)
-      }
-    }
-
     const maxMessages = params.get('mm')
     if (maxMessages !== null) {
       const value = parseInt(maxMessages, 10)
@@ -92,9 +83,6 @@ export const useQueryParams = () => {
     if (uiStore.fontSizeMultiplier !== 1) {
       params.set('fs', uiStore.fontSizeMultiplier.toFixed(2))
     }
-    if (chatStore.messageDelay !== 0) {
-      params.set('md', chatStore.messageDelay.toString())
-    }
     if (chatStore.maxMessages !== 100) {
       params.set('mm', chatStore.maxMessages.toString())
     }
@@ -106,7 +94,6 @@ export const useQueryParams = () => {
     window.history.replaceState({}, '', newURL)
   }, [
     chatStore.currentChannel,
-    chatStore.messageDelay,
     chatStore.maxMessages,
     themeStore.currentThemeName,
     uiStore.showTimestamps,
