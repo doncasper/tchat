@@ -21,6 +21,8 @@
   max-height: 80vh;
   overflow: hidden;
   animation: slideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes slideIn {
@@ -68,8 +70,10 @@
 
 .settingsContent {
   padding: 24px;
-  max-height: calc(80vh - 80px);
+  padding-bottom: 24px;
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .settingsSection {
@@ -331,8 +335,10 @@
   flex: 1;
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d5db;
   font-size: 14px;
+  background: #ffffff;
+  color: #374151;
   transition: border-color 0.2s ease;
 }
 
@@ -379,6 +385,10 @@
   margin-bottom: 20px;
 }
 
+.filterSection:last-child {
+  margin-bottom: 0;
+}
+
 .filterSection h4 {
   margin-bottom: 10px;
   font-size: 0.9rem;
@@ -406,6 +416,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 4px;
   font-size: 0.875rem;
+  color: #374151;
 }
 
 .removeButton {
@@ -426,6 +437,7 @@
 .addUserForm {
   display: flex;
   gap: 8px;
+  width: 100%;
 }
 
 .userInput {
@@ -434,6 +446,8 @@
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font-size: 0.875rem;
+  background: #ffffff;
+  color: #374151;
 }
 
 .userInput:focus {
