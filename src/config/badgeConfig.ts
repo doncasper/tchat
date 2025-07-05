@@ -1607,7 +1607,10 @@ export const getBadgeImageUrl = (badgeId: string): string => {
       const version = parseInt(parts[1])
       if (!isNaN(version) && version > 6) {
         // Use subscriber/6 for all subscriber badges with version > 6
-        badge = BADGE_CONFIG['subscriber/6']
+        const subscriberBadge = BADGE_CONFIG['subscriber/6']
+        if (subscriberBadge) {
+          badge = { ...subscriberBadge, displayName: `${version}-month Subscriber` }
+        }
       }
     }
   }
