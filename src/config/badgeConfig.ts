@@ -1598,7 +1598,20 @@ export const BADGE_CONFIG: Record<string, BadgeInfo> = {
 }
 
 export const getBadgeImageUrl = (badgeId: string): string => {
-  const badge = BADGE_CONFIG[badgeId]
+  let badge = BADGE_CONFIG[badgeId]
+  
+  // Special handling for subscriber badges with versions > 6
+  if (!badge && badgeId.startsWith('subscriber/')) {
+    const parts = badgeId.split('/')
+    if (parts.length > 1 && parts[1]) {
+      const version = parseInt(parts[1])
+      if (!isNaN(version) && version > 6) {
+        // Use subscriber/6 for all subscriber badges with version > 6
+        badge = BADGE_CONFIG['subscriber/6']
+      }
+    }
+  }
+  
   const imageId = badge?.imageId || `${badgeId}/3`
 
   return `https://static-cdn.jtvnw.net/badges/v1/${imageId}`

@@ -15,25 +15,32 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
     return null
   }
 
-  // Helper function to get badge URL from Twitch CDN
-  const getTwitchBadgeUrl = (type: string, version: string) => {
-    // Handle special cases where badge type needs mapping
-    const mappedType = type.replace('_', '-') // Convert underscore to dash
-    return `https://static-cdn.jtvnw.net/badges/v1/${mappedType}/${version}/3`
-  }
 
-  if (badgeDisplayMode === 'image' && badgeInfo && badgeInfo.length > 0) {
-    // Use badgeInfo for images when available
+  if (badgeDisplayMode === 'image') {
+    // Image mode - render badges as images
     return (
       <>
-        {badgeInfo.map((badge, index) => {
-          // Look up the badge using the full ID (type/version)
-          const fullBadgeId = `${badge.type}/${badge.version}`
-          const knownBadge = BADGE_CONFIG[fullBadgeId]
+        {badges.map((badge, index) => {
+          let badgeConfig = BADGE_CONFIG[badge]
+          
+          // Special handling for subscriber badges with versions > 6
+          if (!badgeConfig && badge.startsWith('subscriber/')) {
+            const parts = badge.split('/')
+            if (parts.length > 1 && parts[1]) {
+              const version = parseInt(parts[1])
+              if (!isNaN(version) && version > 6) {
+                // Use subscriber/6 for all subscriber badges with version > 6
+                badgeConfig = BADGE_CONFIG['subscriber/6']
+              }
+            }
+          }
+          
+          // Extract type from badge ID
+          const type = badge.includes('/') ? badge.split('/')[0] : badge
           
           return (
             <span
-              key={`${badge.type}-${badge.version}-${index}`}
+              key={`${badge}-${index}`}
               className={className}
               style={{ 
                 display: 'inline-flex',
@@ -44,9 +51,9 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
               }}
             >
               <img
-                src={knownBadge?.imageId ? getBadgeImageUrl(fullBadgeId) : getTwitchBadgeUrl(badge.type, badge.version)}
-                alt={knownBadge?.displayName || badge.type}
-                title={knownBadge?.displayName || badge.type}
+                src={getBadgeImageUrl(badge)}
+                alt={badgeConfig?.displayName || type}
+                title={badgeConfig?.displayName || type}
                 style={{ 
                   height: '1.2em', 
                   width: '1.2em',
@@ -57,14 +64,14 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
                   // Fallback to text if image fails to load
                   const target = e.target as HTMLImageElement
                   const parent = target.parentElement
-                  if (parent && knownBadge) {
-                    parent.style.backgroundColor = knownBadge.color
+                  if (parent && badgeConfig) {
+                    parent.style.backgroundColor = badgeConfig.color
                     parent.style.padding = '0 4px'
-                    parent.innerHTML = knownBadge.displayName
+                    parent.innerHTML = badgeConfig.displayName
                   } else if (parent) {
                     parent.style.backgroundColor = '#6441a5'
                     parent.style.padding = '0 4px'
-                    parent.innerHTML = badge.type.toUpperCase()
+                    parent.innerHTML = type?.toUpperCase() || 'BADGE'
                   }
                 }}
               />
@@ -79,7 +86,20 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
   return (
     <>
       {badges.map((badge, index) => {
-        const badgeConfig = BADGE_CONFIG[badge]
+        let badgeConfig = BADGE_CONFIG[badge]
+        
+        // Special handling for subscriber badges with versions > 6
+        if (!badgeConfig && badge.startsWith('subscriber/')) {
+          const parts = badge.split('/')
+          if (parts.length > 1 && parts[1]) {
+            const version = parseInt(parts[1])
+            if (!isNaN(version) && version > 6) {
+              // Use subscriber/6 display name for all subscriber badges with version > 6
+              badgeConfig = BADGE_CONFIG['subscriber/6']
+            }
+          }
+        }
+        
         if (!badgeConfig) {
           // Unknown badge - display with default styling
           // Extract the badge type from versioned badges (e.g., "subscriber/0" -> "subscriber")
