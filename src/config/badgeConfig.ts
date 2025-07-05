@@ -5,6 +5,7 @@
 export interface BadgeInfo {
   id: string
   displayName: string
+  displayNameShort?: string
   color: string
   // Image ID for CDN (some badges have different IDs on CDN)
   imageId?: string
@@ -1370,42 +1371,49 @@ export const BADGE_CONFIG: Record<string, BadgeInfo> = {
   "subscriber/0": {
     id: 'subscriber/0',
     displayName: 'Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: '5d9f2208-5dd8-11e7-8513-2ff4adfae661/3'
   },
   "subscriber/1": {
     id: 'subscriber/1',
     displayName: 'Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: '5d9f2208-5dd8-11e7-8513-2ff4adfae661/3'
   },
   "subscriber/2": {
     id: 'subscriber/2',
     displayName: '2-Month Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: '25a03e36-2bb2-4625-bd37-d6d9d406238d/3'
   },
   "subscriber/3": {
     id: 'subscriber/3',
     displayName: '3-Month Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: 'e8984705-d091-4e54-8241-e53b30a84b0e/3'
   },
   "subscriber/4": {
     id: 'subscriber/4',
     displayName: '6-Month Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: '2d2485f6-d19b-4daa-8393-9493b019156b/3'
   },
   "subscriber/5": {
     id: 'subscriber/5',
     displayName: '9-Month Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: 'b4e6b13a-a76f-4c56-87e1-9375a7aaa610/3'
   },
   "subscriber/6": {
     id: 'subscriber/6',
     displayName: '6-Month Subscriber',
+    displayNameShort: 'Sub',
     color: '#9147ff',
     imageId: 'ed51a614-2c44-4a60-80b6-62908436b43a/3'
   },

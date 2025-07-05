@@ -39,6 +39,7 @@ TChat supports configuration via URL query parameters, allowing you to bookmark 
 | `th` | Theme | `default`, `tako` | `default` |
 | `ts` | Show timestamps | `0` (off), `1` (on) | `1` |
 | `bd` | Show badges | `0` (off), `1` (on) | `1` |
+| `bdm` | Badge display mode | `text`, `image` | `text` |
 | `fs` | Font size multiplier | `1.0` - `2.0` | `1.0` |
 | `mm` | Max messages | `1` - `200` | `15` |
 | `hd` | Show header | `0` (off), `1` (on) | `1` |
@@ -58,8 +59,8 @@ https://yoursite.com/?ch=xqc&fs=1.5&ts=0&bg=0
 # Hide command messages and limit to 50 messages
 https://yoursite.com/?ch=lirik&hc=1&mm=50
 
-# Overlay mode - no header, no background
-https://yoursite.com/?ch=summit1g&hd=0&bg=0
+# Overlay mode - no header, no background, badges as images
+https://yoursite.com/?ch=summit1g&hd=0&bg=0&bdm=image
 ```
 
 ### URL Behavior

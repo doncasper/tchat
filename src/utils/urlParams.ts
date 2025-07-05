@@ -13,7 +13,8 @@ export const readSettingsFromURL = () => {
     showHeader: params.get('hd') !== null ? params.get('hd') === '1' : null,
     showBackground: params.get('bg') !== null ? params.get('bg') === '1' : null,
     onlyFullyVisible: params.get('ov') !== null ? params.get('ov') === '1' : null,
-    hideCommandMessages: params.get('hc') !== null ? params.get('hc') === '1' : null
+    hideCommandMessages: params.get('hc') !== null ? params.get('hc') === '1' : null,
+    badgeDisplayMode: params.get('bdm') as 'text' | 'image' | null
   }
 }
 
@@ -28,6 +29,7 @@ export const updateURLWithSettings = (settings: {
   showBackground?: boolean
   onlyFullyVisible?: boolean
   hideCommandMessages?: boolean
+  badgeDisplayMode?: 'text' | 'image'
 }) => {
   const params = new URLSearchParams()
 
@@ -61,6 +63,9 @@ export const updateURLWithSettings = (settings: {
   }
   if (settings.hideCommandMessages === true) {
     params.set('hc', '1')
+  }
+  if (settings.badgeDisplayMode && settings.badgeDisplayMode !== 'text') {
+    params.set('bdm', settings.badgeDisplayMode)
   }
 
   const newURL = params.toString() 

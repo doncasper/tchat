@@ -54,6 +54,9 @@ function ChatApp() {
     if (urlSettings.hideCommandMessages !== null) {
       useUIStore.getState().setHideCommandMessages(urlSettings.hideCommandMessages)
     }
+    if (urlSettings.badgeDisplayMode !== null && (urlSettings.badgeDisplayMode === 'text' || urlSettings.badgeDisplayMode === 'image')) {
+      useUIStore.getState().setBadgeDisplayMode(urlSettings.badgeDisplayMode)
+    }
   }, [])
   
   // Zustand stores

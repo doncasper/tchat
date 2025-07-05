@@ -278,7 +278,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose, changeChann
                 Badge display:
                 <span className={styles.tooltip}>
                   <span className={styles.tooltipIcon}>ⓘ</span>
-                  <span className={styles.tooltipText}>Show badges as text or images</span>
+                  <span className={styles.tooltipText}>Show badges as text or images. Query param: ?bdm=image</span>
                 </span>
               </label>
               <select

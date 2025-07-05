@@ -121,7 +121,7 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
             className={className}
             style={{ backgroundColor: badgeConfig.color }}
           >
-            {badgeConfig.displayName}
+            {badgeConfig.displayNameShort || badgeConfig.displayName}
           </span>
         )
       })}

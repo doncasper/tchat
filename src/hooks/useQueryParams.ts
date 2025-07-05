@@ -61,6 +61,12 @@ export const useQueryParams = () => {
         chatStore.setMaxMessages(value)
       }
     }
+
+    // Badge display mode
+    const badgeDisplayMode = params.get('bdm')
+    if (badgeDisplayMode !== null && (badgeDisplayMode === 'text' || badgeDisplayMode === 'image')) {
+      uiStore.setBadgeDisplayMode(badgeDisplayMode)
+    }
   }, [chatStore, uiStore, themeStore])
 
   // Update URL from current settings
@@ -86,6 +92,9 @@ export const useQueryParams = () => {
     if (chatStore.maxMessages !== 100) {
       params.set('mm', chatStore.maxMessages.toString())
     }
+    if (uiStore.badgeDisplayMode !== 'text') {
+      params.set('bdm', uiStore.badgeDisplayMode)
+    }
 
     const newURL = params.toString() 
       ? `${window.location.pathname}?${params.toString()}`
@@ -98,7 +107,8 @@ export const useQueryParams = () => {
     themeStore.currentThemeName,
     uiStore.showTimestamps,
     uiStore.showBadges,
-    uiStore.fontSizeMultiplier
+    uiStore.fontSizeMultiplier,
+    uiStore.badgeDisplayMode
   ])
 
   // Initialize from URL on mount
