@@ -141,7 +141,7 @@ export class TwitchWebSocket {
     const tags = this.parseTags(line)
     const username = tags['display-name'] || match[1]?.split('!')[0] || 'Unknown'
     const message = match[2]
-    const badges = this.parseBadges(tags.badges)
+    const { badges, badgeInfo } = this.parseBadges(tags.badges)
     const userType = this.getUserType(tags, badges)
 
     // Handle bits (cheering)
@@ -172,6 +172,7 @@ export class TwitchWebSocket {
       userType,
       time: new Date(),
       badges,
+      badgeInfo,
       emotes
     }
 
@@ -263,20 +264,24 @@ export class TwitchWebSocket {
     return tags
   }
 
-  private parseBadges(badgesString?: string): string[] {
-    if (!badgesString) return []
+  private parseBadges(badgesString?: string): { badges: string[]; badgeInfo: Array<{ type: string; version: string }> } {
+    if (!badgesString) return { badges: [], badgeInfo: [] }
 
     const badges: string[] = []
+    const badgeInfo: Array<{ type: string; version: string }> = []
     const badgeList = badgesString.split(',')
 
     badgeList.forEach(badge => {
-      const [type] = badge.split('/')
+      const [type, version] = badge.split('/')
       if (type) {
         badges.push(type)
+        if (version) {
+          badgeInfo.push({ type, version })
+        }
       }
     })
 
-    return badges
+    return { badges, badgeInfo }
   }
 
   private getUserType(tags: TwitchTags, badges: string[]): ChatDataItem['userType'] {

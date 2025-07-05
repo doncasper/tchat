@@ -17,6 +17,7 @@ export interface ChatDataItem {
   userType?: 'broadcaster' | 'moderator' | 'subscriber' | 'vip' | 'staff' | 'partner' | 'founder' | 'artist' | 'dj' | 'turbo' | 'bot'
   time: Date
   badges?: string[]
+  badgeInfo?: Array<{ type: string; version: string }>
   count?: number
   emotes?: TwitchEmote[]
 } 
