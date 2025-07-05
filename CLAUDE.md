@@ -45,7 +45,8 @@ npm run preview
 
 - **chatStore** (`src/store/chatStore.ts`): Messages with duplicate detection, connection status, channel management, message limits
 - **themeStore** (`src/store/themeStore.ts`): Dynamic theme registration, available themes, theme switching with fallbacks
-- **uiStore** (`src/store/uiStore.ts`): Display preferences (timestamps, badges, header, background), font size, border radius
+- **uiStore** (`src/store/uiStore.ts`): Display preferences (timestamps, badges, header, background), font size, border radius, command message filtering
+- **userFilterStore** (`src/store/userFilterStore.ts`): Bot user management, blocked user list with message filtering
 
 All stores persist relevant settings to localStorage automatically with selective persistence strategies.
 
@@ -89,6 +90,7 @@ src/
 │   ├── chatStore.ts           # Messages, connection, duplicate detection
 │   ├── themeStore.ts          # Dynamic theme management with fallbacks
 │   ├── uiStore.ts             # Display preferences and UI state
+│   ├── userFilterStore.ts     # User filtering (bots, blocked users)
 │   └── useThemeInitializer.ts # Theme initialization hook
 ├── themes/                    # Theme implementations
 │   ├── ThemeFactory.ts        # Dynamic theme registration system
@@ -100,7 +102,8 @@ src/
 ├── types/
 │   └── ChatTypes.ts           # Core data types with TwitchEmote interface
 └── utils/
-    └── urlParams.ts           # URL parameter parsing and updating utilities
+    ├── urlParams.ts           # URL parameter parsing and updating utilities
+    └── useAnimationStyles.ts  # Theme animation injection hook
 ```
 
 ## Development Guidelines
@@ -184,7 +187,9 @@ src/
 
 ### Comprehensive Settings System
 - **Display Controls**: Toggle timestamps, badges, header, background visibility
+- **Message Filtering**: Hide command messages (!), manage bot users, block users
 - **Appearance**: Font size (1.0-2.0x), border radius (0-30px) with sliders
+- **User Management**: Convert bot messages to notifications, hide blocked users
 - **URL Parameters**: All settings configurable via query string
 - **Keyboard Shortcuts**: `Ctrl+M` (or `Cmd+M`) opens settings modal
 - **Tooltips**: Helpful information for each setting
@@ -209,8 +214,11 @@ All settings can be configured via URL parameters:
 - `ts=0` - Disable timestamps
 - `bd=0` - Disable badges
 - `fs=1.5` - Set font size multiplier
-- `md=1000` - Set message delay (ms)
-- `mm=150` - Set max messages
+- `mm=150` - Set max messages (default: 15)
+- `hd=0` - Hide header
+- `bg=0` - Hide background
+- `ov=1` - Only show fully visible messages
+- `hc=1` - Hide command messages (starting with !)
 
 ## WebSocket Connection Details
 

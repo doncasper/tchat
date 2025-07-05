@@ -4,12 +4,15 @@ A modern, themeable Twitch chat viewer built with React 19, TypeScript, and Zust
 
 ## Features
 
-- **Real-time Twitch Chat**: WebSocket connection to Twitch IRC
-- **Multiple Themes**: Plugin-based theme system with built-in themes
+- **Real-time Twitch Chat**: WebSocket connection to Twitch IRC with full emote support
+- **Multiple Themes**: Plugin-based theme system (Default and Tako themes)
 - **Virtual Scrolling**: Efficient rendering for thousands of messages
-- **URL Configuration**: Configure chat settings via query parameters
-- **Customizable Display**: Font size, timestamps, badges, and animations
+- **Message Filtering**: Hide command messages (!), manage bot users, block users
+- **URL Configuration**: Configure all settings via query parameters
+- **Customizable Display**: Font size, timestamps, badges, border radius, visibility options
 - **Auto-scroll**: Smart auto-scrolling with manual override
+- **User Management**: Convert bot messages to notifications, hide blocked users
+- **Keyboard Shortcuts**: Quick settings access with Ctrl/Cmd+M
 
 ## Quick Start
 
@@ -32,14 +35,16 @@ TChat supports configuration via URL query parameters, allowing you to bookmark 
 
 | Parameter | Description | Values | Default |
 |-----------|-------------|---------|---------|
-| `ch` | Channel name | Any Twitch channel | `lirik` |
-| `th` | Theme | `default`, `minimal`, `tako` | `default` |
-| `as` | Auto-scroll | `0` (off), `1` (on) | `1` |
+| `ch` | Channel name | Any Twitch channel | `takotoken` |
+| `th` | Theme | `default`, `tako` | `default` |
 | `ts` | Show timestamps | `0` (off), `1` (on) | `1` |
 | `bd` | Show badges | `0` (off), `1` (on) | `1` |
 | `fs` | Font size multiplier | `1.0` - `2.0` | `1.0` |
-| `md` | Message delay (ms) | `0` - `50000` | `0` |
-| `mm` | Max messages | `1` - `200` | `100` |
+| `mm` | Max messages | `1` - `200` | `15` |
+| `hd` | Show header | `0` (off), `1` (on) | `1` |
+| `bg` | Show background | `0` (off), `1` (on) | `1` |
+| `ov` | Only show fully visible messages | `0` (off), `1` (on) | `0` |
+| `hc` | Hide command messages (!) | `0` (off), `1` (on) | `0` |
 
 ### Example URLs
 
@@ -47,11 +52,14 @@ TChat supports configuration via URL query parameters, allowing you to bookmark 
 # Basic usage - watch shroud's chat with tako theme
 https://yoursite.com/?ch=shroud&th=tako
 
-# Customized setup - large font, no timestamps, minimal theme
-https://yoursite.com/?ch=xqc&th=minimal&fs=1.5&ts=0
+# Customized setup - large font, no timestamps, hide background
+https://yoursite.com/?ch=xqc&fs=1.5&ts=0&bg=0
 
-# Delayed chat for spoiler avoidance
-https://yoursite.com/?ch=lirik&md=30000&mm=50
+# Hide command messages and limit to 50 messages
+https://yoursite.com/?ch=lirik&hc=1&mm=50
+
+# Overlay mode - no header, no background
+https://yoursite.com/?ch=summit1g&hd=0&bg=0
 ```
 
 ### URL Behavior
@@ -60,3 +68,20 @@ https://yoursite.com/?ch=lirik&md=30000&mm=50
 - URL updates automatically when settings change
 - Only non-default values appear in URL for cleaner links
 - Settings persist to localStorage and URL simultaneously
+
+## Advanced Features
+
+### User Filtering
+- **Bot Users**: Convert messages from specified users to notifications
+- **Blocked Users**: Completely hide messages from specified users
+- **Command Messages**: Option to hide messages starting with "!"
+
+### Themes
+- **Default Theme**: Professional gradient background with clean design
+- **Tako Theme**: Animated theme with custom graphics and playful styling
+
+### Performance
+- Virtual scrolling handles thousands of messages efficiently
+- Duplicate message detection within 1-second window
+- Automatic message limit enforcement (default: 15 messages)
+- Only visible messages are rendered to DOM
