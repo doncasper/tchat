@@ -48,9 +48,10 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ badges, badgeInfo,
                 alt={knownBadge?.displayName || badge.type}
                 title={knownBadge?.displayName || badge.type}
                 style={{ 
-                  height: '18px', 
-                  width: '18px',
-                  display: 'block'
+                  height: '1.2em', 
+                  width: '1.2em',
+                  display: 'block',
+                  verticalAlign: 'middle'
                 }}
                 onError={(e) => {
                   // Fallback to text if image fails to load

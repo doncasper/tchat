@@ -1600,5 +1600,6 @@ export const BADGE_CONFIG: Record<string, BadgeInfo> = {
 export const getBadgeImageUrl = (badgeId: string): string => {
   const badge = BADGE_CONFIG[badgeId]
   const imageId = badge?.imageId || `${badgeId}/3`
+
   return `https://static-cdn.jtvnw.net/badges/v1/${imageId}`
 }
